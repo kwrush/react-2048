@@ -1,0 +1,22 @@
+/*$tile-size: $cell-size;
+$tile-font-size: 3em;
+$tile-font-size-s: 1.8em;
+
+.tile {
+    position: absolute;
+    width: $tile-size;
+    height: $tile-size;
+    text-align: center;
+    line-height: $tile-size;
+    font-size: $tile-font-size;
+    font-weight: bold;
+    @include border-radius($border-radius);
+}
+
+.tile-new {
+
+}
+
+.tile-merged {
+
+}*/

@@ -2,9 +2,10 @@ import React from 'react';
 import Grid from './Grid';
 
 const defaultProps = {
-    row: 4,
-    col: 4,
-    max: 2048
+    rows: 4,
+    cols: 4,
+    max: 2048,
+    gridSize: 400
 };
 
 export default class Game extends React.Component {
@@ -16,9 +17,9 @@ export default class Game extends React.Component {
         return (
             <div id="game-container">
                 <Grid 
-                    row={this.props.row}
-                    col={this.props.col}
-                    max={this.props.max}
+                    gridSize={this.props.gridSize}
+                    rows={this.props.rows}
+                    cols={this.props.cols}
                 />
             </div>
         );

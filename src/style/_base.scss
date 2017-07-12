@@ -1,0 +1,41 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto');
+
+$font-size: 18px;
+$font-family: "Roboto", "Helvetica Neue", Arial, sans-serif;
+$font-color: #776E65;
+$white-font-color: #FFF;
+$button-bgcolor: $font-color; 
+$border-radius: 3px;
+
+
+*,
+html,
+body {
+    margin: 0;
+    padding: 0;
+    font-family: $font-family;
+    color: $font-color;
+    font-size: $font-size;
+    box-sizing: border-box;
+}
+
+.button {
+    @include border-radius($border-radius);
+    background: $font-color;
+    outline: none;
+    border: none;
+    color: $white-font-color;
+}
+
+#game {
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+    display: inline-block;
+}
+
+#game-container {
+    position: relative;
+    display: inline-block;
+}
+
