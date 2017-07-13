@@ -1,22 +1,115 @@
-/*$tile-size: $cell-size;
 $tile-font-size: 3em;
 $tile-font-size-s: 1.8em;
+$anime-duration: 0.2s;
+$anime-delay: 0.15s;
+
+
+@keyframes appear {
+    from {
+        transform: scale(0);
+    }
+    to {
+        transform: scale(1);
+    }
+}
+
+@keyframes merge {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.2);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
 
 .tile {
     position: absolute;
-    width: $tile-size;
-    height: $tile-size;
-    text-align: center;
-    line-height: $tile-size;
-    font-size: $tile-font-size;
     font-weight: bold;
+    text-align: center;
+    transition: all 0.2s ease-out;
+    z-index: 10;
     @include border-radius($border-radius);
+
+    &.tile-new {
+        & .tile-inner {
+            animation-duration: $anime-duration;
+            animation-name: appear;
+            animation-fill-mode: forwards;
+            animation-delay: $anime-delay;
+            transform: scale(0);
+        }
+    }
+
+    & .tile-inner {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        font-size: $tile-font-size;
+        transition: all 0.2s ease-out;
+        @include border-radius($border-radius);
+    }
+
+    & .tile-2 {
+        background-color: #EEE;
+    }
+
+    & .tile-4 {
+        background-color: #EEC;
+    }
+
+    & .tile-8 {
+        color: $white-font-color;
+        background-color: #FB8;
+    }
+
+    & .tile-16 {
+        color: $white-font-color;
+        background-color: #F96;
+    }
+
+    & .tile-32 {
+        color: $white-font-color;
+        background-color: #F75;
+    }
+
+    & .tile-64 {
+        color: $white-font-color;
+        background-color: #F53;
+    }
+
+    & .tile-128 {
+        color: $white-font-color;
+        background-color: #EC7;
+    }
+
+    & .tile-256 {
+        color: $white-font-color;
+        background-color: #EC6;
+    }
+
+    & .tile-512 {
+        color: $white-font-color;
+        background-color: #EC5;
+    }
+
+    & .tile-1024 {
+        color: $white-font-color;
+        background-color: #EC3;
+    }
+
+    & .tile-2048,
+    & .tile-beyond {
+        color: $white-font-color;
+        background-color: #EC2;
+    }
 }
-
-.tile-new {
-
-}
-
-.tile-merged {
-
-}*/

@@ -1,5 +1,6 @@
 import React from 'react';
 import Grid from './Grid';
+import Board from './Board';
 
 const defaultProps = {
     rows: 4,
@@ -16,6 +17,12 @@ export default class Game extends React.Component {
     render () {
         return (
             <div id="game-container">
+                <Board
+                    startTiles={2}
+                    gridSize={this.props.gridSize}
+                    rows={this.props.rows}
+                    cols={this.props.cols}
+                />
                 <Grid 
                     gridSize={this.props.gridSize}
                     rows={this.props.rows}
