@@ -18,12 +18,12 @@ export default class Game extends React.Component {
         return (
             <div id="game-container">
                 <Board
-                    startTiles={2}
                     gridSize={this.props.gridSize}
                     rows={this.props.rows}
                     cols={this.props.cols}
                 />
                 <Grid 
+                    startTiles={2}
                     gridSize={this.props.gridSize}
                     rows={this.props.rows}
                     cols={this.props.cols}

@@ -22460,7 +22460,7 @@ var _Grid = __webpack_require__(187);
 
 var _Grid2 = _interopRequireDefault(_Grid);
 
-var _Board = __webpack_require__(188);
+var _Board = __webpack_require__(190);
 
 var _Board2 = _interopRequireDefault(_Board);
 
@@ -22495,12 +22495,12 @@ var Game = function (_React$Component) {
                 'div',
                 { id: 'game-container' },
                 _react2.default.createElement(_Board2.default, {
-                    startTiles: 2,
                     gridSize: this.props.gridSize,
                     rows: this.props.rows,
                     cols: this.props.cols
                 }),
                 _react2.default.createElement(_Grid2.default, {
+                    startTiles: 2,
                     gridSize: this.props.gridSize,
                     rows: this.props.rows,
                     cols: this.props.cols
@@ -22534,6 +22534,371 @@ var _react = __webpack_require__(20);
 
 var _react2 = _interopRequireDefault(_react);
 
+var _constants = __webpack_require__(188);
+
+var _utils = __webpack_require__(82);
+
+var _tile = __webpack_require__(189);
+
+var _tile2 = _interopRequireDefault(_tile);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+// Board controls how the tile being moved
+var Grid = function (_React$Component) {
+    _inherits(Grid, _React$Component);
+
+    function Grid(props) {
+        _classCallCheck(this, Grid);
+
+        var _this = _possibleConstructorReturn(this, (Grid.__proto__ || Object.getPrototypeOf(Grid)).call(this, props));
+
+        _this.addStartTiles = function () {
+            var grid = _this.state.grid;
+            var cells = _this.availableCells();
+
+            for (var i = 0; i < _this.props.startTiles; i++) {
+                var pos = _this.randomAvailableCell(cells);
+                if (pos !== null) {
+                    var cell = grid[pos.row][pos.col];
+                    grid[pos.row][pos.col] = Object.assign(cell, { tile: _this.createTile(cell, true) });
+                }
+            }
+
+            _this.setState({
+                grid: grid
+            });
+        };
+
+        _this.state = {
+            grid: _this.emptyGrid(_this.props.gridSize, _this.props.rows, _this.props.cols)
+        };
+
+        _this.keyDownHandler = _this.keyDownHandler.bind(_this);
+        _this.initialBoard = _this.initialBoard.bind(_this);
+        _this.createTile = _this.createTile.bind(_this);
+        return _this;
+    }
+
+    _createClass(Grid, [{
+        key: 'componentWillMount',
+        value: function componentWillMount() {
+            document.addEventListener('keydown', this.keyDownHandler, true);
+        }
+    }, {
+        key: 'componentDidMount',
+        value: function componentDidMount() {
+            this.addStartTiles();
+        }
+    }, {
+        key: 'componentWillUnmount',
+        value: function componentWillUnmount() {
+            document.removeEventListener('keydown', this.keyDownHandler, true);
+        }
+
+        // for test
+
+    }, {
+        key: 'keyDownHandler',
+        value: function keyDownHandler(event) {
+            var key = event.keyCode;
+            var step = { x: 0, y: 0 };
+            if (key === 37) {
+                step.x = -1;
+            } else if (key === 38) {
+                step.y = -1;
+            } else if (key === 39) {
+                step.x = 1;
+            } else if (key === 40) {
+                step.y = 1;
+            }
+
+            this.moveTile(step);
+        }
+    }, {
+        key: 'moveTile',
+        value: function moveTile(step) {
+            var board = this.state.grid;
+            for (var i = 0; i < board.length; i++) {
+                for (var j = 0; j < board[0].length; j++) {
+                    if (board[i][j].tile && board[i + step.y] && board[i + step.y][j + step.x]) {
+                        var cell = board[i + step.y][j + step.x];
+                        board[i + step.y][j + step.x] = Object.assign(cell, {
+                            tile: this.createTile(cell, false)
+                        });
+                        board[i][j].tile = null;
+                    }
+                }
+            }
+
+            this.setState({
+                grid: board
+            });
+        }
+    }, {
+        key: 'initialBoard',
+        value: function initialBoard() {
+            var board = this.state.grid;
+            var cells = this.availableCells();
+            for (var i = 0; i < this.props.startTiles; i++) {
+                var pos = this.randomAvailableCell(cells);
+                if (pos !== null) {
+                    var cell = board[pos.row][pos.col];
+                    board[pos.row][pos.col] = Object.assign(cell, { tile: this.createTile(cell, true) });
+                }
+            }
+
+            return board;
+        }
+    }, {
+        key: 'randomCellValue',
+        value: function randomCellValue() {
+            return Math.random() > 0.9 ? 4 : 2;
+        }
+    }, {
+        key: 'randomAvailableCell',
+        value: function randomAvailableCell(availableCells) {
+            if (Array.isArray(availableCells)) {
+                var index = Math.floor(Math.random() * availableCells.length);
+                var cell = availableCells.splice(index, 1);
+                return cell.length > 0 ? cell[0] : null;
+            }
+
+            return null;
+        }
+    }, {
+        key: 'availableCells',
+        value: function availableCells() {
+            var cells = [];
+            for (var i = 0; i < this.props.rows; i++) {
+                for (var j = 0; j < this.props.cols; j++) {
+                    if (this.state.grid[i][j].tile === null) {
+                        cells.push({
+                            row: i,
+                            col: j
+                        });
+                    }
+                }
+            }
+
+            return cells;
+        }
+    }, {
+        key: 'checkCellsAvailable',
+        value: function checkCellsAvailable() {
+            return this.availableCells().length > 0;
+        }
+    }, {
+        key: 'createTile',
+        value: function createTile(cell, isNew, isMerged) {
+            var w = cell.width;
+            var h = cell.height;
+            var x = cell.x;
+            var y = cell.y;
+
+            return _react2.default.createElement(_tile2.default, {
+                width: w,
+                height: h,
+                x: x,
+                y: y,
+                value: this.randomCellValue(),
+                newTile: isNew,
+                merged: isMerged
+            });
+        }
+    }, {
+        key: 'mergeTiles',
+        value: function mergeTiles(target, source) {
+            return createTile(target);
+        }
+    }, {
+        key: 'emptyCell',
+        value: function emptyCell(cell, r, c) {
+            var spacing = cell.spacing;
+            var w = cell.width;
+            var h = cell.height;
+
+            return Object.assign({}, {
+                width: w,
+                height: h,
+                x: spacing * (c + 1) + c * w,
+                y: spacing * (r + 1) + r * h,
+                tile: null
+            });
+        }
+    }, {
+        key: 'emptyGrid',
+        value: function emptyGrid(gridSize, r, c) {
+            var _this2 = this;
+
+            var gridSpacing = (0, _utils.calcGridSpacing)(gridSize, r >= c ? r : c);
+            var cellHeight = (0, _utils.calcCellHeight)(gridSize, r, gridSpacing);
+            var cellWidth = (0, _utils.calcCellWidth)(gridSize, c, gridSpacing);
+
+            var board = new Array(r).fill(new Array(c).fill({
+                spacing: gridSpacing,
+                width: cellWidth,
+                height: cellHeight
+            }));
+
+            return board.map(function (row, r) {
+                return row.map(function (cell, c) {
+                    return _this2.emptyCell(cell, r, c);
+                });
+            });
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            return _react2.default.createElement(
+                'div',
+                { id: 'grid' },
+                this.state.grid.map(function (row, r) {
+                    return row.map(function (cell, c) {
+                        return cell.tile;
+                    });
+                })
+            );
+        }
+    }]);
+
+    return Grid;
+}(_react2.default.Component);
+
+exports.default = Grid;
+
+/***/ }),
+/* 188 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.keyCodes = keyCodes;
+function keyCodes() {
+    return {
+        UP: 38,
+        RIGHT: 39,
+        DOWN: 40,
+        LEFT: 41,
+        SPACEBAR: 32
+    };
+}
+
+/***/ }),
+/* 189 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(20);
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Tile = function (_React$Component) {
+    _inherits(Tile, _React$Component);
+
+    function Tile(props) {
+        _classCallCheck(this, Tile);
+
+        var _this = _possibleConstructorReturn(this, (Tile.__proto__ || Object.getPrototypeOf(Tile)).call(this, props));
+
+        _this.state = {
+            classNames: ['tile', 'tile-new'],
+            innerClass: ['tile-inner', 'tile-' + _this.props.value],
+            x: _this.props.x,
+            y: _this.props.y,
+            value: _this.props.value
+        };
+        return _this;
+    }
+
+    _createClass(Tile, [{
+        key: 'componentDidUpdate',
+        value: function componentDidUpdate() {
+            this.setState({
+                classNames: ['tile']
+            });
+        }
+    }, {
+        key: 'move',
+        value: function move(cell) {
+            this.setState({
+                x: cell.x,
+                y: cell.y
+            });
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            var w = this.props.width;
+            var h = this.props.height;
+            var x = this.state.x;
+            var y = this.state.y;
+            var tileStyles = {
+                width: w + 'px',
+                height: h + 'px',
+                transform: 'translate(' + x + 'px,' + y + 'px)'
+            };
+
+            return _react2.default.createElement(
+                'div',
+                { className: this.state.classNames.join(' '), style: tileStyles },
+                _react2.default.createElement(
+                    'div',
+                    { className: this.state.innerClass.join(' ') },
+                    this.props.value
+                )
+            );
+        }
+    }]);
+
+    return Tile;
+}(_react2.default.Component);
+
+exports.default = Tile;
+
+/***/ }),
+/* 190 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(20);
+
+var _react2 = _interopRequireDefault(_react);
+
 var _utils = __webpack_require__(82);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -22544,17 +22909,17 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-// Background grid that won't update after mounting
-var Grid = function (_React$Component) {
-    _inherits(Grid, _React$Component);
+// Background board that won't update after mounting
+var Board = function (_React$Component) {
+    _inherits(Board, _React$Component);
 
-    function Grid() {
-        _classCallCheck(this, Grid);
+    function Board() {
+        _classCallCheck(this, Board);
 
-        return _possibleConstructorReturn(this, (Grid.__proto__ || Object.getPrototypeOf(Grid)).apply(this, arguments));
+        return _possibleConstructorReturn(this, (Board.__proto__ || Object.getPrototypeOf(Board)).apply(this, arguments));
     }
 
-    _createClass(Grid, [{
+    _createClass(Board, [{
         key: 'shouldComponentUpdate',
         value: function shouldComponentUpdate() {
             return false;
@@ -22608,285 +22973,10 @@ var Grid = function (_React$Component) {
         }
     }]);
 
-    return Grid;
-}(_react2.default.Component);
-
-exports.default = Grid;
-
-/***/ }),
-/* 188 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _react = __webpack_require__(20);
-
-var _react2 = _interopRequireDefault(_react);
-
-var _constants = __webpack_require__(189);
-
-var _utils = __webpack_require__(82);
-
-var _tile = __webpack_require__(190);
-
-var _tile2 = _interopRequireDefault(_tile);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-// Board controls how the tile being moved
-var Board = function (_React$Component) {
-    _inherits(Board, _React$Component);
-
-    function Board(props) {
-        _classCallCheck(this, Board);
-
-        var _this = _possibleConstructorReturn(this, (Board.__proto__ || Object.getPrototypeOf(Board)).call(this, props));
-
-        _this.state = {
-            board: _this.emptyBoard(_this.props.gridSize, _this.props.rows, _this.props.cols)
-        };
-        return _this;
-    }
-
-    _createClass(Board, [{
-        key: 'componentWillMount',
-        value: function componentWillMount() {
-            document.addEventListener('keydown', this.keyDownHandler, true);
-        }
-    }, {
-        key: 'componentDidMount',
-        value: function componentDidMount() {
-            this.setState({
-                board: this.initialBoard()
-            });
-        }
-    }, {
-        key: 'componentWillUnmount',
-        value: function componentWillUnmount() {
-            document.removeEventListener('keydown', this.keyDownHandler, true);
-        }
-    }, {
-        key: 'initialBoard',
-        value: function initialBoard() {
-            var board = this.state.board;
-            var cells = this.availableCells();
-            for (var i = 0; i < this.props.startTiles; i++) {
-                var pos = this.randomAvailableCell(cells);
-                if (pos !== null) {
-                    var cell = board[pos.row][pos.col];
-                    board[pos.row][pos.col] = Object.assign(cell, { tile: this.newTile(cell) });
-                }
-            }
-
-            return board;
-        }
-    }, {
-        key: 'randomCellValue',
-        value: function randomCellValue() {
-            return Math.random() > 0.8 ? 4 : 2;
-        }
-    }, {
-        key: 'randomAvailableCell',
-        value: function randomAvailableCell(availableCells) {
-            if (Array.isArray(availableCells)) {
-                var index = Math.floor(Math.random() * availableCells.length);
-                var cell = availableCells.splice(index, 1);
-                return cell.length > 0 ? cell[0] : null;
-            }
-
-            return null;
-        }
-    }, {
-        key: 'availableCells',
-        value: function availableCells() {
-            var cells = [];
-            for (var i = 0; i < this.props.rows; i++) {
-                for (var j = 0; j < this.props.cols; j++) {
-                    if (this.state.board[i][j].tile === null) {
-                        cells.push({
-                            row: i,
-                            col: j
-                        });
-                    }
-                }
-            }
-
-            return cells;
-        }
-    }, {
-        key: 'checkCellsAvailable',
-        value: function checkCellsAvailable() {
-            return this.availableCells().length > 0;
-        }
-    }, {
-        key: 'newTile',
-        value: function newTile(cell) {
-            var w = cell.width;
-            var h = cell.height;
-            var x = cell.x;
-            var y = cell.y;
-
-            return _react2.default.createElement(_tile2.default, {
-                width: w,
-                height: h,
-                x: x,
-                y: y,
-                value: this.randomCellValue(),
-                newTile: true,
-                merged: false
-            });
-        }
-    }, {
-        key: 'emptyCell',
-        value: function emptyCell(cell, r, c) {
-            var spacing = cell.spacing;
-            var w = cell.width;
-            var h = cell.height;
-
-            return Object.assign({}, {
-                width: w,
-                height: h,
-                x: spacing * (c + 1) + c * w,
-                y: spacing * (r + 1) + r * h,
-                tile: null
-            });
-        }
-    }, {
-        key: 'emptyBoard',
-        value: function emptyBoard(gridSize, r, c) {
-            var _this2 = this;
-
-            var gridSpacing = (0, _utils.calcGridSpacing)(gridSize, r >= c ? r : c);
-            var cellHeight = (0, _utils.calcCellHeight)(gridSize, r, gridSpacing);
-            var cellWidth = (0, _utils.calcCellWidth)(gridSize, c, gridSpacing);
-
-            var board = new Array(r).fill(new Array(c).fill({
-                spacing: gridSpacing,
-                width: cellWidth,
-                height: cellHeight
-            }));
-
-            return board.map(function (row, r) {
-                return row.map(function (cell, c) {
-                    return _this2.emptyCell(cell, r, c);
-                });
-            });
-        }
-    }, {
-        key: 'render',
-        value: function render() {
-            return _react2.default.createElement(
-                'div',
-                { id: 'game-board' },
-                this.state.board.map(function (row, r) {
-                    return row.map(function (cell, c) {
-                        return cell.tile;
-                    });
-                })
-            );
-        }
-    }]);
-
     return Board;
 }(_react2.default.Component);
 
 exports.default = Board;
-
-/***/ }),
-/* 189 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports.keyCodes = keyCodes;
-function keyCodes() {
-    return {
-        UP: 38,
-        RIGHT: 39,
-        DOWN: 40,
-        LEFT: 41,
-        SPACEBAR: 32
-    };
-}
-
-/***/ }),
-/* 190 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _react = __webpack_require__(20);
-
-var _react2 = _interopRequireDefault(_react);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var Tile = function (_React$Component) {
-    _inherits(Tile, _React$Component);
-
-    function Tile(props) {
-        _classCallCheck(this, Tile);
-
-        return _possibleConstructorReturn(this, (Tile.__proto__ || Object.getPrototypeOf(Tile)).call(this, props));
-    }
-
-    _createClass(Tile, [{
-        key: 'render',
-        value: function render() {
-            var w = this.props.width;
-            var h = this.props.height;
-            var x = this.props.x;
-            var y = this.props.y;
-            var tileStyles = {
-                width: '${w}',
-                height: '${h}'
-            };
-
-            var newTile = this.props.newTile ? 'tile-new' : '';
-            var merged = this.props.merged ? 'tile-merged' : '';
-
-            return _react2.default.createElement(
-                'div',
-                { className: 'tile ${newTile} ${marged}', style: tileStyles },
-                this.props.value
-            );
-        }
-    }]);
-
-    return Tile;
-}(_react2.default.Component);
-
-exports.default = Tile;
 
 /***/ })
 /******/ ]);
