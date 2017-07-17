@@ -1,21 +1,9 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
-/*
- * Create background grid that won't update 
- * unless the grid actual size or dimension changes
- */
-export default class Grid extends React.Component {
-    static propTypes = {
-        gridSize: PropTypes.number.isRequired,
-        gridSpacing: PropTypes.number.isRequired,
-        rows: PropTypes.number.isRequired,
-        cols: PropTypes.number.isRequired,
-        cellWidth: PropTypes.number.isRequired,
-        cellHeight: PropTypes.number.isRequired
-    }
 
-    shouldComponentUpdate (nextProps) {
+// Background board that won't update after mounting unless grid size changes
+export default class Board extends React.Component {
+    shouldComponentUpdate (nextProps, nextState) {
         const props = this.props;
 
         return (
@@ -29,6 +17,7 @@ export default class Grid extends React.Component {
     }
 
     renderRow (key) {
+        const gridSpacing = this.props.gridSpacing;
         let cols = this.props.cols;
 
         const rowStyles = {
@@ -64,7 +53,7 @@ export default class Grid extends React.Component {
         }
 
         return (
-            <div className="grid">
+            <div className="board">
                 {grid}
             </div>
         );

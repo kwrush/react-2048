@@ -1,59 +1,57 @@
 import React from 'react';
-import {
-    calcGridSpacing, 
-    calcCellHeight,
-    calcCellWidth
-} from '../utils';
+import PropTypes from 'prop-types';
+import {keyCodes} from '../utils/constants';
+import {randomCellValue} from '../utils/helper';
+import Tile from './Tile';
 
-// Background board that won't update after mounting
 export default class Board extends React.Component {
-    shouldComponentUpdate () {
-        return false;
+    static propTypes = {
+        startTiles: PropTypes.number.isRequired,
+        gridSize: PropTypes.number.isRequired,
+        gridSpacing: PropTypes.number.isRequired,
+        rows: PropTypes.number.isRequired,
+        cols: PropTypes.number.isRequired,
+        cellWidth: PropTypes.number.isRequired,
+        cellHeight: PropTypes.number.isRequired
     }
 
-    renderRow (gridSize, rows, cols, key) {
-        const lines = rows >= cols ? rows : cols;
-        const gridSpacing = calcGridSpacing(gridSize, lines);
-        const cellHeight = calcCellHeight(gridSize, rows, gridSpacing);
-        const cellWidth = calcCellWidth(gridSize, cols, gridSpacing);
-
-        const rowStyles = {
-            marginBottom: gridSpacing + 'px'
-        };
-
-        let gridRows = [];
-        while (cols > 0) {
-            gridRows.push(this.renderCell(cellWidth, cellHeight, gridSpacing, cols--));
-        }
-
-        return (
-            <div key={key} className="grid-row" style={rowStyles}>
-                {gridRows}
-            </div>
-        );
+    constructor (props) {
+        super(props);
     }
 
-    renderCell (width, height, gridSpacing, key) {
-        const cellStyles = {
-            width: width + 'px',
-            height: height + 'px',
-            marginRight: gridSpacing + 'px'
-        };
-        return <div key={key} className="grid-cell" style={cellStyles}></div>;
+    componentWillMount () {
+        document.addEventListener('keydown', this.keyDownHandler, false);
+    }
+
+    componentDidMount () {
+        this.gridContainer.addEventListener('transitionend', this.transitionEndHandler, false);
+        this.addStartTiles();
+    }
+
+    componentWillUnmount() {
+        document.removeEventListener('keydown', this.keyDownHandler, false);
     }
 
     render () {
-        let grid = [];
-        let rows = this.props.rows;
-        while (rows > 0) {
-            grid.push(
-                this.renderRow(
-                    this.props.gridSize, this.props.rows, this.props.cols, rows--));
-        }
-        return (
-            <div className="grid-container">
-                {grid}
-            </div>
-        );
+
     }
+
+    keyDownHandler = (event) => {
+
+    }
+
+    transitionEndHandler = (event) => {
+
+    }
+
+    addStartTiles = () => {
+        // add from save 
+        if (this.props.savedGrid) {
+
+        } else {
+            
+        }
+    }
+
+
 }

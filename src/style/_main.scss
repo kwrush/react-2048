@@ -1,7 +1,100 @@
-$tile-font-size: 3em;
-$tile-font-size-s: 1.8em;
+@import url('https://fonts.googleapis.com/css?family=Roboto');
+
+/*
+ * Common variables
+ */
+$font-size: 18px;
+$font-family: "Roboto", "Helvetica Neue", Arial, sans-serif;
+$font-color: #776E65;
+$white-font-color: #FFF;
+$button-bgcolor: $font-color; 
+$border-radius: 3px;
+
+/*
+ * Grid variables
+ */
+$grid-size: 360px;
+$bgcolor: #BBADA0;
+$cell-color: rgba(238, 228, 218, 0.35);
+
+/*
+ * Tiles
+ */
+$tile-font-size: 2.5em;
+$tile-font-size-s: 1.5em;
 $anime-duration: 0.2s;
 $anime-delay: 0.15s;
+
+/**
+ * Overall
+ */
+*,
+html,
+body {
+    margin: 0;
+    padding: 0;
+    font-family: $font-family;
+    color: $font-color;
+    font-size: $font-size;
+    box-sizing: border-box;
+}
+
+.button {
+    background: $font-color;
+    outline: none;
+    border: none;
+    border-radius: $border-radius;
+    color: $white-font-color;
+}
+
+#game {
+    @include horiz-center;
+    display: inline-block;
+}
+
+#game-container {
+    position: relative;
+    display: inline-block;
+}
+
+.grid-container {
+    position: relative;
+    display: inline-block;
+    width: $grid-size;
+    height: $grid-size;
+}
+
+
+.grid, .board {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+} 
+
+.grid {
+    background: $bgcolor;
+    @include flex-grid(column);
+    border-radius: $border-radius;
+    z-index: -1;
+}
+
+.grid-row {
+    @include flex-grid(row);
+    &:last-child {
+        margin-bottom: 0;
+    }
+}
+
+.grid-cell {
+    border-radius: $border-radius;
+    background: $cell-color;
+
+    &:last-child {
+        margin-right: 0;
+    }
+}
 
 
 @keyframes appear {
@@ -27,13 +120,21 @@ $anime-delay: 0.15s;
     }
 }
 
+.tile-enter {
+    transform: scale(0);
+
+    &.tile-enter-active {
+        transform: scale(1);
+    }
+}
+
 .tile {
     position: absolute;
     font-weight: bold;
     text-align: center;
     transition: all 0.2s ease-out;
     z-index: 10;
-    @include border-radius($border-radius);
+    border-radius: $border-radius;
 
     &.tile-new {
         & .tile-inner {
@@ -42,6 +143,15 @@ $anime-delay: 0.15s;
             animation-fill-mode: forwards;
             animation-delay: $anime-delay;
             transform: scale(0);
+        }
+    }
+
+    &.tile-merge {
+        & .tile-inner {
+            animation-duration: $anime-duration;
+            animation-name: merge;
+            animation-fill-mode: forwards;
+            transform: scale(1);
         }
     }
 
@@ -54,9 +164,9 @@ $anime-delay: 0.15s;
         display: flex;
         flex-direction: column;
         justify-content: center;
+        border-radius: $border-radius;
         font-size: $tile-font-size;
         transition: all 0.2s ease-out;
-        @include border-radius($border-radius);
     }
 
     & .tile-2 {
@@ -113,3 +223,4 @@ $anime-delay: 0.15s;
         background-color: #EC2;
     }
 }
+

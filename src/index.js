@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import style from './style/main.scss';
+import style from './style/index.scss';
 import Game from './components/Game';
 
-ReactDOM.render(<Game />, document.getElementById('game'));
+ReactDOM.render(<Game fromSave={false} />, document.getElementById('game'));

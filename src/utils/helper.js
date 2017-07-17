@@ -1,3 +1,5 @@
+import { List } from 'immutable'; 
+
 // Give an appropriate spacing between two cells
 export function calcGridSpacing (gridSize, rows) {
     return gridSize / Math.pow(rows + 1.5, 2);
@@ -12,3 +14,8 @@ export function calcCellHeight (gridSize, rows, spacing) {
 export function calcCellWidth (gridSize, cols, spacing) {
     return (gridSize - (cols + 1) * spacing) / cols;
 }
+
+export function randomCellValue () {
+    return Math.random() > 0.95 ? 4 : 2;
+}
+

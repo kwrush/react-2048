@@ -16,8 +16,11 @@
   "author": "Kai Wang",
   "license": "ISC",
   "dependencies": {
+    "immutable": "^3.8.1",
+    "prop-types": "^15.5.10",
     "react": "^15.6.1",
-    "react-dom": "^15.6.1"
+    "react-dom": "^15.6.1",
+    "react-transition-group": "^2.1.0"
   },
   "devDependencies": {
     "babel-cli": "^6.24.1",
@@ -27,7 +30,6 @@
     "css-loader": "^0.28.4",
     "extract-text-webpack-plugin": "^2.1.2",
     "html-webpack-plugin": "^2.29.0",
-    "immutable": "^3.8.1",
     "node-sass": "^4.5.3",
     "sass-loader": "^6.0.6",
     "style-loader": "^0.18.2",
