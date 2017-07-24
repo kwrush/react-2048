@@ -19,3 +19,7 @@ export function randomCellValue () {
     return Math.random() > 0.95 ? 4 : 2;
 }
 
+export function within2dList (list, r, c) {
+    return List.isList(list) && r >= 0 && c >= 0 && r < list.size && c < list.get(0).size;
+}
+

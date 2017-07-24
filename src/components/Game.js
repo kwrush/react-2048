@@ -1,11 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Grid from './grid';
+import Grid from './Grid';
+import Board from './Board';
 import {
     calcGridSpacing, 
     calcCellHeight,
     calcCellWidth
-} from '../utils/helper';
+} from '../utils/helpers';
 
 export default class Game extends React.Component {
     static propTypes = {
@@ -42,9 +43,12 @@ export default class Game extends React.Component {
 
         return (
             <div id="game">
-
                 <div className="grid-container">
                     <Grid {...props}/>
+                    <Board 
+                        {...props}
+                        startTiles={this.props.startTiles} 
+                    />
                 </div>
             </div>
         );
