@@ -4,8 +4,8 @@ export const keyCodes = {
     UP: 38,
     RIGHT: 39,
     DOWN: 40,
-    LEFT: 41,
-    SPACEBAR: 32
+    LEFT: 37,
+    SPACEBAR: 32 
 }
 
 export const VECTORS = {

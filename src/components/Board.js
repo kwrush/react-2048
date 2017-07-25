@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {Map, List} from 'immutable';
 import {keyCodes, VECTORS} from '../utils/constants';
-import {randomCellValue, within2dList} from '../utils/helpers';
+import {randomCellValue, within2dList, newId} from '../utils/helpers';
 import Tile from './Tile';
 
 export default class Board extends React.Component {
@@ -22,12 +22,8 @@ export default class Board extends React.Component {
             grid: this.createEmptyGrid()
         };
     }
-
-    componentWillMount () {
-        document.addEventListener('keydown', this.keyDownHandler, false);
-    }
-
     componentDidMount () {
+        document.addEventListener('keydown', this.keyDownHandler, false);
         this.gridContainer.addEventListener('transitionend', this.transitionEndHandler, false);
         this.addStartTiles();
     }
@@ -37,19 +33,17 @@ export default class Board extends React.Component {
     }
 
     render () {
-        let index = 0;
-        const tilesView = this.state.grid.map((row, r) => {
-            return row.map((cell, c) => {
-                const tile = cell.get('tile').first();
-                return (typeof tile === 'undefined') ? null :
-                <Tile
-                    key={index++} 
+        let tilesView = [];
+        this.state.grid.flatten(1).forEach((cell) => {
+            cell.get('tile').forEach(tile => {
+                tilesView.push(<Tile
+                    key={tile.get('id')}
                     width={this.props.cellWidth}
                     height={this.props.cellHeight}
                     x={cell.get('x')}
                     y={cell.get('y')}
-                    {...tile.toJS()}
-                />;
+                    {...tile.toJS() }
+                />);
             });
         });
 
@@ -83,7 +77,7 @@ export default class Board extends React.Component {
     }
 
     transitionEndHandler = (event) => {
-
+        event
     }
 
     addStartTiles = () => {
@@ -140,8 +134,8 @@ export default class Board extends React.Component {
             col: Array.apply(null, {length: this.props.rows}).map(Number.call, Number)
         });
 
-        if (vector.x === 1) traversal = traversal.update('row', value => value.reverse());
-        if (vector.y === 1) traversal = traversal.update('col', value => value.reverse());
+        if (vector.x === 1) traversal = traversal.update('col', value => value.reverse());
+        if (vector.y === 1) traversal = traversal.update('row', value => value.reverse());
 
         return traversal;
     }
@@ -149,38 +143,34 @@ export default class Board extends React.Component {
     moveInDirection = (vector) => {
         const traversal = this.prepareTraversalMap(vector);
         let grid = this.state.grid;
-        let nextPos = List();
 
         traversal.get('row').forEach(r => {
             traversal.get('col').forEach(c => {
                 let cell = grid.getIn([r, c]);
-                if (cell.get('tile').size === 1) {
-                    nextPos = nextPos.push(this.nextPosition(grid, r, c, vector));
+                if (cell.get('tile').size > 0) {
+                    const nextPos = this.nextPosition(grid, r, c, vector);
+                    grid = this.moveTo(grid, nextPos);
                 }
-            });
-        });
-
-        this.moveTo(nextPos);
-    }
-
-    moveTo = (nextPos) => {
-        let grid = this.state.grid;
-
-        nextPos.forEach(pos => {
-            let tmpTile = grid.getIn([pos.row, pos.col]).get('tile').first().set('isNew', false);
-
-            grid = grid.updateIn([pos.row, pos.col], cell => {
-                return cell.update('tile', tile => tile.clear());
-            });
-
-            grid = grid.updateIn([pos.nextRow, pos.nextCol], cell => {
-                return cell.update('tile', tile => tile.push(tmpTile));
             });
         });
 
         this.setState({
             grid: grid
         });
+    }
+
+    moveTo = (grid, pos) => {
+        let tmpTile = grid.getIn([pos.row, pos.col]).get('tile').first().set('isNew', false);
+
+        grid = grid.updateIn([pos.row, pos.col], cell => {
+            return cell.update('tile', tile => tile.clear());
+        });
+
+        grid = grid.updateIn([pos.nextRow, pos.nextCol], cell => {
+            return cell.update('tile', tile => tile.push(tmpTile));
+        });
+
+        return grid;
     }
 
     nextPosition = (grid, r, c, vector) => {
@@ -203,16 +193,18 @@ export default class Board extends React.Component {
                     nextRow: nextRow,
                     nextCol: nextCol
                 });
-                nextRow += vector.y;
-                nextCol += vector.x;
             } else {
                 if (currCell.getIn(['tile', 'value']) === nextCell.getIn(['tile', 'value'])) {
                     nextPos = Object.assign(nextPos, {
                         nextRow: nextRow,
                         nextCol: nextCol
                     });
-                } 
+                }
+                break;
             }
+
+            nextRow += vector.y;
+            nextCol += vector.x;
         }
 
         return nextPos;
@@ -268,6 +260,7 @@ export default class Board extends React.Component {
     newTile = (props) => {
         const {row, col, value, isNew, isMerged} = props;
         return Map({
+            id: newId(),
             row: row,
             col: col,
             value: value,

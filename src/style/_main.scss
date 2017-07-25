@@ -132,7 +132,7 @@ body {
     position: absolute;
     font-weight: bold;
     text-align: center;
-    transition: all 0.2s ease-out;
+    transition: all 0.2s cubic-bezier(0.785, 0.115, 0.270, 0.895);
     z-index: 10;
     border-radius: $border-radius;
 

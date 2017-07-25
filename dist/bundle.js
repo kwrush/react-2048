@@ -27828,12 +27828,11 @@ var Board = function (_React$Component) {
         value: function render() {
             var _this2 = this;
 
-            var index = 0;
             var tilesView = this.state.grid.map(function (row, r) {
                 return row.map(function (cell, c) {
                     var tile = cell.get('tile').first();
                     return typeof tile === 'undefined' ? null : _react2.default.createElement(_Tile2.default, _extends({
-                        key: index++,
+                        key: tile.id,
                         width: _this2.props.cellWidth,
                         height: _this2.props.cellHeight,
                         x: cell.get('x'),
@@ -27914,7 +27913,7 @@ var _initialiseProps = function _initialiseProps() {
                 vector = _this3.getDirection('LEFT');
                 break;
             default:
-                break;
+                return;
         }
 
         _this3.moveInDirection(vector);
@@ -27957,7 +27956,7 @@ var _initialiseProps = function _initialiseProps() {
     };
 
     this.getDirection = function (direction) {
-        return _constants.VECTORS.get(direction.toUpperCase());
+        return _constants.VECTORS[direction.toUpperCase()];
     };
 
     this.prepareTraversalMap = function (vector) {
@@ -27979,40 +27978,71 @@ var _initialiseProps = function _initialiseProps() {
     this.moveInDirection = function (vector) {
         var traversal = _this3.prepareTraversalMap(vector);
         var grid = _this3.state.grid;
+        var nextPos = (0, _immutable.List)();
 
-        traversal.row.forEach(function (r) {
-            traversal.col.forEach(function (c) {
+        traversal.get('row').forEach(function (r) {
+            traversal.get('col').forEach(function (c) {
                 var cell = grid.getIn([r, c]);
-                if (cell.get('tile').size > 0) {
-                    var nextPos = _this3.nextPosition(grid, r, c, vector);
+                if (cell.get('tile').size === 1) {
+                    nextPos = nextPos.push(_this3.nextPosition(grid, r, c, vector));
                 }
             });
+        });
+
+        _this3.moveTo(nextPos);
+    };
+
+    this.moveTo = function (nextPos) {
+        var grid = _this3.state.grid;
+
+        nextPos.forEach(function (pos) {
+            var tmpTile = grid.getIn([pos.row, pos.col]).get('tile').first().set('isNew', false);
+
+            grid = grid.updateIn([pos.row, pos.col], function (cell) {
+                return cell.update('tile', function (tile) {
+                    return tile.clear();
+                });
+            });
+
+            grid = grid.updateIn([pos.nextRow, pos.nextCol], function (cell) {
+                return cell.update('tile', function (tile) {
+                    return tile.push(tmpTile);
+                });
+            });
+        });
+
+        _this3.setState({
+            grid: grid
         });
     };
 
     this.nextPosition = function (grid, r, c, vector) {
         var nextPos = {
             row: r,
-            col: c
+            col: c,
+            nextRow: r,
+            nextCol: c
         };
 
         var currCell = grid.getIn([r, c]);
 
-        var nextRow = nextPos.row + vector.y;
-        var nextCol = nextPos.col + vector.x;
+        var nextRow = nextPos.nextRow + vector.y;
+        var nextCol = nextPos.nextCol + vector.x;
 
         while ((0, _helpers.within2dList)(grid, nextRow, nextCol)) {
             var nextCell = grid.getIn([nextRow, nextCol]);
             if (nextCell.get('tile').size === 0) {
                 nextPos = Object.assign(nextPos, {
-                    row: nextRow++,
-                    col: nextCol++
+                    nextRow: nextRow,
+                    nextCol: nextCol
                 });
+                nextRow += vector.y;
+                nextCol += vector.x;
             } else {
                 if (currCell.getIn(['tile', 'value']) === nextCell.getIn(['tile', 'value'])) {
                     nextPos = Object.assign(nextPos, {
-                        row: nextRow,
-                        col: nextCol
+                        nextRow: nextRow,
+                        nextCol: nextCol
                     });
                 }
             }
@@ -28074,6 +28104,7 @@ var _initialiseProps = function _initialiseProps() {
             isMerged = props.isMerged;
 
         return (0, _immutable.Map)({
+            id: (0, _helpers.newId)(),
             row: row,
             col: col,
             value: value,
@@ -28099,23 +28130,19 @@ exports.VECTORS = exports.keyCodes = undefined;
 
 var _immutable = __webpack_require__(52);
 
-var keyCodes = exports.keyCodes = function keyCodes() {
-    return {
-        UP: 38,
-        RIGHT: 39,
-        DOWN: 40,
-        LEFT: 41,
-        SPACEBAR: 32
-    };
+var keyCodes = exports.keyCodes = {
+    UP: 38,
+    RIGHT: 39,
+    DOWN: 40,
+    LEFT: 41,
+    SPACEBAR: 32
 };
 
-var VECTORS = exports.VECTORS = function VECTORS() {
-    return (0, _immutable.Map)({
-        LEFT: { x: -1, y: 0 },
-        RIGHT: { x: 1, y: 0 },
-        UP: { x: 0, y: -1 },
-        DOWN: { x: 0, y: 1 }
-    });
+var VECTORS = exports.VECTORS = {
+    LEFT: { x: -1, y: 0 },
+    RIGHT: { x: 1, y: 0 },
+    UP: { x: 0, y: -1 },
+    DOWN: { x: 0, y: 1 }
 };
 
 /***/ }),

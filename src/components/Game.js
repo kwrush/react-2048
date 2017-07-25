@@ -21,6 +21,8 @@ export default class Game extends React.Component {
     static defaultProps = {
         rows: 4,
         cols: 4,
+        maxRow: 10,
+        maxCol: 10,
         max: 2048,
         startTiles: 2,
         gridSize: 360

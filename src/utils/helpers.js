@@ -1,5 +1,7 @@
 import { List } from 'immutable'; 
 
+let id = 0;
+
 // Give an appropriate spacing between two cells
 export function calcGridSpacing (gridSize, rows) {
     return gridSize / Math.pow(rows + 1.5, 2);
@@ -21,5 +23,9 @@ export function randomCellValue () {
 
 export function within2dList (list, r, c) {
     return List.isList(list) && r >= 0 && c >= 0 && r < list.size && c < list.get(0).size;
+}
+
+export function newId () {
+    return `id${id++}`;
 }
 
