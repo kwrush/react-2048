@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Map, List} from 'immutable';
+import Immutable, {Map, List} from 'immutable';
 import {keyCodes, VECTORS} from '../utils/constants';
 import {randomCellValue, within2dList, newId} from '../utils/helpers';
 import Tile from './Tile';
@@ -29,7 +29,12 @@ export default class Board extends React.Component {
     }
 
     componentWillUnmount() {
+        this.gridContainer.removeEventListener('transitionend', this.transitionEndHandler, false);
         document.removeEventListener('keydown', this.keyDownHandler, false);
+    }
+
+    shouldComponentUpdate(nextProps, nextState) {
+        return !Immutable.is(this.state.grid, nextState.grid);
     }
 
     render () {
@@ -77,7 +82,16 @@ export default class Board extends React.Component {
     }
 
     transitionEndHandler = (event) => {
-        event
+        if (event.target.classList.contains('tile')) {
+            const availableCells = this.findEmptyCells();
+            const index = Math.floor(Math.random() * availableCells.length);
+            const pos = availableCells.splice(index, 1)[0];
+            let grid = this.insertNewTile(this.state.grid, pos.row, pos.col);
+
+            this.setState({
+                grid: grid
+            });
+        }
     }
 
     addStartTiles = () => {
@@ -159,20 +173,6 @@ export default class Board extends React.Component {
         });
     }
 
-    moveTo = (grid, pos) => {
-        let tmpTile = grid.getIn([pos.row, pos.col]).get('tile').first().set('isNew', false);
-
-        grid = grid.updateIn([pos.row, pos.col], cell => {
-            return cell.update('tile', tile => tile.clear());
-        });
-
-        grid = grid.updateIn([pos.nextRow, pos.nextCol], cell => {
-            return cell.update('tile', tile => tile.push(tmpTile));
-        });
-
-        return grid;
-    }
-
     nextPosition = (grid, r, c, vector) => {
         let nextPos = {
             row: r,
@@ -194,7 +194,8 @@ export default class Board extends React.Component {
                     nextCol: nextCol
                 });
             } else {
-                if (currCell.getIn(['tile', 'value']) === nextCell.getIn(['tile', 'value'])) {
+                if (nextCell.get('tile').size === 1 && 
+                    currCell.getIn(['tile', 0, 'value']) === nextCell.getIn(['tile', 0, 'value'])) {
                     nextPos = Object.assign(nextPos, {
                         nextRow: nextRow,
                         nextCol: nextCol
@@ -208,7 +209,21 @@ export default class Board extends React.Component {
         }
 
         return nextPos;
-    }   
+    }  
+    
+    moveTo = (grid, pos) => {
+        let tmpTile = grid.getIn([pos.row, pos.col]).get('tile').first().set('isNew', false);
+
+        grid = grid.updateIn([pos.row, pos.col], cell => {
+            return cell.update('tile', tile => tile.clear());
+        });
+
+        grid = grid.updateIn([pos.nextRow, pos.nextCol], cell => {
+            return cell.update('tile', tile => tile.push(tmpTile));
+        });
+
+        return grid;
+    }
 
     /**
      * Return positions of empty cells in the current grid
