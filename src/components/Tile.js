@@ -9,11 +9,11 @@ export default function Tile (props) {
         transform: `translate(${props.x}px, ${props.y}px)`
     };
 
-    const tileClasses = ['tile', props.isNew ? 'tile-new' : ''];
+    const tileClasses = ['tile', props.isNew ? 'tile-new' : '', props.isMerged ? 'tile-merge' : ''];
     const innerClasses = ['tile-inner', 'tile-' + props.value];
 
     return (
-        <div className={tileClasses.join(' ')} style={tileStyles}>
+        <div className={tileClasses.join(' ').trim()} style={tileStyles}>
             <div className={innerClasses.join(' ')}>{props.value}</div>
         </div>
     );

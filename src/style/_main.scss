@@ -20,7 +20,7 @@ $cell-color: rgba(238, 228, 218, 0.35);
 /*
  * Tiles
  */
-$tile-font-size: 2.5em;
+$tile-font-size: 2.2em;
 $tile-font-size-s: 1.5em;
 $anime-duration: 0.2s;
 $anime-delay: 0;
@@ -112,7 +112,7 @@ body {
     }
 
     50% {
-        transform: scale(1.2);
+        transform: scale(1.3);
     }
 
     100% {
@@ -132,7 +132,7 @@ body {
     position: absolute;
     font-weight: bold;
     text-align: center;
-    transition: all 0.2s cubic-bezier(0.785, 0.115, 0.270, 0.895);
+    transition: all $anime-duration cubic-bezier(0.785, 0.115, 0.270, 0.895);
     z-index: 10;
     border-radius: $border-radius;
 

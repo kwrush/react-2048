@@ -466,14 +466,14 @@ body {
   position: absolute;
   font-weight: bold;
   text-align: center;
-  transition: all 0.2s ease-out;
+  transition: all 0.2s cubic-bezier(0.785, 0.115, 0.27, 0.895);
   z-index: 10;
   border-radius: 3px; }
   .tile.tile-new .tile-inner {
     animation-duration: 0.2s;
     animation-name: appear;
     animation-fill-mode: forwards;
-    animation-delay: 0.15s;
+    animation-delay: 0;
     transform: scale(0); }
   .tile.tile-merge .tile-inner {
     animation-duration: 0.2s;

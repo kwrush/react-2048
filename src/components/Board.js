@@ -6,6 +6,14 @@ import {randomCellValue, within2dList, newId} from '../utils/helpers';
 import Tile from './Tile';
 
 export default class Board extends React.Component {
+
+    // Queue of moving tiles. Needed for finishing current keydown event
+    // before the next event is fired 
+    moveQueue = []
+
+    // Block keydown event if transition is not yet finsihed
+    isMoving = false;
+
     static propTypes = {
         startTiles: PropTypes.number.isRequired,
         gridSize: PropTypes.number.isRequired,
@@ -28,13 +36,17 @@ export default class Board extends React.Component {
         this.addStartTiles();
     }
 
-    componentWillUnmount() {
+    componentWillUnmount () {
         this.gridContainer.removeEventListener('transitionend', this.transitionEndHandler, false);
         document.removeEventListener('keydown', this.keyDownHandler, false);
     }
 
-    shouldComponentUpdate(nextProps, nextState) {
+    shouldComponentUpdate (nextProps, nextState) {
         return !Immutable.is(this.state.grid, nextState.grid);
+    }
+
+    componentDidUpdate (prevState) {
+        console.log('DidUpdate...');
     }
 
     render () {
@@ -52,6 +64,8 @@ export default class Board extends React.Component {
             });
         });
 
+        console.log('Render...');
+
         return (
             <div className="board" ref={(div) => this.gridContainer = div}>
                 {tilesView}
@@ -60,6 +74,10 @@ export default class Board extends React.Component {
     }
 
     keyDownHandler = (event) => {
+        // Do nothing until the previous event is finished
+        if (this.moveQueue.length > 0) {
+            return;
+        }
         let vector = {x: 0, y: 0};
         switch (event.keyCode) {
             case keyCodes.UP:
@@ -83,14 +101,19 @@ export default class Board extends React.Component {
 
     transitionEndHandler = (event) => {
         if (event.target.classList.contains('tile')) {
-            const availableCells = this.findEmptyCells();
-            const index = Math.floor(Math.random() * availableCells.length);
-            const pos = availableCells.splice(index, 1)[0];
-            let grid = this.insertNewTile(this.state.grid, pos.row, pos.col);
+            // pop queue till the last element left
+            if (this.moveQueue.length > 1) {
+                this.moveQueue.shift();
+            } else {
+                this.moveQueue.shift();
+                let grid = this.mergeTiles();
+                grid = this.addRandomTile(grid);
+                this.setState({
+                    grid: grid
+                });
+            }
 
-            this.setState({
-                grid: grid
-            });
+            console.log('transitionend...');
         }
     }
 
@@ -106,6 +129,42 @@ export default class Board extends React.Component {
         this.setState({
             grid: grid
         });
+    }
+
+    mergeTiles = () => {
+        return this.state.grid.map((row, r) => {
+            return row.map((cell, c) => {
+                if (cell.get('tile').size > 1) {
+                    const value = cell.get('tile').reduce((t1, t2) => {
+                        return t1.get('value') + t2.get('value');
+                    });
+
+                    return cell.update('tile', tile => {
+                        return List.of(tile.first().merge({
+                            value: value,
+                            isNew: false,
+                            isMerged: true
+                        }));
+                    })
+                } else {
+                    return cell;
+                }
+            })
+        });
+    }
+
+    addRandomTile = (grid) => {
+        const availableCells = this.findEmptyCells();
+
+        if (availableCells.length > 0) {
+
+            const index = Math.floor(Math.random() * availableCells.length);
+            const pos = availableCells.splice(index, 1)[0];
+            return this.insertNewTile(grid, pos.row, pos.col);
+
+        } else {
+            return grid;
+        }
     }
 
     insertNewTile = (grid, r, c) => {
@@ -163,7 +222,10 @@ export default class Board extends React.Component {
                 let cell = grid.getIn([r, c]);
                 if (cell.get('tile').size > 0) {
                     const nextPos = this.nextPosition(grid, r, c, vector);
-                    grid = this.moveTo(grid, nextPos);
+                    if (nextPos.row !== nextPos.nextRow || nextPos.col !== nextPos.nextCol) {
+                        this.moveQueue.push(nextPos);
+                        grid = this.moveTo(grid, nextPos);
+                    }
                 }
             });
         });
@@ -212,15 +274,17 @@ export default class Board extends React.Component {
     }  
     
     moveTo = (grid, pos) => {
-        let tmpTile = grid.getIn([pos.row, pos.col]).get('tile').first().set('isNew', false);
-
-        grid = grid.updateIn([pos.row, pos.col], cell => {
-            return cell.update('tile', tile => tile.clear());
+        let tmpTile = grid.getIn([pos.row, pos.col]).get('tile').first().merge({
+            isNew: false
         });
 
         grid = grid.updateIn([pos.nextRow, pos.nextCol], cell => {
             return cell.update('tile', tile => tile.push(tmpTile));
         });
+
+        grid = grid.updateIn([pos.row, pos.col], cell => {
+            return cell.update('tile', tile => tile.clear());
+        });  
 
         return grid;
     }
@@ -276,8 +340,6 @@ export default class Board extends React.Component {
         const {row, col, value, isNew, isMerged} = props;
         return Map({
             id: newId(),
-            row: row,
-            col: col,
             value: value,
             isNew: isNew,
             isMerged: isMerged

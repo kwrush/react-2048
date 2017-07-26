@@ -15308,8 +15308,11 @@ exports.calcCellHeight = calcCellHeight;
 exports.calcCellWidth = calcCellWidth;
 exports.randomCellValue = randomCellValue;
 exports.within2dList = within2dList;
+exports.newId = newId;
 
 var _immutable = __webpack_require__(52);
+
+var id = 0;
 
 // Give an appropriate spacing between two cells
 function calcGridSpacing(gridSize, rows) {
@@ -15332,6 +15335,10 @@ function randomCellValue() {
 
 function within2dList(list, r, c) {
     return _immutable.List.isList(list) && r >= 0 && c >= 0 && r < list.size && c < list.get(0).size;
+}
+
+function newId() {
+    return 'id' + id++;
 }
 
 /***/ }),
@@ -27569,6 +27576,8 @@ Game.propTypes = {
 Game.defaultProps = {
     rows: 4,
     cols: 4,
+    maxRow: 10,
+    maxCol: 10,
     max: 2048,
     startTiles: 2,
     gridSize: 360
@@ -27775,6 +27784,8 @@ var _propTypes2 = _interopRequireDefault(_propTypes);
 
 var _immutable = __webpack_require__(52);
 
+var _immutable2 = _interopRequireDefault(_immutable);
+
 var _constants = __webpack_require__(192);
 
 var _helpers = __webpack_require__(85);
@@ -27794,6 +27805,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var Board = function (_React$Component) {
     _inherits(Board, _React$Component);
 
+    // Block keydown event if transition is not yet finsihed
     function Board(props) {
         _classCallCheck(this, Board);
 
@@ -27807,39 +27819,52 @@ var Board = function (_React$Component) {
         return _this;
     }
 
+    // Queue of moving tiles. Needed for finishing current keydown event
+    // before the next event is fired 
+
+
     _createClass(Board, [{
-        key: 'componentWillMount',
-        value: function componentWillMount() {
-            document.addEventListener('keydown', this.keyDownHandler, false);
-        }
-    }, {
         key: 'componentDidMount',
         value: function componentDidMount() {
+            document.addEventListener('keydown', this.keyDownHandler, false);
             this.gridContainer.addEventListener('transitionend', this.transitionEndHandler, false);
             this.addStartTiles();
         }
     }, {
         key: 'componentWillUnmount',
         value: function componentWillUnmount() {
+            this.gridContainer.removeEventListener('transitionend', this.transitionEndHandler, false);
             document.removeEventListener('keydown', this.keyDownHandler, false);
+        }
+    }, {
+        key: 'shouldComponentUpdate',
+        value: function shouldComponentUpdate(nextProps, nextState) {
+            return !_immutable2.default.is(this.state.grid, nextState.grid);
+        }
+    }, {
+        key: 'componentDidUpdate',
+        value: function componentDidUpdate(prevState) {
+            console.log(this.moveQueue);
         }
     }, {
         key: 'render',
         value: function render() {
             var _this2 = this;
 
-            var tilesView = this.state.grid.map(function (row, r) {
-                return row.map(function (cell, c) {
-                    var tile = cell.get('tile').first();
-                    return typeof tile === 'undefined' ? null : _react2.default.createElement(_Tile2.default, _extends({
-                        key: tile.id,
+            var tilesView = [];
+            this.state.grid.flatten(1).forEach(function (cell) {
+                cell.get('tile').forEach(function (tile) {
+                    tilesView.push(_react2.default.createElement(_Tile2.default, _extends({
+                        key: tile.get('id'),
                         width: _this2.props.cellWidth,
                         height: _this2.props.cellHeight,
                         x: cell.get('x'),
                         y: cell.get('y')
-                    }, tile.toJS()));
+                    }, tile.toJS())));
                 });
             });
+
+            console.log('Render...');
 
             return _react2.default.createElement(
                 'div',
@@ -27897,7 +27922,14 @@ Board.propTypes = {
 var _initialiseProps = function _initialiseProps() {
     var _this3 = this;
 
+    this.moveQueue = [];
+    this.isMoving = false;
+
     this.keyDownHandler = function (event) {
+        // Do nothing until the previous event is finished
+        if (_this3.moveQueue.length > 0) {
+            return;
+        }
         var vector = { x: 0, y: 0 };
         switch (event.keyCode) {
             case _constants.keyCodes.UP:
@@ -27919,7 +27951,22 @@ var _initialiseProps = function _initialiseProps() {
         _this3.moveInDirection(vector);
     };
 
-    this.transitionEndHandler = function (event) {};
+    this.transitionEndHandler = function (event) {
+        if (event.target.classList.contains('tile')) {
+            // pop queue till the last element left
+            if (_this3.moveQueue.length > 1) {
+                _this3.moveQueue.pop();
+            } else {
+                _this3.moveQueue.pop();
+                var grid = _this3.mergeTiles();
+                _this3.setState({
+                    grid: grid
+                });
+            }
+
+            console.log('transitionend...');
+        }
+    };
 
     this.addStartTiles = function () {
         var availableCells = _this3.findEmptyCells();
@@ -27933,6 +27980,42 @@ var _initialiseProps = function _initialiseProps() {
         _this3.setState({
             grid: grid
         });
+    };
+
+    this.mergeTiles = function () {
+        return _this3.state.grid.map(function (row, r) {
+            return row.map(function (cell, c) {
+                if (cell.get('tile').size > 1) {
+                    var value = cell.get('tile').reduce(function (t1, t2) {
+                        return t1.get('value') + t2.get('value');
+                    });
+
+                    return cell.update('tile', function (tile) {
+                        return _immutable.List.of(tile.first().merge({
+                            id: (0, _helpers.newId)(),
+                            value: value,
+                            isNew: false,
+                            isMerged: true
+                        }));
+                    });
+                } else {
+                    return cell;
+                }
+            });
+        });
+    };
+
+    this.addRandomTile = function (grid) {
+        var availableCells = _this3.findEmptyCells();
+
+        if (availableCells.length > 0) {
+
+            var index = Math.floor(Math.random() * availableCells.length);
+            var pos = availableCells.splice(index, 1)[0];
+            return _this3.insertNewTile(grid, pos.row, pos.col);
+        } else {
+            return grid;
+        }
     };
 
     this.insertNewTile = function (grid, r, c) {
@@ -27965,10 +28048,10 @@ var _initialiseProps = function _initialiseProps() {
             col: Array.apply(null, { length: _this3.props.rows }).map(Number.call, Number)
         });
 
-        if (vector.x === 1) traversal = traversal.update('row', function (value) {
+        if (vector.x === 1) traversal = traversal.update('col', function (value) {
             return value.reverse();
         });
-        if (vector.y === 1) traversal = traversal.update('col', function (value) {
+        if (vector.y === 1) traversal = traversal.update('row', function (value) {
             return value.reverse();
         });
 
@@ -27978,41 +28061,21 @@ var _initialiseProps = function _initialiseProps() {
     this.moveInDirection = function (vector) {
         var traversal = _this3.prepareTraversalMap(vector);
         var grid = _this3.state.grid;
-        var nextPos = (0, _immutable.List)();
 
         traversal.get('row').forEach(function (r) {
             traversal.get('col').forEach(function (c) {
                 var cell = grid.getIn([r, c]);
-                if (cell.get('tile').size === 1) {
-                    nextPos = nextPos.push(_this3.nextPosition(grid, r, c, vector));
+                if (cell.get('tile').size > 0) {
+                    var nextPos = _this3.nextPosition(grid, r, c, vector);
+                    if (nextPos.row !== nextPos.nextRow || nextPos.col !== nextPos.nextCol) {
+                        _this3.moveQueue.push(nextPos);
+                        grid = _this3.moveTo(grid, nextPos);
+                        _this3.setState({
+                            grid: grid
+                        });
+                    }
                 }
             });
-        });
-
-        _this3.moveTo(nextPos);
-    };
-
-    this.moveTo = function (nextPos) {
-        var grid = _this3.state.grid;
-
-        nextPos.forEach(function (pos) {
-            var tmpTile = grid.getIn([pos.row, pos.col]).get('tile').first().set('isNew', false);
-
-            grid = grid.updateIn([pos.row, pos.col], function (cell) {
-                return cell.update('tile', function (tile) {
-                    return tile.clear();
-                });
-            });
-
-            grid = grid.updateIn([pos.nextRow, pos.nextCol], function (cell) {
-                return cell.update('tile', function (tile) {
-                    return tile.push(tmpTile);
-                });
-            });
-        });
-
-        _this3.setState({
-            grid: grid
         });
     };
 
@@ -28036,19 +28099,39 @@ var _initialiseProps = function _initialiseProps() {
                     nextRow: nextRow,
                     nextCol: nextCol
                 });
-                nextRow += vector.y;
-                nextCol += vector.x;
             } else {
-                if (currCell.getIn(['tile', 'value']) === nextCell.getIn(['tile', 'value'])) {
+                if (nextCell.get('tile').size === 1 && currCell.getIn(['tile', 0, 'value']) === nextCell.getIn(['tile', 0, 'value'])) {
                     nextPos = Object.assign(nextPos, {
                         nextRow: nextRow,
                         nextCol: nextCol
                     });
                 }
+                break;
             }
+
+            nextRow += vector.y;
+            nextCol += vector.x;
         }
 
         return nextPos;
+    };
+
+    this.moveTo = function (grid, pos) {
+        var tmpTile = grid.getIn([pos.row, pos.col]).get('tile').first().set('isNew', false);
+
+        grid = grid.updateIn([pos.row, pos.col], function (cell) {
+            return cell.update('tile', function (tile) {
+                return tile.clear();
+            });
+        });
+
+        grid = grid.updateIn([pos.nextRow, pos.nextCol], function (cell) {
+            return cell.update('tile', function (tile) {
+                return tile.push(tmpTile);
+            });
+        });
+
+        return grid;
     };
 
     this.findEmptyCells = function () {
@@ -28134,7 +28217,7 @@ var keyCodes = exports.keyCodes = {
     UP: 38,
     RIGHT: 39,
     DOWN: 40,
-    LEFT: 41,
+    LEFT: 37,
     SPACEBAR: 32
 };
 
@@ -28172,12 +28255,12 @@ function Tile(props) {
         transform: 'translate(' + props.x + 'px, ' + props.y + 'px)'
     };
 
-    var tileClasses = ['tile', props.isNew ? 'tile-new' : ''];
+    var tileClasses = ['tile', props.isNew ? 'tile-new' : '', props.isMerged ? 'tile-merge' : ''];
     var innerClasses = ['tile-inner', 'tile-' + props.value];
 
     return _react2.default.createElement(
         'div',
-        { className: tileClasses.join(' '), style: tileStyles },
+        { className: tileClasses.join(' ').trim(), style: tileStyles },
         _react2.default.createElement(
             'div',
             { className: innerClasses.join(' ') },
