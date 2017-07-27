@@ -1,9 +1,11 @@
 import React from 'react';
 
 export default function Tile (props) {
+    const average = (props.width + props.height) / 2;
     const tileStyles = {
         width: `${props.width}px`,
         height: `${props.height}px`,
+        fontSize: `${props.value >= 1024 ? average / 2.8 : average / 1.8}px`, 
         msTransform: `translate(${props.x}px, ${props.y}px)`,
         WebkitTransform: `translate(${props.x}px, ${props.y}px)`, 
         transform: `translate(${props.x}px, ${props.y}px)`
@@ -13,7 +15,7 @@ export default function Tile (props) {
     const innerClasses = ['tile-inner', 'tile-' + props.value];
 
     return (
-        <div className={tileClasses.join(' ').trim()} style={tileStyles}>
+        <div className={tileClasses.join(' ')} style={tileStyles}>
             <div className={innerClasses.join(' ')}>{props.value}</div>
         </div>
     );

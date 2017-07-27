@@ -1,6 +1,6 @@
 import { List } from 'immutable'; 
 
-let id = 0;
+let id = null;
 
 // Give an appropriate spacing between two cells
 export function calcGridSpacing (gridSize, rows) {
@@ -26,6 +26,7 @@ export function within2dList (list, r, c) {
 }
 
 export function newId () {
-    return `id${id++}`;
+    if (id === null) id = (new Date()).getTime();
+    return '' + id++;
 }
 

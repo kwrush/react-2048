@@ -7,12 +7,13 @@ import Tile from './Tile';
 
 export default class Board extends React.Component {
 
-    // Queue of moving tiles. Needed for finishing current keydown event
-    // before the next event is fired 
+    // Queue of moving tiles. Needed for performing some actions, such as
+    // merging tiles or create a new tile, after finishing the 
+    // current transition event
     moveQueue = []
 
-    // Block keydown event if transition is not yet finsihed
-    isMoving = false;
+    // Collection of tile components
+    tilesView = []
 
     static propTypes = {
         startTiles: PropTypes.number.isRequired,
@@ -30,30 +31,25 @@ export default class Board extends React.Component {
             grid: this.createEmptyGrid()
         };
     }
+
     componentDidMount () {
         document.addEventListener('keydown', this.keyDownHandler, false);
-        this.gridContainer.addEventListener('transitionend', this.transitionEndHandler, false);
         this.addStartTiles();
     }
 
     componentWillUnmount () {
-        this.gridContainer.removeEventListener('transitionend', this.transitionEndHandler, false);
         document.removeEventListener('keydown', this.keyDownHandler, false);
     }
 
     shouldComponentUpdate (nextProps, nextState) {
-        return !Immutable.is(this.state.grid, nextState.grid);
+        return this.isResized(nextProps) || !Immutable.is(this.state.grid, nextState.grid);
     }
 
-    componentDidUpdate (prevState) {
-        console.log('DidUpdate...');
-    }
-
-    render () {
-        let tilesView = [];
-        this.state.grid.flatten(1).forEach((cell) => {
+    componentWillUpdate (nextProps, nextState) {
+        let tiles = [];
+        nextState.grid.flatten(1).forEach((cell) => {
             cell.get('tile').forEach(tile => {
-                tilesView.push(<Tile
+                tiles.push(<Tile
                     key={tile.get('id')}
                     width={this.props.cellWidth}
                     height={this.props.cellHeight}
@@ -64,20 +60,52 @@ export default class Board extends React.Component {
             });
         });
 
-        console.log('Render...');
+        this.tilesView = tiles.sort((t1, t2) => {
+            return parseInt(t1.key, 10) - parseInt(t2.key, 10);
+        });
+    }
 
+    componentDidUpdate (prevProps, nextState) {
+        if (this.isResized(prevProps)) {
+            this.setState({
+                grid: this.createEmptyGrid()
+            }, () => {
+                this.addStartTiles();
+            });
+        } else {
+            const availableCells = this.findEmptyCells();
+            if (availableCells.length === 0) {
+
+            }
+        }
+    }
+
+    render () {
         return (
-            <div className="board" ref={(div) => this.gridContainer = div}>
-                {tilesView}
+            <div className="board" onTransitionEnd={this.transitionEndHandler} onAnimationEnd={this.animationEndHandler}>
+                {this.tilesView}
             </div>
         );
     }
 
+    /**
+     * Check if the grid is resized
+     * @param {object} next props
+     * @return {boolean} true if the grid has been resized
+     */
+    isResized = (nextProps) => {
+        return this.props.rows !== nextProps.rows || this.props.cols !== nextProps.cols;
+    }
+    
+    
+    /**
+     * Handle keydown event
+     * @param {object} event object
+     */
     keyDownHandler = (event) => {
         // Do nothing until the previous event is finished
-        if (this.moveQueue.length > 0) {
-            return;
-        }
+        if (this.moveQueue.length > 0) return;
+
         let vector = {x: 0, y: 0};
         switch (event.keyCode) {
             case keyCodes.UP:
@@ -99,7 +127,13 @@ export default class Board extends React.Component {
         this.moveInDirection(vector);
     }
 
+    /**
+     * Handle transitionend event
+     * @param {object} event object
+     */
     transitionEndHandler = (event) => {
+        if (event.propertyName !== 'transform') return;
+
         if (event.target.classList.contains('tile')) {
             // pop queue till the last element left
             if (this.moveQueue.length > 1) {
@@ -108,14 +142,26 @@ export default class Board extends React.Component {
                 this.moveQueue.shift();
                 let grid = this.mergeTiles();
                 grid = this.addRandomTile(grid);
+                
                 this.setState({
                     grid: grid
                 });
             }
-
-            console.log('transitionend...');
         }
     }
+
+    /**
+     * Handle animationend event
+     * @param {object} event object
+     */
+    animationEndHandler = (event) => {
+        if (['apear', 'merge'].indexOf(event.animationName) === -1) return;
+
+        if (event.target.classList.contains('tile-inner')) {
+            event.target.parentElement.classList.remove('tile-new', 'tile-merge');
+        }
+    }
+
 
     addStartTiles = () => {
         const availableCells = this.findEmptyCells();
@@ -132,15 +178,19 @@ export default class Board extends React.Component {
     }
 
     mergeTiles = () => {
-        return this.state.grid.map((row, r) => {
+        let scoreAdded = 0;
+        const grid = this.state.grid.map((row, r) => {
             return row.map((cell, c) => {
                 if (cell.get('tile').size > 1) {
                     const value = cell.get('tile').reduce((t1, t2) => {
                         return t1.get('value') + t2.get('value');
                     });
 
+                    scoreAdded += value;
+
                     return cell.update('tile', tile => {
                         return List.of(tile.first().merge({
+                            id: newId(),
                             value: value,
                             isNew: false,
                             isMerged: true
@@ -151,6 +201,10 @@ export default class Board extends React.Component {
                 }
             })
         });
+
+        this.props.addScore(scoreAdded);
+
+        return grid;
     }
 
     addRandomTile = (grid) => {
@@ -204,7 +258,7 @@ export default class Board extends React.Component {
     prepareTraversalMap = (vector) => {
         let traversal = Map({
             row: Array.apply(null, {length: this.props.rows}).map(Number.call, Number),
-            col: Array.apply(null, {length: this.props.rows}).map(Number.call, Number)
+            col: Array.apply(null, {length: this.props.cols}).map(Number.call, Number)
         });
 
         if (vector.x === 1) traversal = traversal.update('col', value => value.reverse());
@@ -291,6 +345,7 @@ export default class Board extends React.Component {
 
     /**
      * Return positions of empty cells in the current grid
+     * @return {array} array of object {row: num, col: num}
      */
     findEmptyCells = () => {
         let cells = [];

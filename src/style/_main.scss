@@ -9,6 +9,7 @@ $font-color: #776E65;
 $white-font-color: #FFF;
 $button-bgcolor: $font-color; 
 $border-radius: 3px;
+$header-font-size: 3em;
 
 /*
  * Grid variables
@@ -50,11 +51,102 @@ body {
 #game {
     @include horiz-center;
     display: inline-block;
+    min-width: $grid-size;
 }
 
-#game-container {
-    position: relative;
-    display: inline-block;
+.game-heading {
+    padding: 10px 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+    & h1 {
+        margin: 0;
+        font-size: $header-font-size;
+    }
+}
+
+.score-board {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+
+    & .score,
+    & .record {
+        position: relative;
+        margin: 5px 3px 5px;
+        padding: 25px 5px 5px;
+        min-width: 60px;
+        font-weight: bold;
+        text-align: center;
+        color: $white-font-color;
+        background: $bgcolor;
+        border-radius: $border-radius;
+
+        &:before {
+            position: absolute;
+            left: 0;
+            top: 10px;
+            width: 100%;
+            text-align: center;
+            font-size: 12px;
+            line-height: 12px;
+            color: rgba(255, 255, 255, 0.5);
+            text-transform: uppercase;
+        }
+    }
+
+    & .score {
+        &:before {
+            content: "Score";
+        }
+    }
+
+    & .record {
+        &:before {
+            content: "Best";
+        }
+    }
+}
+
+.game-ctrl {
+    margin: 15px 0 30px 0;
+    height: 40px;
+    display: flex;
+    flex-direction: row;
+    font-size: 16px;
+    line-height: 40px;
+    text-align: center;
+    justify-content: space-between;
+}
+
+#reset {
+    padding: 0 10px;
+}
+
+.resize-ctrl {
+    font-size: 15px;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+
+    & span {
+        font-size: inherit;
+        margin-right: 3px;
+    }
+
+    & .minus,
+    & .add {
+        margin-top: 10px;
+        width: 20px;
+        height: 20px;
+        line-height: 20px;
+        border-radius: 100%;
+    }
+
+    & .resize-num {
+        margin: 0 3px;
+    }
 }
 
 .grid-container {
@@ -161,11 +253,11 @@ body {
         left: 0;
         width: 100%;
         height: 100%;
+        font-size: inherit;
         display: flex;
         flex-direction: column;
         justify-content: center;
         border-radius: $border-radius;
-        font-size: $tile-font-size;
         transition: all 0.2s ease-out;
     }
 
@@ -222,5 +314,12 @@ body {
         color: $white-font-color;
         background-color: #EC2;
     }
+}
+
+
+#footer p {
+    max-width: 360px;
+    text-align: center;
+    font-size: 14px;
 }
 

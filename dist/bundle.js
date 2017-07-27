@@ -789,7 +789,7 @@ module.exports = ExecutionEnvironment;
 
 
 
-var _prodInvariant = __webpack_require__(17);
+var _prodInvariant = __webpack_require__(18);
 
 var ReactCurrentOwner = __webpack_require__(10);
 
@@ -1285,9 +1285,9 @@ var _prodInvariant = __webpack_require__(3),
     _assign = __webpack_require__(4);
 
 var CallbackQueue = __webpack_require__(64);
-var PooledClass = __webpack_require__(15);
+var PooledClass = __webpack_require__(16);
 var ReactFeatureFlags = __webpack_require__(65);
-var ReactReconciler = __webpack_require__(18);
+var ReactReconciler = __webpack_require__(19);
 var Transaction = __webpack_require__(28);
 
 var invariant = __webpack_require__(1);
@@ -1540,7 +1540,7 @@ module.exports = ReactUpdates;
 
 var _assign = __webpack_require__(4);
 
-var PooledClass = __webpack_require__(15);
+var PooledClass = __webpack_require__(16);
 
 var emptyFunction = __webpack_require__(8);
 var warning = __webpack_require__(2);
@@ -2013,6 +2013,16 @@ module.exports = DOMProperty;
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+
+
+module.exports = __webpack_require__(17);
+
+
+/***/ }),
+/* 15 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
 /* WEBPACK VAR INJECTION */(function(process) {/**
  * Copyright 2014-present, Facebook, Inc.
  * All rights reserved.
@@ -2356,7 +2366,7 @@ module.exports = ReactElement;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 15 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2474,7 +2484,7 @@ module.exports = PooledClass;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 16 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2495,7 +2505,7 @@ var _assign = __webpack_require__(4);
 var ReactBaseClasses = __webpack_require__(53);
 var ReactChildren = __webpack_require__(87);
 var ReactDOMFactories = __webpack_require__(91);
-var ReactElement = __webpack_require__(14);
+var ReactElement = __webpack_require__(15);
 var ReactPropTypes = __webpack_require__(95);
 var ReactVersion = __webpack_require__(97);
 
@@ -2612,7 +2622,7 @@ module.exports = React;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 17 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2656,7 +2666,7 @@ function reactProdInvariant(code) {
 module.exports = reactProdInvariant;
 
 /***/ }),
-/* 18 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2828,7 +2838,7 @@ module.exports = ReactReconciler;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 19 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2949,16 +2959,6 @@ DOMLazyTree.queueHTML = queueHTML;
 DOMLazyTree.queueText = queueText;
 
 module.exports = DOMLazyTree;
-
-/***/ }),
-/* 20 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-module.exports = __webpack_require__(16);
-
 
 /***/ }),
 /* 21 */
@@ -5258,7 +5258,7 @@ module.exports = getEventModifierState;
 
 
 
-var DOMLazyTree = __webpack_require__(19);
+var DOMLazyTree = __webpack_require__(20);
 var Danger = __webpack_require__(121);
 var ReactDOMComponentTree = __webpack_require__(5);
 var ReactInstrumentation = __webpack_require__(9);
@@ -5557,7 +5557,7 @@ var _prodInvariant = __webpack_require__(3);
 var ReactPropTypesSecret = __webpack_require__(73);
 var propTypesFactory = __webpack_require__(58);
 
-var React = __webpack_require__(16);
+var React = __webpack_require__(17);
 var PropTypes = propTypesFactory(React.isValidElement);
 
 var invariant = __webpack_require__(1);
@@ -11623,7 +11623,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 
 
-var _prodInvariant = __webpack_require__(17),
+var _prodInvariant = __webpack_require__(18),
     _assign = __webpack_require__(4);
 
 var ReactNoopUpdateQueue = __webpack_require__(54);
@@ -11953,7 +11953,7 @@ module.exports = getIteratorFn;
 
 var ReactCurrentOwner = __webpack_require__(10);
 var ReactComponentTreeHook = __webpack_require__(7);
-var ReactElement = __webpack_require__(14);
+var ReactElement = __webpack_require__(15);
 
 var checkReactTypeSpec = __webpack_require__(92);
 
@@ -12919,7 +12919,7 @@ var _prodInvariant = __webpack_require__(3);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var PooledClass = __webpack_require__(15);
+var PooledClass = __webpack_require__(16);
 
 var invariant = __webpack_require__(1);
 
@@ -14135,7 +14135,7 @@ module.exports = instantiateReactComponent;
 
 var _prodInvariant = __webpack_require__(3);
 
-var React = __webpack_require__(16);
+var React = __webpack_require__(17);
 
 var invariant = __webpack_require__(1);
 
@@ -14733,9 +14733,9 @@ module.exports = getActiveElement;
 
 var _prodInvariant = __webpack_require__(3);
 
-var DOMLazyTree = __webpack_require__(19);
+var DOMLazyTree = __webpack_require__(20);
 var DOMProperty = __webpack_require__(13);
-var React = __webpack_require__(16);
+var React = __webpack_require__(17);
 var ReactBrowserEventEmitter = __webpack_require__(32);
 var ReactCurrentOwner = __webpack_require__(10);
 var ReactDOMComponentTree = __webpack_require__(5);
@@ -14745,7 +14745,7 @@ var ReactFeatureFlags = __webpack_require__(65);
 var ReactInstanceMap = __webpack_require__(24);
 var ReactInstrumentation = __webpack_require__(9);
 var ReactMarkupChecksum = __webpack_require__(179);
-var ReactReconciler = __webpack_require__(18);
+var ReactReconciler = __webpack_require__(19);
 var ReactUpdateQueue = __webpack_require__(48);
 var ReactUpdates = __webpack_require__(11);
 
@@ -15312,7 +15312,7 @@ exports.newId = newId;
 
 var _immutable = __webpack_require__(52);
 
-var id = 0;
+var id = null;
 
 // Give an appropriate spacing between two cells
 function calcGridSpacing(gridSize, rows) {
@@ -15338,7 +15338,8 @@ function within2dList(list, r, c) {
 }
 
 function newId() {
-    return 'id' + id++;
+    if (id === null) id = new Date().getTime();
+    return '' + id++;
 }
 
 /***/ }),
@@ -15348,7 +15349,7 @@ function newId() {
 "use strict";
 
 
-var _react = __webpack_require__(20);
+var _react = __webpack_require__(14);
 
 var _react2 = _interopRequireDefault(_react);
 
@@ -15386,7 +15387,7 @@ _reactDom2.default.render(_react2.default.createElement(_Game2.default, { fromSa
 
 
 var PooledClass = __webpack_require__(88);
-var ReactElement = __webpack_require__(14);
+var ReactElement = __webpack_require__(15);
 
 var emptyFunction = __webpack_require__(8);
 var traverseAllChildren = __webpack_require__(89);
@@ -15582,7 +15583,7 @@ module.exports = ReactChildren;
 
 
 
-var _prodInvariant = __webpack_require__(17);
+var _prodInvariant = __webpack_require__(18);
 
 var invariant = __webpack_require__(1);
 
@@ -15699,7 +15700,7 @@ module.exports = PooledClass;
 
 
 
-var _prodInvariant = __webpack_require__(17);
+var _prodInvariant = __webpack_require__(18);
 
 var ReactCurrentOwner = __webpack_require__(10);
 var REACT_ELEMENT_TYPE = __webpack_require__(55);
@@ -15945,7 +15946,7 @@ module.exports = KeyEscapeUtils;
 
 
 
-var ReactElement = __webpack_require__(14);
+var ReactElement = __webpack_require__(15);
 
 /**
  * Create a factory that creates HTML tag elements.
@@ -16120,7 +16121,7 @@ module.exports = ReactDOMFactories;
 
 
 
-var _prodInvariant = __webpack_require__(17);
+var _prodInvariant = __webpack_require__(18);
 
 var ReactPropTypeLocationNames = __webpack_require__(93);
 var ReactPropTypesSecret = __webpack_require__(94);
@@ -16266,7 +16267,7 @@ module.exports = ReactPropTypesSecret;
 
 
 
-var _require = __webpack_require__(14),
+var _require = __webpack_require__(15),
     isValidElement = _require.isValidElement;
 
 var factory = __webpack_require__(58);
@@ -16381,7 +16382,7 @@ module.exports = '15.6.1';
 var _require = __webpack_require__(53),
     Component = _require.Component;
 
-var _require2 = __webpack_require__(14),
+var _require2 = __webpack_require__(15),
     isValidElement = _require2.isValidElement;
 
 var ReactNoopUpdateQueue = __webpack_require__(54);
@@ -17285,9 +17286,9 @@ module.exports = factory;
  */
 
 
-var _prodInvariant = __webpack_require__(17);
+var _prodInvariant = __webpack_require__(18);
 
-var ReactElement = __webpack_require__(14);
+var ReactElement = __webpack_require__(15);
 
 var invariant = __webpack_require__(1);
 
@@ -17345,7 +17346,7 @@ module.exports = __webpack_require__(102);
 var ReactDOMComponentTree = __webpack_require__(5);
 var ReactDefaultInjection = __webpack_require__(103);
 var ReactMount = __webpack_require__(83);
-var ReactReconciler = __webpack_require__(18);
+var ReactReconciler = __webpack_require__(19);
 var ReactUpdates = __webpack_require__(11);
 var ReactVersion = __webpack_require__(181);
 
@@ -18018,7 +18019,7 @@ module.exports = BeforeInputEventPlugin;
 
 var _assign = __webpack_require__(4);
 
-var PooledClass = __webpack_require__(15);
+var PooledClass = __webpack_require__(16);
 
 var getTextContentAccessor = __webpack_require__(63);
 
@@ -19635,7 +19636,7 @@ module.exports = ReactComponentBrowserEnvironment;
 
 var _prodInvariant = __webpack_require__(3);
 
-var DOMLazyTree = __webpack_require__(19);
+var DOMLazyTree = __webpack_require__(20);
 var ExecutionEnvironment = __webpack_require__(6);
 
 var createNodesFromMarkup = __webpack_require__(122);
@@ -20054,7 +20055,7 @@ var _prodInvariant = __webpack_require__(3),
 
 var AutoFocusUtils = __webpack_require__(127);
 var CSSPropertyOperations = __webpack_require__(128);
-var DOMLazyTree = __webpack_require__(19);
+var DOMLazyTree = __webpack_require__(20);
 var DOMNamespaces = __webpack_require__(41);
 var DOMProperty = __webpack_require__(13);
 var DOMPropertyOperations = __webpack_require__(72);
@@ -22066,7 +22067,7 @@ module.exports = ReactDOMInput;
 
 var _assign = __webpack_require__(4);
 
-var React = __webpack_require__(16);
+var React = __webpack_require__(17);
 var ReactDOMComponentTree = __webpack_require__(5);
 var ReactDOMSelect = __webpack_require__(74);
 
@@ -22365,7 +22366,7 @@ var ReactInstanceMap = __webpack_require__(24);
 var ReactInstrumentation = __webpack_require__(9);
 
 var ReactCurrentOwner = __webpack_require__(10);
-var ReactReconciler = __webpack_require__(18);
+var ReactReconciler = __webpack_require__(19);
 var ReactChildReconciler = __webpack_require__(142);
 
 var emptyFunction = __webpack_require__(8);
@@ -22810,7 +22811,7 @@ module.exports = ReactMultiChild;
 
 
 
-var ReactReconciler = __webpack_require__(18);
+var ReactReconciler = __webpack_require__(19);
 
 var instantiateReactComponent = __webpack_require__(75);
 var KeyEscapeUtils = __webpack_require__(47);
@@ -22972,14 +22973,14 @@ module.exports = ReactChildReconciler;
 var _prodInvariant = __webpack_require__(3),
     _assign = __webpack_require__(4);
 
-var React = __webpack_require__(16);
+var React = __webpack_require__(17);
 var ReactComponentEnvironment = __webpack_require__(44);
 var ReactCurrentOwner = __webpack_require__(10);
 var ReactErrorUtils = __webpack_require__(36);
 var ReactInstanceMap = __webpack_require__(24);
 var ReactInstrumentation = __webpack_require__(9);
 var ReactNodeTypes = __webpack_require__(76);
-var ReactReconciler = __webpack_require__(18);
+var ReactReconciler = __webpack_require__(19);
 
 if (process.env.NODE_ENV !== 'production') {
   var checkReactTypeSpec = __webpack_require__(144);
@@ -24180,7 +24181,7 @@ module.exports = flattenChildren;
 
 var _assign = __webpack_require__(4);
 
-var PooledClass = __webpack_require__(15);
+var PooledClass = __webpack_require__(16);
 var Transaction = __webpack_require__(28);
 var ReactInstrumentation = __webpack_require__(9);
 var ReactServerUpdateQueue = __webpack_require__(151);
@@ -24421,7 +24422,7 @@ module.exports = ReactServerUpdateQueue;
 
 var _assign = __webpack_require__(4);
 
-var DOMLazyTree = __webpack_require__(19);
+var DOMLazyTree = __webpack_require__(20);
 var ReactDOMComponentTree = __webpack_require__(5);
 
 var ReactDOMEmptyComponent = function (instantiate) {
@@ -24630,7 +24631,7 @@ var _prodInvariant = __webpack_require__(3),
     _assign = __webpack_require__(4);
 
 var DOMChildrenOperations = __webpack_require__(40);
-var DOMLazyTree = __webpack_require__(19);
+var DOMLazyTree = __webpack_require__(20);
 var ReactDOMComponentTree = __webpack_require__(5);
 
 var escapeTextContentForBrowser = __webpack_require__(31);
@@ -24871,7 +24872,7 @@ var _assign = __webpack_require__(4);
 
 var EventListener = __webpack_require__(80);
 var ExecutionEnvironment = __webpack_require__(6);
-var PooledClass = __webpack_require__(15);
+var PooledClass = __webpack_require__(16);
 var ReactDOMComponentTree = __webpack_require__(5);
 var ReactUpdates = __webpack_require__(11);
 
@@ -25113,7 +25114,7 @@ module.exports = ReactInjection;
 var _assign = __webpack_require__(4);
 
 var CallbackQueue = __webpack_require__(64);
-var PooledClass = __webpack_require__(15);
+var PooledClass = __webpack_require__(16);
 var ReactBrowserEventEmitter = __webpack_require__(32);
 var ReactInputSelection = __webpack_require__(81);
 var ReactInstrumentation = __webpack_require__(9);
@@ -27495,7 +27496,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _react = __webpack_require__(20);
+var _react = __webpack_require__(14);
 
 var _react2 = _interopRequireDefault(_react);
 
@@ -27503,11 +27504,19 @@ var _propTypes = __webpack_require__(51);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
-var _Grid = __webpack_require__(190);
+var _Score = __webpack_require__(190);
+
+var _Score2 = _interopRequireDefault(_Score);
+
+var _Resize = __webpack_require__(191);
+
+var _Resize2 = _interopRequireDefault(_Resize);
+
+var _Grid = __webpack_require__(192);
 
 var _Grid2 = _interopRequireDefault(_Grid);
 
-var _Board = __webpack_require__(191);
+var _Board = __webpack_require__(193);
 
 var _Board2 = _interopRequireDefault(_Board);
 
@@ -27524,18 +27533,53 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var Game = function (_React$Component) {
     _inherits(Game, _React$Component);
 
-    function Game() {
+    function Game(props) {
         _classCallCheck(this, Game);
 
-        return _possibleConstructorReturn(this, (Game.__proto__ || Object.getPrototypeOf(Game)).apply(this, arguments));
+        var _this = _possibleConstructorReturn(this, (Game.__proto__ || Object.getPrototypeOf(Game)).call(this, props));
+
+        _this.changeRow = function (diff) {
+            var rows = _this.state.rows + diff;
+            if (rows <= _this.props.maxRow && rows >= _this.props.minRow) {
+                _this.setState({
+                    rows: rows
+                });
+            }
+        };
+
+        _this.changeCol = function (diff) {
+            var cols = _this.state.cols + diff;
+            if (cols <= _this.props.maxCol && cols >= _this.props.minCol) {
+                _this.setState({
+                    cols: cols
+                });
+            }
+        };
+
+        _this.addScore = function (value) {
+            _this.setState({
+                scoreAdded: value,
+                score: _this.state.score + value
+            });
+        };
+
+        _this.state = {
+            rows: _this.props.minRow,
+            cols: _this.props.minCol,
+            win: false,
+            lose: false,
+            scoreAdded: null,
+            score: 0
+        };
+        return _this;
     }
 
     _createClass(Game, [{
         key: 'render',
         value: function render() {
             var gridSize = this.props.gridSize;
-            var rows = this.props.rows;
-            var cols = this.props.cols;
+            var rows = this.state.rows;
+            var cols = this.state.cols;
             var gridSpacing = (0, _helpers.calcGridSpacing)(gridSize, rows >= cols ? rows : cols);
 
             var props = {
@@ -27544,12 +27588,34 @@ var Game = function (_React$Component) {
                 cellHeight: (0, _helpers.calcCellHeight)(gridSize, rows, gridSpacing),
                 cellWidth: (0, _helpers.calcCellWidth)(gridSize, cols, gridSpacing),
                 rows: rows,
-                cols: cols
+                cols: cols,
+                addScore: this.addScore
             };
 
             return _react2.default.createElement(
                 'div',
                 { id: 'game' },
+                _react2.default.createElement(
+                    'header',
+                    { className: 'game-heading' },
+                    _react2.default.createElement(
+                        'h1',
+                        null,
+                        '2048'
+                    ),
+                    _react2.default.createElement(_Score2.default, { score: this.state.score, scoreAdded: this.state.scoreAdded })
+                ),
+                _react2.default.createElement(
+                    'div',
+                    { className: 'game-ctrl' },
+                    _react2.default.createElement(_Resize2.default, { label: 'Rows:', number: this.state.rows, resize: this.changeRow }),
+                    _react2.default.createElement(_Resize2.default, { label: 'Columns:', number: this.state.cols, resize: this.changeCol }),
+                    _react2.default.createElement(
+                        'button',
+                        { id: 'reset', className: 'button' },
+                        'New Game'
+                    )
+                ),
                 _react2.default.createElement(
                     'div',
                     { className: 'grid-container' },
@@ -27557,6 +27623,15 @@ var Game = function (_React$Component) {
                     _react2.default.createElement(_Board2.default, _extends({}, props, {
                         startTiles: this.props.startTiles
                     }))
+                ),
+                _react2.default.createElement(
+                    'footer',
+                    { id: 'footer' },
+                    _react2.default.createElement(
+                        'p',
+                        null,
+                        'Join tiles with the same number and get to the 2048 tile'
+                    )
                 )
             );
         }
@@ -27567,15 +27642,17 @@ var Game = function (_React$Component) {
 
 Game.propTypes = {
     startTiles: _propTypes2.default.number,
-    rows: _propTypes2.default.number,
-    cols: _propTypes2.default.number,
+    maxRow: _propTypes2.default.number,
+    maxCol: _propTypes2.default.number,
+    minRow: _propTypes2.default.number,
+    minCol: _propTypes2.default.number,
     gridSize: _propTypes2.default.number,
     max: _propTypes2.default.number,
     fromSave: _propTypes2.default.bool.isRequired
 };
 Game.defaultProps = {
-    rows: 4,
-    cols: 4,
+    minRow: 4,
+    minCol: 4,
     maxRow: 10,
     maxCol: 10,
     max: 2048,
@@ -27660,10 +27737,94 @@ module.exports = function() {
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
+exports.default = Score;
+
+var _react = __webpack_require__(14);
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function Score(props) {
+    return _react2.default.createElement(
+        "div",
+        { className: "score-board" },
+        _react2.default.createElement(
+            "div",
+            { className: "score" },
+            props.score
+        ),
+        _react2.default.createElement(
+            "div",
+            { className: "record" },
+            "Record"
+        )
+    );
+}
+
+/***/ }),
+/* 191 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.default = Resize;
+
+var _react = __webpack_require__(14);
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function Resize(props) {
+    return _react2.default.createElement(
+        "div",
+        { className: "resize-ctrl" },
+        _react2.default.createElement(
+            "span",
+            null,
+            props.label
+        ),
+        _react2.default.createElement(
+            "button",
+            { className: "button minus", onClick: function onClick() {
+                    props.resize(-1);
+                } },
+            "-"
+        ),
+        _react2.default.createElement(
+            "span",
+            { className: "resize-num" },
+            props.number
+        ),
+        _react2.default.createElement(
+            "button",
+            { className: "button add", onClick: function onClick() {
+                    props.resize(1);
+                } },
+            "+"
+        )
+    );
+}
+
+/***/ }),
+/* 192 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _react = __webpack_require__(20);
+var _react = __webpack_require__(14);
 
 var _react2 = _interopRequireDefault(_react);
 
@@ -27760,7 +27921,7 @@ Grid.propTypes = {
 exports.default = Grid;
 
 /***/ }),
-/* 191 */
+/* 193 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -27774,7 +27935,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _react = __webpack_require__(20);
+var _react = __webpack_require__(14);
 
 var _react2 = _interopRequireDefault(_react);
 
@@ -27786,11 +27947,11 @@ var _immutable = __webpack_require__(52);
 
 var _immutable2 = _interopRequireDefault(_immutable);
 
-var _constants = __webpack_require__(192);
+var _constants = __webpack_require__(194);
 
 var _helpers = __webpack_require__(85);
 
-var _Tile = __webpack_require__(193);
+var _Tile = __webpack_require__(195);
 
 var _Tile2 = _interopRequireDefault(_Tile);
 
@@ -27805,7 +27966,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var Board = function (_React$Component) {
     _inherits(Board, _React$Component);
 
-    // Block keydown event if transition is not yet finsihed
+    // Collection of tile components
     function Board(props) {
         _classCallCheck(this, Board);
 
@@ -27819,42 +27980,36 @@ var Board = function (_React$Component) {
         return _this;
     }
 
-    // Queue of moving tiles. Needed for finishing current keydown event
-    // before the next event is fired 
+    // Queue of moving tiles. Needed for performing some actions, such as
+    // merging tiles or create a new tile, after finishing the 
+    // current transition event
 
 
     _createClass(Board, [{
         key: 'componentDidMount',
         value: function componentDidMount() {
             document.addEventListener('keydown', this.keyDownHandler, false);
-            this.gridContainer.addEventListener('transitionend', this.transitionEndHandler, false);
             this.addStartTiles();
         }
     }, {
         key: 'componentWillUnmount',
         value: function componentWillUnmount() {
-            this.gridContainer.removeEventListener('transitionend', this.transitionEndHandler, false);
             document.removeEventListener('keydown', this.keyDownHandler, false);
         }
     }, {
         key: 'shouldComponentUpdate',
         value: function shouldComponentUpdate(nextProps, nextState) {
-            return !_immutable2.default.is(this.state.grid, nextState.grid);
+            return this.isResized(nextProps) || !_immutable2.default.is(this.state.grid, nextState.grid);
         }
     }, {
-        key: 'componentDidUpdate',
-        value: function componentDidUpdate(prevState) {
-            console.log(this.moveQueue);
-        }
-    }, {
-        key: 'render',
-        value: function render() {
+        key: 'componentWillUpdate',
+        value: function componentWillUpdate(nextProps, nextState) {
             var _this2 = this;
 
-            var tilesView = [];
-            this.state.grid.flatten(1).forEach(function (cell) {
+            var tiles = [];
+            nextState.grid.flatten(1).forEach(function (cell) {
                 cell.get('tile').forEach(function (tile) {
-                    tilesView.push(_react2.default.createElement(_Tile2.default, _extends({
+                    tiles.push(_react2.default.createElement(_Tile2.default, _extends({
                         key: tile.get('id'),
                         width: _this2.props.cellWidth,
                         height: _this2.props.cellHeight,
@@ -27864,16 +28019,60 @@ var Board = function (_React$Component) {
                 });
             });
 
-            console.log('Render...');
+            this.tilesView = tiles.sort(function (t1, t2) {
+                return parseInt(t1.key, 10) - parseInt(t2.key, 10);
+            });
+        }
+    }, {
+        key: 'componentDidUpdate',
+        value: function componentDidUpdate(prevProps, nextState) {
+            var _this3 = this;
 
+            if (this.isResized(prevProps)) {
+                this.setState({
+                    grid: this.createEmptyGrid()
+                }, function () {
+                    _this3.addStartTiles();
+                });
+            } else {
+                var availableCells = this.findEmptyCells();
+                if (availableCells.length === 0) {}
+            }
+        }
+    }, {
+        key: 'render',
+        value: function render() {
             return _react2.default.createElement(
                 'div',
-                { className: 'board', ref: function ref(div) {
-                        return _this2.gridContainer = div;
-                    } },
-                tilesView
+                { className: 'board', onTransitionEnd: this.transitionEndHandler, onAnimationEnd: this.animationEndHandler },
+                this.tilesView
             );
         }
+
+        /**
+         * Check if the grid is resized
+         * @param {object} next props
+         * @return {boolean} true if the grid has been resized
+         */
+
+
+        /**
+         * Handle keydown event
+         * @param {object} event object
+         */
+
+
+        /**
+         * Handle transitionend event
+         * @param {object} event object
+         */
+
+
+        /**
+         * Handle animationend event
+         * @param {object} event object
+         */
+
 
         /**
          * Return the direction vector object
@@ -27892,6 +28091,7 @@ var Board = function (_React$Component) {
 
         /**
          * Return positions of empty cells in the current grid
+         * @return {array} array of object {row: num, col: num}
          */
 
 
@@ -27920,75 +28120,91 @@ Board.propTypes = {
 };
 
 var _initialiseProps = function _initialiseProps() {
-    var _this3 = this;
+    var _this4 = this;
 
     this.moveQueue = [];
-    this.isMoving = false;
+    this.tilesView = [];
+
+    this.isResized = function (nextProps) {
+        return _this4.props.rows !== nextProps.rows || _this4.props.cols !== nextProps.cols;
+    };
 
     this.keyDownHandler = function (event) {
         // Do nothing until the previous event is finished
-        if (_this3.moveQueue.length > 0) {
-            return;
-        }
+        if (_this4.moveQueue.length > 0) return;
+
         var vector = { x: 0, y: 0 };
         switch (event.keyCode) {
             case _constants.keyCodes.UP:
-                vector = _this3.getDirection('UP');
+                vector = _this4.getDirection('UP');
                 break;
             case _constants.keyCodes.RIGHT:
-                vector = _this3.getDirection('RIGHT');
+                vector = _this4.getDirection('RIGHT');
                 break;
             case _constants.keyCodes.DOWN:
-                vector = _this3.getDirection('DOWN');
+                vector = _this4.getDirection('DOWN');
                 break;
             case _constants.keyCodes.LEFT:
-                vector = _this3.getDirection('LEFT');
+                vector = _this4.getDirection('LEFT');
                 break;
             default:
                 return;
         }
 
-        _this3.moveInDirection(vector);
+        _this4.moveInDirection(vector);
     };
 
     this.transitionEndHandler = function (event) {
+        if (event.propertyName !== 'transform') return;
+
         if (event.target.classList.contains('tile')) {
             // pop queue till the last element left
-            if (_this3.moveQueue.length > 1) {
-                _this3.moveQueue.pop();
+            if (_this4.moveQueue.length > 1) {
+                _this4.moveQueue.shift();
             } else {
-                _this3.moveQueue.pop();
-                var grid = _this3.mergeTiles();
-                _this3.setState({
+                _this4.moveQueue.shift();
+                var grid = _this4.mergeTiles();
+                grid = _this4.addRandomTile(grid);
+
+                _this4.setState({
                     grid: grid
                 });
             }
+        }
+    };
 
-            console.log('transitionend...');
+    this.animationEndHandler = function (event) {
+        if (['apear', 'merge'].indexOf(event.animationName) === -1) return;
+
+        if (event.target.classList.contains('tile-inner')) {
+            event.target.parentElement.classList.remove('tile-new', 'tile-merge');
         }
     };
 
     this.addStartTiles = function () {
-        var availableCells = _this3.findEmptyCells();
-        var grid = _this3.state.grid;
-        for (var i = 0; i < _this3.props.startTiles; i++) {
+        var availableCells = _this4.findEmptyCells();
+        var grid = _this4.state.grid;
+        for (var i = 0; i < _this4.props.startTiles; i++) {
             var index = Math.floor(Math.random() * availableCells.length);
             var pos = availableCells.splice(index, 1)[0];
-            grid = _this3.insertNewTile(grid, pos.row, pos.col);
+            grid = _this4.insertNewTile(grid, pos.row, pos.col);
         }
 
-        _this3.setState({
+        _this4.setState({
             grid: grid
         });
     };
 
     this.mergeTiles = function () {
-        return _this3.state.grid.map(function (row, r) {
+        var scoreAdded = 0;
+        var grid = _this4.state.grid.map(function (row, r) {
             return row.map(function (cell, c) {
                 if (cell.get('tile').size > 1) {
                     var value = cell.get('tile').reduce(function (t1, t2) {
                         return t1.get('value') + t2.get('value');
                     });
+
+                    scoreAdded += value;
 
                     return cell.update('tile', function (tile) {
                         return _immutable.List.of(tile.first().merge({
@@ -28003,16 +28219,20 @@ var _initialiseProps = function _initialiseProps() {
                 }
             });
         });
+
+        _this4.props.addScore(scoreAdded);
+
+        return grid;
     };
 
     this.addRandomTile = function (grid) {
-        var availableCells = _this3.findEmptyCells();
+        var availableCells = _this4.findEmptyCells();
 
         if (availableCells.length > 0) {
 
             var index = Math.floor(Math.random() * availableCells.length);
             var pos = availableCells.splice(index, 1)[0];
-            return _this3.insertNewTile(grid, pos.row, pos.col);
+            return _this4.insertNewTile(grid, pos.row, pos.col);
         } else {
             return grid;
         }
@@ -28030,7 +28250,7 @@ var _initialiseProps = function _initialiseProps() {
                 };
 
                 return cell.update('tile', function (tile) {
-                    return tile.push(_this3.newTile(tileProps));
+                    return tile.push(_this4.newTile(tileProps));
                 });
             });
         }
@@ -28044,8 +28264,8 @@ var _initialiseProps = function _initialiseProps() {
 
     this.prepareTraversalMap = function (vector) {
         var traversal = (0, _immutable.Map)({
-            row: Array.apply(null, { length: _this3.props.rows }).map(Number.call, Number),
-            col: Array.apply(null, { length: _this3.props.rows }).map(Number.call, Number)
+            row: Array.apply(null, { length: _this4.props.rows }).map(Number.call, Number),
+            col: Array.apply(null, { length: _this4.props.cols }).map(Number.call, Number)
         });
 
         if (vector.x === 1) traversal = traversal.update('col', function (value) {
@@ -28059,23 +28279,24 @@ var _initialiseProps = function _initialiseProps() {
     };
 
     this.moveInDirection = function (vector) {
-        var traversal = _this3.prepareTraversalMap(vector);
-        var grid = _this3.state.grid;
+        var traversal = _this4.prepareTraversalMap(vector);
+        var grid = _this4.state.grid;
 
         traversal.get('row').forEach(function (r) {
             traversal.get('col').forEach(function (c) {
                 var cell = grid.getIn([r, c]);
                 if (cell.get('tile').size > 0) {
-                    var nextPos = _this3.nextPosition(grid, r, c, vector);
+                    var nextPos = _this4.nextPosition(grid, r, c, vector);
                     if (nextPos.row !== nextPos.nextRow || nextPos.col !== nextPos.nextCol) {
-                        _this3.moveQueue.push(nextPos);
-                        grid = _this3.moveTo(grid, nextPos);
-                        _this3.setState({
-                            grid: grid
-                        });
+                        _this4.moveQueue.push(nextPos);
+                        grid = _this4.moveTo(grid, nextPos);
                     }
                 }
             });
+        });
+
+        _this4.setState({
+            grid: grid
         });
     };
 
@@ -28117,12 +28338,8 @@ var _initialiseProps = function _initialiseProps() {
     };
 
     this.moveTo = function (grid, pos) {
-        var tmpTile = grid.getIn([pos.row, pos.col]).get('tile').first().set('isNew', false);
-
-        grid = grid.updateIn([pos.row, pos.col], function (cell) {
-            return cell.update('tile', function (tile) {
-                return tile.clear();
-            });
+        var tmpTile = grid.getIn([pos.row, pos.col]).get('tile').first().merge({
+            isNew: false
         });
 
         grid = grid.updateIn([pos.nextRow, pos.nextCol], function (cell) {
@@ -28131,12 +28348,18 @@ var _initialiseProps = function _initialiseProps() {
             });
         });
 
+        grid = grid.updateIn([pos.row, pos.col], function (cell) {
+            return cell.update('tile', function (tile) {
+                return tile.clear();
+            });
+        });
+
         return grid;
     };
 
     this.findEmptyCells = function () {
         var cells = [];
-        var grid = _this3.state.grid;
+        var grid = _this4.state.grid;
         grid.map(function (row, r) {
             row.map(function (cell, c) {
                 if (cell.get('tile').size === 0) {
@@ -28152,7 +28375,7 @@ var _initialiseProps = function _initialiseProps() {
     };
 
     this.createEmptyGrid = function () {
-        var _props = _this3.props,
+        var _props = _this4.props,
             rows = _props.rows,
             cols = _props.cols;
 
@@ -28161,13 +28384,13 @@ var _initialiseProps = function _initialiseProps() {
 
         return (0, _immutable.List)(grid.map(function (row, r) {
             return (0, _immutable.List)(row.map(function (cell, c) {
-                return _this3.newCell(r, c);
+                return _this4.newCell(r, c);
             }));
         }));
     };
 
     this.newCell = function (r, c) {
-        var _props2 = _this3.props,
+        var _props2 = _this4.props,
             gridSpacing = _props2.gridSpacing,
             cellWidth = _props2.cellWidth,
             cellHeight = _props2.cellHeight;
@@ -28188,8 +28411,6 @@ var _initialiseProps = function _initialiseProps() {
 
         return (0, _immutable.Map)({
             id: (0, _helpers.newId)(),
-            row: row,
-            col: col,
             value: value,
             isNew: isNew,
             isMerged: isMerged
@@ -28200,7 +28421,7 @@ var _initialiseProps = function _initialiseProps() {
 exports.default = Board;
 
 /***/ }),
-/* 192 */
+/* 194 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -28229,7 +28450,7 @@ var VECTORS = exports.VECTORS = {
 };
 
 /***/ }),
-/* 193 */
+/* 195 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -28240,16 +28461,18 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = Tile;
 
-var _react = __webpack_require__(20);
+var _react = __webpack_require__(14);
 
 var _react2 = _interopRequireDefault(_react);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function Tile(props) {
+    var average = (props.width + props.height) / 2;
     var tileStyles = {
         width: props.width + 'px',
         height: props.height + 'px',
+        fontSize: (props.value >= 1024 ? average / 2.8 : average / 1.8) + 'px',
         msTransform: 'translate(' + props.x + 'px, ' + props.y + 'px)',
         WebkitTransform: 'translate(' + props.x + 'px, ' + props.y + 'px)',
         transform: 'translate(' + props.x + 'px, ' + props.y + 'px)'
@@ -28260,7 +28483,7 @@ function Tile(props) {
 
     return _react2.default.createElement(
         'div',
-        { className: tileClasses.join(' ').trim(), style: tileStyles },
+        { className: tileClasses.join(' '), style: tileStyles },
         _react2.default.createElement(
             'div',
             { className: innerClasses.join(' ') },
