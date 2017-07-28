@@ -41,6 +41,16 @@ export default class Board extends React.Component {
         document.removeEventListener('keydown', this.keyDownHandler, false);
     }
 
+    componentWillReceiveProps (nextProps) {
+        if (nextProps.reset) {
+            this.setState({
+                grid: this.createEmptyGrid()
+            }, () => {
+                this.addStartTiles();
+            });
+        }
+    }
+
     shouldComponentUpdate (nextProps, nextState) {
         return this.isResized(nextProps) || !Immutable.is(this.state.grid, nextState.grid);
     }

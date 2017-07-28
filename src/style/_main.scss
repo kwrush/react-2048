@@ -97,6 +97,10 @@ body {
     }
 
     & .score {
+        & span {
+            color: inherit;
+        }
+
         &:before {
             content: "Score";
         }
@@ -106,6 +110,18 @@ body {
         &:before {
             content: "Best";
         }
+    }
+
+    & .scoreAdded {
+        position: absolute;
+        left: 0;
+        bottom: 10px;
+        width: 100%;
+        color: $font-color;
+        transition: all $anime-duration ease-in;
+        animation-duration: 0.6s;
+        animation-name: moveup;
+        animation-fill-mode: forwards;
     }
 }
 
@@ -131,8 +147,8 @@ body {
     justify-content: flex-start;
 
     & span {
+        margin: 0 3px;
         font-size: inherit;
-        margin-right: 3px;
     }
 
     & .minus,
@@ -141,11 +157,7 @@ body {
         width: 20px;
         height: 20px;
         line-height: 20px;
-        border-radius: 100%;
-    }
-
-    & .resize-num {
-        margin: 0 3px;
+        border-radius: $border-radius;
     }
 }
 
@@ -188,11 +200,24 @@ body {
     }
 }
 
+@keyframes moveup {
+    from {
+        transform: translateY(0);
+        opacity: 0.9;
+    }
+
+    to {
+        transform: translateY(-50px);
+        opacity: 0;
+    }
+}
+
 
 @keyframes appear {
     from {
         transform: scale(0);
     }
+
     to {
         transform: scale(1);
     }

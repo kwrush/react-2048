@@ -441,10 +441,22 @@ body {
       line-height: 12px;
       color: rgba(255, 255, 255, 0.5);
       text-transform: uppercase; }
+  .score-board .score span {
+    color: inherit; }
   .score-board .score:before {
     content: "Score"; }
   .score-board .record:before {
     content: "Best"; }
+  .score-board .scoreAdded {
+    position: absolute;
+    left: 0;
+    bottom: 10px;
+    width: 100%;
+    color: #776E65;
+    transition: all 0.2s ease-in;
+    animation-duration: 0.6s;
+    animation-name: moveup;
+    animation-fill-mode: forwards; }
 
 .game-ctrl {
   margin: 15px 0 30px 0;
@@ -465,17 +477,15 @@ body {
   flex-direction: row;
   justify-content: flex-start; }
   .resize-ctrl span {
-    font-size: inherit;
-    margin-right: 3px; }
+    margin: 0 3px;
+    font-size: inherit; }
   .resize-ctrl .minus,
   .resize-ctrl .add {
     margin-top: 10px;
     width: 20px;
     height: 20px;
     line-height: 20px;
-    border-radius: 100%; }
-  .resize-ctrl .resize-num {
-    margin: 0 3px; }
+    border-radius: 3px; }
 
 .grid-container {
   position: relative;
@@ -510,6 +520,14 @@ body {
   background: rgba(238, 228, 218, 0.35); }
   .grid-cell:last-child {
     margin-right: 0; }
+
+@keyframes moveup {
+  from {
+    transform: translateY(0);
+    opacity: 0.9; }
+  to {
+    transform: translateY(-50px);
+    opacity: 0; } }
 
 @keyframes appear {
   from {

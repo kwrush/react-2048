@@ -40,7 +40,8 @@ export default class Game extends React.Component {
             cols: this.props.minCol,
             win: false,
             lose: false,
-            scoreAdded: null,
+            reset: false,
+            scoreAdded: 0,
             score: 0
         }
     }
@@ -65,17 +66,18 @@ export default class Game extends React.Component {
             <div id="game">
                 <header className="game-heading">
                     <h1>2048</h1>
-                    <Score score={this.state.score} scoreAdded={this.state.scoreAdded}/>
+                    <Score score={this.state.score} scoreAdded={this.state.scoreAdded} resetScoreAdded={this.resetScoreAdded}/>
                 </header>
                 <div className="game-ctrl">
+                    <button id="reset" className="button" onClick={this.reset}>New Game</button>
                     <Resize label='Rows:' number={this.state.rows} resize={this.changeRow} />
                     <Resize label='Columns:' number={this.state.cols} resize={this.changeCol} />
-                    <button id="reset" className="button">New Game</button>
                 </div>
                 <div className="grid-container">
                     <Grid {...props}/>
                     <Board 
                         {...props}
+                        reset={this.state.reset}
                         startTiles={this.props.startTiles} 
                     />
                 </div>
@@ -86,10 +88,24 @@ export default class Game extends React.Component {
         );
     }
 
+    reset = () => {
+        this.setState({
+            reset: true,
+            score: 0,
+            scoreAdded: 0
+        }, () => {
+            this.setState({
+                reset: false
+            });
+        });
+    }
+
     changeRow = (diff) => {
         let rows = this.state.rows + diff;
         if (rows <= this.props.maxRow && rows >= this.props.minRow) {
             this.setState({
+                score: 0,
+                scoreAdded: 0,
                 rows: rows
             });
         }
@@ -99,6 +115,8 @@ export default class Game extends React.Component {
         let cols = this.state.cols + diff;
         if (cols <= this.props.maxCol && cols >= this.props.minCol) {
             this.setState({
+                score: 0,
+                scoreAdded: 0,
                 cols: cols
             });
         }
@@ -110,5 +128,11 @@ export default class Game extends React.Component {
             score: this.state.score + value
         });
     } 
+
+    resetScoreAdded = (event) => {
+        this.setState({
+            scoreAdded: 0
+        })
+    }
 }
 

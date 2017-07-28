@@ -27542,6 +27542,8 @@ var Game = function (_React$Component) {
             var rows = _this.state.rows + diff;
             if (rows <= _this.props.maxRow && rows >= _this.props.minRow) {
                 _this.setState({
+                    score: 0,
+                    scoreAdded: null,
                     rows: rows
                 });
             }
@@ -27551,6 +27553,8 @@ var Game = function (_React$Component) {
             var cols = _this.state.cols + diff;
             if (cols <= _this.props.maxCol && cols >= _this.props.minCol) {
                 _this.setState({
+                    score: 0,
+                    scoreAdded: null,
                     cols: cols
                 });
             }
@@ -27608,13 +27612,13 @@ var Game = function (_React$Component) {
                 _react2.default.createElement(
                     'div',
                     { className: 'game-ctrl' },
-                    _react2.default.createElement(_Resize2.default, { label: 'Rows:', number: this.state.rows, resize: this.changeRow }),
-                    _react2.default.createElement(_Resize2.default, { label: 'Columns:', number: this.state.cols, resize: this.changeCol }),
                     _react2.default.createElement(
                         'button',
                         { id: 'reset', className: 'button' },
                         'New Game'
-                    )
+                    ),
+                    _react2.default.createElement(_Resize2.default, { label: 'Rows:', number: this.state.rows, resize: this.changeRow }),
+                    _react2.default.createElement(_Resize2.default, { label: 'Columns:', number: this.state.cols, resize: this.changeCol })
                 ),
                 _react2.default.createElement(
                     'div',
@@ -27746,13 +27750,24 @@ var _react2 = _interopRequireDefault(_react);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function Score(props) {
+    var scoreAdded = props.scoreAdded > 0 ? props.scoreAdded : false;
     return _react2.default.createElement(
         "div",
         { className: "score-board" },
         _react2.default.createElement(
             "div",
             { className: "score" },
-            props.score
+            _react2.default.createElement(
+                "span",
+                null,
+                props.score
+            ),
+            scoreAdded && _react2.default.createElement(
+                "div",
+                { className: "scoreAdded" },
+                "+",
+                scoreAdded
+            )
         ),
         _react2.default.createElement(
             "div",
