@@ -12,6 +12,8 @@ export default class Board extends React.Component {
     // current transition event
     moveQueue = []
 
+    moved = false
+
     // Collection of tile components
     tilesView = []
 
@@ -144,12 +146,15 @@ export default class Board extends React.Component {
     transitionEndHandler = (event) => {
         if (event.propertyName !== 'transform') return;
 
+        if (!this.moved) return;
+
         if (event.target.classList.contains('tile')) {
             // pop queue till the last element left
             if (this.moveQueue.length > 1) {
                 this.moveQueue.shift();
             } else {
                 this.moveQueue.shift();
+                this.moved = false;
                 let grid = this.mergeTiles();
                 grid = this.addRandomTile(grid);
                 
@@ -288,6 +293,7 @@ export default class Board extends React.Component {
                     const nextPos = this.nextPosition(grid, r, c, vector);
                     if (nextPos.row !== nextPos.nextRow || nextPos.col !== nextPos.nextCol) {
                         this.moveQueue.push(nextPos);
+                        this.moved = this.moved ? this.moved : true;
                         grid = this.moveTo(grid, nextPos);
                     }
                 }
