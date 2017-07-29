@@ -4,6 +4,7 @@ import Score from './Score';
 import Resize from './Resize';
 import Grid from './Grid';
 import Board from './Board';
+import Overlay from './Overlay';
 import {
     calcGridSpacing, 
     calcCellHeight,
@@ -74,10 +75,19 @@ export default class Game extends React.Component {
                     <Resize label='Columns:' number={this.state.cols} resize={this.changeCol} />
                 </div>
                 <div className="grid-container">
+                    <Overlay 
+                        win={this.state.win}
+                        lose={this.state.lose}
+                        reset={this.reset}
+                        continue={this.continueGame}
+                    />
                     <Grid {...props}/>
                     <Board 
                         {...props}
                         reset={this.state.reset}
+                        pause={this.state.win || this.state.lose}
+                        winGame={this.winGame}
+                        gameOver={this.gameOver}
                         startTiles={this.props.startTiles} 
                     />
                 </div>
@@ -91,6 +101,8 @@ export default class Game extends React.Component {
     reset = () => {
         this.setState({
             reset: true,
+            win: false,
+            lose: false,
             score: 0,
             scoreAdded: 0
         }, () => {
@@ -98,6 +110,28 @@ export default class Game extends React.Component {
                 reset: false
             });
         });
+    }
+
+    winGame = () => {
+        this.setState({
+            win: true,
+            lose: false
+        });
+    }
+
+    gameOver = () => {
+        this.setState({
+            win: false,
+            lose: true
+        });
+    }
+
+    continueGame = () => {
+        this.setState({
+            win: false,
+            lose: false,
+            reset: false
+        })
     }
 
     changeRow = (diff) => {

@@ -18,7 +18,7 @@ export function calcCellWidth (gridSize, cols, spacing) {
 }
 
 export function randomCellValue () {
-    return Math.random() > 0.95 ? 4 : 2;
+    return Math.random() > 0.99 ? 4 : 2;
 }
 
 export function within2dList (list, r, c) {

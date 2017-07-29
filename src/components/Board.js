@@ -116,7 +116,7 @@ export default class Board extends React.Component {
      */
     keyDownHandler = (event) => {
         // Do nothing until the previous event is finished
-        if (this.moveQueue.length > 0) return;
+        if (this.moveQueue.length > 0 || this.props.pause) return;
 
         let vector = {x: 0, y: 0};
         switch (event.keyCode) {
@@ -202,6 +202,8 @@ export default class Board extends React.Component {
                     });
 
                     scoreAdded += value;
+
+                    if (scoreAdded === 2048) this.props.winGame();
 
                     return cell.update('tile', tile => {
                         return List.of(tile.first().merge({
@@ -411,7 +413,7 @@ export default class Board extends React.Component {
         const {row, col, value, isNew, isMerged} = props;
         return Map({
             id: newId(),
-            value: value,
+            value: randomCellValue(),
             isNew: isNew,
             isMerged: isMerged
         });
