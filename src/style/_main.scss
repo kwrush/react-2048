@@ -360,6 +360,9 @@ body {
     animation-delay: $anime-delay;
     transform: scale(0);
     
+    & p {
+        text-shadow: rgba(0, 0, 0, 0.8) 1px 1px;
+    }
 
     & p,
     & .button-container {
