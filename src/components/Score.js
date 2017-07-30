@@ -7,7 +7,7 @@ export default function Score (props) {
                 <span>{props.score}</span>
                 {!!props.scoreAdded && <div className="scoreAdded">+{props.scoreAdded}</div>}    
             </div>
-            <div className="record">Record</div> 
+            <div className="record">{props.bestScore}</div> 
         </div>
     );
 } 

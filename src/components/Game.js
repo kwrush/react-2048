@@ -10,6 +10,7 @@ import {
     calcCellHeight,
     calcCellWidth
 } from '../utils/helpers';
+import Store from '../utils/store';
 
 export default class Game extends React.Component {
     static propTypes = {
@@ -43,7 +44,29 @@ export default class Game extends React.Component {
             lose: false,
             reset: false,
             scoreAdded: 0,
-            score: 0
+            score: 0,
+            bestScore: 0
+        }
+    }
+
+    componentWillMount () {
+        if (Store.getBestScore() === null) {
+            Store.init();
+        }
+
+        this.setState({
+            bestScore: Store.getBestScore()
+        });
+    }
+
+    componentDidUpdate (prevProps, prevState) {
+        const bestScore = Store.getBestScore();
+        if (this.state.score > bestScore) {
+            this.setState({
+                bestScore: this.state.score
+            });
+
+            Store.saveBestScore(this.state.score);
         }
     }
 
@@ -67,7 +90,12 @@ export default class Game extends React.Component {
             <div id="game">
                 <header className="game-heading">
                     <h1>2048</h1>
-                    <Score score={this.state.score} scoreAdded={this.state.scoreAdded} resetScoreAdded={this.resetScoreAdded}/>
+                    <Score 
+                        score={this.state.score} 
+                        scoreAdded={this.state.scoreAdded} 
+                        resetScoreAdded={this.resetScoreAdded}
+                        bestScore={this.state.bestScore}
+                    />
                 </header>
                 <div className="game-ctrl">
                     <button id="reset" className="button" onClick={this.reset}>New Game</button>
