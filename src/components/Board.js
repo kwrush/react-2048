@@ -86,8 +86,8 @@ export default class Board extends React.Component {
             });
         } else {
             const availableCells = this.findEmptyCells();
-            if (availableCells.length === 0) {
-
+            if (availableCells.length === 0 && !this.canMove()) {
+                this.props.gameOver();
             }
         }
     }
@@ -305,6 +305,34 @@ export default class Board extends React.Component {
         this.setState({
             grid: grid
         });
+    }
+
+    canMove = () => {
+        let moveable = [];
+        const vectors = [
+            this.getDirection('LEFT'),
+            this.getDirection('RIGHT'),
+            this.getDirection('UP'),
+            this.getDirection('DOWN')
+        ];
+
+        this.state.grid.forEach((row, r) => {
+            row.forEach((cell, c) => {
+                if (cell.get('tile').size > 0) {
+                    let canCellMove = false;
+                    for (let i = 0; i < vectors.length; i++) {
+                        const nextPos = this.nextPosition(this.state.grid, r, c, vectors[i]);
+                        if (nextPos.row !== nextPos.nextRow || nextPos.col !== nextPos.nextCol) {
+                            canCellMove = true;
+                            break;
+                        }
+                    }
+                    moveable.push(canCellMove);
+                }
+            });
+        });
+
+        return moveable.reduce((prev, curr) => prev || curr);
     }
 
     nextPosition = (grid, r, c, vector) => {
