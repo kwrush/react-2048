@@ -8,10 +8,11 @@ import Tile from './Tile';
 export default class Board extends React.Component {
 
     // Queue of moving tiles. Needed for performing some actions, such as
-    // merging tiles or create a new tile, after finishing the 
-    // current transition event
+    // merging tiles or creating a new tile, after all transition 
+    // events are consumed
     moveQueue = []
 
+    // Used for avoid transitionend event triggered by, for instance, zoom in/out
     moved = false
 
     // Collection of tile components
@@ -45,11 +46,7 @@ export default class Board extends React.Component {
 
     componentWillReceiveProps (nextProps) {
         if (nextProps.reset) {
-            this.setState({
-                grid: this.createEmptyGrid()
-            }, () => {
-                this.addStartTiles();
-            });
+            this.setup();
         }
     }
 
@@ -72,6 +69,9 @@ export default class Board extends React.Component {
             });
         });
 
+        // Sort tiles by their keys before rendering to prevent 
+        // transition animaion is aborted from recreating DOM elemnt
+        // by React
         this.tilesView = tiles.sort((t1, t2) => {
             return parseInt(t1.key, 10) - parseInt(t2.key, 10);
         });
@@ -79,13 +79,11 @@ export default class Board extends React.Component {
 
     componentDidUpdate (prevProps, nextState) {
         if (this.isResized(prevProps)) {
-            this.setState({
-                grid: this.createEmptyGrid()
-            }, () => {
-                this.addStartTiles();
-            });
+            this.setup();
+
         } else {
             const availableCells = this.findEmptyCells();
+            // Do the expensive checking when all cells are occupied
             if (availableCells.length === 0 && !this.canMove()) {
                 this.props.gameOver();
             }
@@ -146,6 +144,7 @@ export default class Board extends React.Component {
     transitionEndHandler = (event) => {
         if (event.propertyName !== 'transform') return;
 
+        // Only handle the event triggered by moving tiles
         if (!this.moved) return;
 
         if (event.target.classList.contains('tile')) {
@@ -155,6 +154,9 @@ export default class Board extends React.Component {
             } else {
                 this.moveQueue.shift();
                 this.moved = false;
+
+                // merge and add new tile after all tiles have been moved
+                // to their new locations
                 let grid = this.mergeTiles();
                 grid = this.addRandomTile(grid);
                 
@@ -166,7 +168,8 @@ export default class Board extends React.Component {
     }
 
     /**
-     * Handle animationend event
+     * Handle animationend event, removing some animation classes in
+     * DOM elements to prevent repeat animation from next rendering
      * @param {object} event object
      */
     animationEndHandler = (event) => {
@@ -177,7 +180,20 @@ export default class Board extends React.Component {
         }
     }
 
+    /**
+     * initiate game board
+     */
+    setup = () => {
+        this.setState({
+            grid: this.createEmptyGrid()
+        }, () => {
+            this.addStartTiles();
+        });
+    }
 
+    /**
+     * Add initial tiles
+     */
     addStartTiles = () => {
         const availableCells = this.findEmptyCells();
         let grid = this.state.grid;
@@ -192,6 +208,10 @@ export default class Board extends React.Component {
         });
     }
 
+    /**
+     * Merge tiles
+     * @return {List} grid that has been merged 
+     */
     mergeTiles = () => {
         let scoreAdded = 0;
         const grid = this.state.grid.map((row, r) => {
@@ -203,7 +223,7 @@ export default class Board extends React.Component {
 
                     scoreAdded += value;
 
-                    if (scoreAdded === 2048) this.props.winGame();
+                    if (scoreAdded === this.props.max && !this.props.continue) this.props.winGame();
 
                     return cell.update('tile', tile => {
                         return List.of(tile.first().merge({
@@ -224,11 +244,15 @@ export default class Board extends React.Component {
         return grid;
     }
 
+    /**
+     * Add a new tile in a random available location
+     * @param {List} grid
+     * @return {List} grid with new tile
+     */
     addRandomTile = (grid) => {
         const availableCells = this.findEmptyCells();
 
         if (availableCells.length > 0) {
-
             const index = Math.floor(Math.random() * availableCells.length);
             const pos = availableCells.splice(index, 1)[0];
             return this.insertNewTile(grid, pos.row, pos.col);
@@ -238,6 +262,13 @@ export default class Board extends React.Component {
         }
     }
 
+    /**
+     * Add new tile to the specifc cell of the given grid
+     * @param {List} grid
+     * @param {number} row index
+     * @param {number} column index
+     * @return {List} grid with the new tile
+     */
     insertNewTile = (grid, r, c) => {
         if (within2dList(grid, r, c)) {
             grid = grid.updateIn([r, c], (cell) => {
@@ -263,6 +294,8 @@ export default class Board extends React.Component {
      * RIGHT->{x: 1, y: 0}
      * UP->{x: 0, y: -1}
      * DOWN->{x: 0, y: 1}
+     * @param {string} direction
+     * @return {object} vector object
      */
     getDirection = (direction) => {
         return VECTORS[direction.toUpperCase()];
@@ -271,6 +304,7 @@ export default class Board extends React.Component {
     /**
      * Create an array that indicates tranversal order of all tiles
      * @param {object} direction vector e.g. {x: 0, y: 1}
+     * @return {Map} traversal map in row and column wise
      */
     prepareTraversalMap = (vector) => {
         let traversal = Map({
@@ -278,12 +312,17 @@ export default class Board extends React.Component {
             col: Array.apply(null, {length: this.props.cols}).map(Number.call, Number)
         });
 
+        // Always start from the farthest tile
         if (vector.x === 1) traversal = traversal.update('col', value => value.reverse());
         if (vector.y === 1) traversal = traversal.update('row', value => value.reverse());
 
         return traversal;
     }
 
+    /**
+     * Move tiles in the given direction
+     * @param {object} direction vector
+     */
     moveInDirection = (vector) => {
         const traversal = this.prepareTraversalMap(vector);
         let grid = this.state.grid;
@@ -307,34 +346,15 @@ export default class Board extends React.Component {
         });
     }
 
-    canMove = () => {
-        let moveable = [];
-        const vectors = [
-            this.getDirection('LEFT'),
-            this.getDirection('RIGHT'),
-            this.getDirection('UP'),
-            this.getDirection('DOWN')
-        ];
-
-        this.state.grid.forEach((row, r) => {
-            row.forEach((cell, c) => {
-                if (cell.get('tile').size > 0) {
-                    let canCellMove = false;
-                    for (let i = 0; i < vectors.length; i++) {
-                        const nextPos = this.nextPosition(this.state.grid, r, c, vectors[i]);
-                        if (nextPos.row !== nextPos.nextRow || nextPos.col !== nextPos.nextCol) {
-                            canCellMove = true;
-                            break;
-                        }
-                    }
-                    moveable.push(canCellMove);
-                }
-            });
-        });
-
-        return moveable.reduce((prev, curr) => prev || curr);
-    }
-
+    /**
+     * Calcualte next position of the specific tile 
+     * following the direction vector
+     * @param {List} grid
+     * @param {number} row index
+     * @param {number} column index
+     * @param {object} vector of direction 
+     * @return {object} object indicates next position of row and column
+     */
     nextPosition = (grid, r, c, vector) => {
         let nextPos = {
             row: r,
@@ -350,12 +370,14 @@ export default class Board extends React.Component {
 
         while (within2dList(grid, nextRow, nextCol)) {
             let nextCell = grid.getIn([nextRow, nextCol]);
+            // Move the tile to the next position if it's empty
             if (nextCell.get('tile').size === 0) {
                 nextPos = Object.assign(nextPos, {
                     nextRow: nextRow,
                     nextCol: nextCol
                 });
             } else {
+                // If the cell is occurpied, then check if we can merge two tiles
                 if (nextCell.get('tile').size === 1 && 
                     currCell.getIn(['tile', 0, 'value']) === nextCell.getIn(['tile', 0, 'value'])) {
                     nextPos = Object.assign(nextPos, {
@@ -373,7 +395,14 @@ export default class Board extends React.Component {
         return nextPos;
     }  
     
+    /**
+     * Move all tiles to their next positions
+     * @param {List} grid to be moved
+     * @param {pos} object of next position
+     * @return {List} updated grid
+     */
     moveTo = (grid, pos) => {
+        // Get the tile to be moved
         let tmpTile = grid.getIn([pos.row, pos.col]).get('tile').first().merge({
             isNew: false
         });
@@ -382,11 +411,41 @@ export default class Board extends React.Component {
             return cell.update('tile', tile => tile.push(tmpTile));
         });
 
+        // Remove this tile from old position
         grid = grid.updateIn([pos.row, pos.col], cell => {
             return cell.update('tile', tile => tile.clear());
         });  
 
         return grid;
+    }
+
+    /**
+     * Check if it's possible to continue the game
+     * @return {boolean} true if there's a tile can be moved
+     */
+    canMove = () => {
+        const vectors = [
+            this.getDirection('LEFT'),
+            this.getDirection('RIGHT'),
+            this.getDirection('UP'),
+            this.getDirection('DOWN')
+        ];
+
+        for (let r = 0; r < this.state.grid.size; r++) {
+            for (let c = 0; c < this.state.grid.get(r).size; c++) {
+                const tile = this.state.grid.getIn([r, c, 'tile']);
+                if (tile.size > 0) {
+                    for (let i = 0; i < vectors.length; i++) {
+                        const nextPos = this.nextPosition(this.state.grid, r, c, vectors[i]);
+                        if (nextPos.row !== nextPos.nextRow || nextPos.col !== nextPos.nextCol) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -412,6 +471,7 @@ export default class Board extends React.Component {
 
     /**
      * Return an grid filled with initial cells 
+     * @return {List} empty grid
      */
     createEmptyGrid = () => {
         const {rows, cols} = this.props;
@@ -427,6 +487,9 @@ export default class Board extends React.Component {
 
     /**
      * Empty new cell
+     * @param {number} row index
+     * @param {number} column index
+     * @return {Map} empty cell map
      */
     newCell = (r, c) => {
         const {gridSpacing, cellWidth, cellHeight} = this.props;
@@ -437,6 +500,11 @@ export default class Board extends React.Component {
         });
     }
 
+    /**
+     * Empty tile
+     * @param {object} tile propertie
+     * @return {Map} map of a tile 
+     */
     newTile = (props) => {
         const {row, col, value, isNew, isMerged} = props;
         return Map({

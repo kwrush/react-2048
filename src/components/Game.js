@@ -20,8 +20,7 @@ export default class Game extends React.Component {
         minRow: PropTypes.number,
         minCol: PropTypes.number,
         gridSize: PropTypes.number,
-        max: PropTypes.number,
-        fromSave: PropTypes.bool.isRequired
+        max: PropTypes.number
     }
 
     static defaultProps = {
@@ -43,6 +42,7 @@ export default class Game extends React.Component {
             win: false,
             lose: false,
             reset: false,
+            continue: false,
             scoreAdded: 0,
             score: 0,
             bestScore: 0
@@ -83,6 +83,7 @@ export default class Game extends React.Component {
             cellWidth: calcCellWidth(gridSize, cols, gridSpacing),
             rows: rows,
             cols: cols,
+            max: this.props.max,
             addScore: this.addScore
         }
 
@@ -113,6 +114,7 @@ export default class Game extends React.Component {
                     <Board 
                         {...props}
                         reset={this.state.reset}
+                        continue={this.state.continue}
                         pause={this.state.win || this.state.lose}
                         winGame={this.winGame}
                         gameOver={this.gameOver}
@@ -120,7 +122,7 @@ export default class Game extends React.Component {
                     />
                 </div>
                 <footer id="footer">
-                    <p>Join tiles with the same number and get to the 2048 tile</p>
+                    <p>Join tiles with the same value and get to the 2048 tile</p>
                 </footer>
             </div>
         );
@@ -154,14 +156,20 @@ export default class Game extends React.Component {
         });
     }
 
+    // Continue the game even if there's a 2048 tiles
     continueGame = () => {
         this.setState({
             win: false,
             lose: false,
+            continue: true,
             reset: false
         })
     }
 
+    /**
+     * Change row numbers of the grid
+     * @param {number} row number to add
+     */
     changeRow = (diff) => {
         let rows = this.state.rows + diff;
         if (rows <= this.props.maxRow && rows >= this.props.minRow) {
@@ -173,6 +181,10 @@ export default class Game extends React.Component {
         }
     }
 
+    /**
+     * Change column numbers of the grid
+     * @param {number} column number to add
+     */
     changeCol = (diff) => {
         let cols = this.state.cols + diff;
         if (cols <= this.props.maxCol && cols >= this.props.minCol) {
@@ -184,6 +196,10 @@ export default class Game extends React.Component {
         }
     }
 
+    /**
+     * Add score
+     * @param {number} value of score to add
+     */
     addScore = (value) => {
         this.setState({
             scoreAdded: value,

@@ -170,7 +170,8 @@ body {
 }
 
 
-.grid, .board {
+.grid, 
+.board {
     position: absolute;
     top: 0;
     left: 0;
@@ -402,6 +403,6 @@ body {
 #footer p {
     max-width: 360px;
     text-align: center;
-    font-size: 14px;
+    font-size: 15px;
 }
 

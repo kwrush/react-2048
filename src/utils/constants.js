@@ -1,5 +1,3 @@
-import {Map} from 'immutable';
-
 export const keyCodes = {
     UP: 38,
     RIGHT: 39,
