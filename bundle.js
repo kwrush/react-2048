@@ -15309,6 +15309,7 @@ exports.calcCellWidth = calcCellWidth;
 exports.randomCellValue = randomCellValue;
 exports.within2dList = within2dList;
 exports.newId = newId;
+exports.getTouches = getTouches;
 
 var _immutable = __webpack_require__(52);
 
@@ -15342,6 +15343,13 @@ function newId() {
     return '' + id++;
 }
 
+function getTouches(touches) {
+    return Object.assign({}, {
+        x: touches[0].clientX,
+        y: touches[0].clientY
+    });
+}
+
 /***/ }),
 /* 86 */
 /***/ (function(module, exports, __webpack_require__) {
@@ -15367,7 +15375,9 @@ var _Game2 = _interopRequireDefault(_Game);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-_reactDom2.default.render(_react2.default.createElement(_Game2.default, { fromSave: false }), document.getElementById('game'));
+var width = window.outerWidth;
+var padding = 5;
+_reactDom2.default.render(_react2.default.createElement(_Game2.default, { initialGridSize: width, padding: padding, maxGridSize: 360 }), document.getElementById('game'));
 
 /***/ }),
 /* 87 */
@@ -27546,77 +27556,9 @@ var Game = function (_React$Component) {
 
         var _this = _possibleConstructorReturn(this, (Game.__proto__ || Object.getPrototypeOf(Game)).call(this, props));
 
-        _this.reset = function () {
-            _this.setState({
-                reset: true,
-                win: false,
-                lose: false,
-                score: 0,
-                scoreAdded: 0
-            }, function () {
-                _this.setState({
-                    reset: false
-                });
-            });
-        };
+        _initialiseProps.call(_this);
 
-        _this.winGame = function () {
-            _this.setState({
-                win: true,
-                lose: false
-            });
-        };
-
-        _this.gameOver = function () {
-            _this.setState({
-                win: false,
-                lose: true
-            });
-        };
-
-        _this.continueGame = function () {
-            _this.setState({
-                win: false,
-                lose: false,
-                continue: true,
-                reset: false
-            });
-        };
-
-        _this.changeRow = function (diff) {
-            var rows = _this.state.rows + diff;
-            if (rows <= _this.props.maxRow && rows >= _this.props.minRow) {
-                _this.setState({
-                    score: 0,
-                    scoreAdded: 0,
-                    rows: rows
-                });
-            }
-        };
-
-        _this.changeCol = function (diff) {
-            var cols = _this.state.cols + diff;
-            if (cols <= _this.props.maxCol && cols >= _this.props.minCol) {
-                _this.setState({
-                    score: 0,
-                    scoreAdded: 0,
-                    cols: cols
-                });
-            }
-        };
-
-        _this.addScore = function (value) {
-            _this.setState({
-                scoreAdded: value,
-                score: _this.state.score + value
-            });
-        };
-
-        _this.resetScoreAdded = function (event) {
-            _this.setState({
-                scoreAdded: 0
-            });
-        };
+        var width = _this.props.initialGridSize > _this.props.maxGridSize ? _this.props.maxGridSize : _this.props.initialGridSize;
 
         _this.state = {
             rows: _this.props.minRow,
@@ -27627,7 +27569,8 @@ var Game = function (_React$Component) {
             continue: false,
             scoreAdded: 0,
             score: 0,
-            bestScore: 0
+            bestScore: 0,
+            gridSize: width - 2 * _this.props.padding
         };
         return _this;
     }
@@ -27639,9 +27582,19 @@ var Game = function (_React$Component) {
                 _store2.default.init();
             }
 
+            window.addEventListener('resize', this._windowResize, false);
+        }
+    }, {
+        key: 'componentDidMount',
+        value: function componentDidMount() {
             this.setState({
                 bestScore: _store2.default.getBestScore()
             });
+        }
+    }, {
+        key: 'componentWillUnmount',
+        value: function componentWillUnmount() {
+            window.removeEventListener('resize', this._windowResize, false);
         }
     }, {
         key: 'componentDidUpdate',
@@ -27658,10 +27611,11 @@ var Game = function (_React$Component) {
     }, {
         key: 'render',
         value: function render() {
-            var gridSize = this.props.gridSize;
-            var rows = this.state.rows;
-            var cols = this.state.cols;
-            var gridSpacing = (0, _helpers.calcGridSpacing)(gridSize, rows >= cols ? rows : cols);
+            var _calcDemension = this.calcDemension(),
+                gridSize = _calcDemension.gridSize,
+                rows = _calcDemension.rows,
+                cols = _calcDemension.cols,
+                gridSpacing = _calcDemension.gridSpacing;
 
             var props = {
                 gridSize: gridSize,
@@ -27676,7 +27630,7 @@ var Game = function (_React$Component) {
 
             return _react2.default.createElement(
                 'div',
-                { id: 'game' },
+                { id: 'game', style: { width: gridSize + 'px' } },
                 _react2.default.createElement(
                     'header',
                     { className: 'game-heading' },
@@ -27705,7 +27659,7 @@ var Game = function (_React$Component) {
                 ),
                 _react2.default.createElement(
                     'div',
-                    { className: 'grid-container' },
+                    { className: 'grid-container', style: { width: gridSize + 'px', height: gridSize + 'px' } },
                     _react2.default.createElement(_Overlay2.default, {
                         win: this.state.win,
                         lose: this.state.lose,
@@ -27728,7 +27682,7 @@ var Game = function (_React$Component) {
                     _react2.default.createElement(
                         'p',
                         null,
-                        'Join tiles with the same value and get to the 2048 tile'
+                        'Join tiles with the same value to get the 2048 tile'
                     )
                 )
             );
@@ -27765,8 +27719,10 @@ Game.propTypes = {
     maxCol: _propTypes2.default.number,
     minRow: _propTypes2.default.number,
     minCol: _propTypes2.default.number,
-    gridSize: _propTypes2.default.number,
-    max: _propTypes2.default.number
+    initialGridSize: _propTypes2.default.number,
+    padding: _propTypes2.default.number,
+    max: _propTypes2.default.number,
+    maxGridSize: _propTypes2.default.number
 };
 Game.defaultProps = {
     minRow: 4,
@@ -27775,8 +27731,106 @@ Game.defaultProps = {
     maxCol: 10,
     max: 2048,
     startTiles: 2,
-    gridSize: 360
+    padding: 5,
+    initialGridSize: 360,
+    maxGridSize: 360
 };
+
+var _initialiseProps = function _initialiseProps() {
+    var _this2 = this;
+
+    this._windowResize = function (event) {
+        var width = window.outerWidth > _this2.props.maxGridSize ? _this2.props.maxGridSize : window.outerWidth;
+        _this2.setState({
+            gridSize: width - _this2.props.padding * 2
+        });
+    };
+
+    this.calcDemension = function () {
+        var r = _this2.state.rows;
+        var c = _this2.state.cols;
+        var width = _this2.state.gridSize;
+        return {
+            gridSize: _this2.state.gridSize,
+            rows: r,
+            cols: c,
+            gridSpacing: (0, _helpers.calcGridSpacing)(width, r >= c ? r : c)
+        };
+    };
+
+    this.reset = function () {
+        _this2.setState({
+            reset: true,
+            win: false,
+            lose: false,
+            score: 0,
+            scoreAdded: 0
+        }, function () {
+            _this2.setState({
+                reset: false
+            });
+        });
+    };
+
+    this.winGame = function () {
+        _this2.setState({
+            win: true,
+            lose: false
+        });
+    };
+
+    this.gameOver = function () {
+        _this2.setState({
+            win: false,
+            lose: true
+        });
+    };
+
+    this.continueGame = function () {
+        _this2.setState({
+            win: false,
+            lose: false,
+            continue: true,
+            reset: false
+        });
+    };
+
+    this.changeRow = function (diff) {
+        var rows = _this2.state.rows + diff;
+        if (rows <= _this2.props.maxRow && rows >= _this2.props.minRow) {
+            _this2.setState({
+                score: 0,
+                scoreAdded: 0,
+                rows: rows
+            });
+        }
+    };
+
+    this.changeCol = function (diff) {
+        var cols = _this2.state.cols + diff;
+        if (cols <= _this2.props.maxCol && cols >= _this2.props.minCol) {
+            _this2.setState({
+                score: 0,
+                scoreAdded: 0,
+                cols: cols
+            });
+        }
+    };
+
+    this.addScore = function (value) {
+        _this2.setState({
+            scoreAdded: value,
+            score: _this2.state.score + value
+        });
+    };
+
+    this.resetScoreAdded = function (event) {
+        _this2.setState({
+            scoreAdded: 0
+        });
+    };
+};
+
 exports.default = Game;
 
 /***/ }),
@@ -28008,7 +28062,7 @@ var Grid = function (_React$Component) {
 
             return _react2.default.createElement(
                 'div',
-                { key: key, className: 'grid-row', style: rowStyles },
+                { key: 'row-' + key, className: 'grid-row', style: rowStyles },
                 gridRows
             );
         }
@@ -28020,7 +28074,7 @@ var Grid = function (_React$Component) {
                 height: this.props.cellHeight + 'px',
                 marginRight: this.props.gridSpacing + 'px'
             };
-            return _react2.default.createElement('div', { key: key, className: 'grid-cell', style: cellStyles });
+            return _react2.default.createElement('div', { key: 'cell-' + key, className: 'grid-cell', style: cellStyles });
         }
     }, {
         key: 'render',
@@ -28098,12 +28152,10 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var Board = function (_React$Component) {
     _inherits(Board, _React$Component);
 
-    // Collection of tile components
+    // Save touchstart event object
 
 
-    // Queue of moving tiles. Needed for performing some actions, such as
-    // merging tiles or creating a new tile, after all transition 
-    // events are consumed
+    // Used for avoid transitionend event triggered by, for instance, zoom in/out
     function Board(props) {
         _classCallCheck(this, Board);
 
@@ -28117,7 +28169,12 @@ var Board = function (_React$Component) {
         return _this;
     }
 
-    // Used for avoid transitionend event triggered by, for instance, zoom in/out
+    // Collection of tile components
+
+
+    // Queue of moving tiles. Needed for performing some actions, such as
+    // merging tiles or creating a new tile, after all transition 
+    // events are consumed
 
 
     _createClass(Board, [{
@@ -28141,7 +28198,7 @@ var Board = function (_React$Component) {
     }, {
         key: 'shouldComponentUpdate',
         value: function shouldComponentUpdate(nextProps, nextState) {
-            return this.isResized(nextProps) || !_immutable2.default.is(this.state.grid, nextState.grid);
+            return this.isResized(nextProps) || !_immutable2.default.is(this.state.grid, nextState.grid) || this.props.gridSize !== nextProps.gridSize;
         }
     }, {
         key: 'componentWillUpdate',
@@ -28171,10 +28228,18 @@ var Board = function (_React$Component) {
     }, {
         key: 'componentDidUpdate',
         value: function componentDidUpdate(prevProps, nextState) {
+            // If there's different row or columns
             if (this.isResized(prevProps)) {
                 this.setup();
+            } else if (this.props.gridSize !== prevProps.gridSize) {
+                // Adjust tiles position if the browser windows is resized
+                this.setState({
+                    grid: this.adjustCellsPosition()
+                });
             } else {
+                // Otherwise check if there're empty cells left
                 var availableCells = this.findEmptyCells();
+
                 // Do the expensive checking when all cells are occupied
                 if (availableCells.length === 0 && !this.canMove()) {
                     this.props.gameOver();
@@ -28186,7 +28251,14 @@ var Board = function (_React$Component) {
         value: function render() {
             return _react2.default.createElement(
                 'div',
-                { className: 'board', onTransitionEnd: this.transitionEndHandler, onAnimationEnd: this.animationEndHandler },
+                {
+                    className: 'board',
+                    onTransitionEnd: this.transitionEndHandler,
+                    onAnimationEnd: this.animationEndHandler,
+                    onTouchStart: this.touchStartHandler,
+                    onTouchMove: this.touchMoveHandler,
+                    onTouchEnd: this.touchEndHandler
+                },
                 this.tilesView
             );
         }
@@ -28311,6 +28383,12 @@ var Board = function (_React$Component) {
 
 
         /**
+         * Adjust positions of cells based on current width of the browser window
+         * @return {List} grid adjusted
+         */
+
+
+        /**
          * Empty new cell
          * @param {number} row index
          * @param {number} column index
@@ -28345,12 +28423,43 @@ var _initialiseProps = function _initialiseProps() {
     this.moveQueue = [];
     this.moved = false;
     this.tilesView = [];
+    this.touch = { x: 0, y: 0 };
 
     this.isResized = function (nextProps) {
         return _this3.props.rows !== nextProps.rows || _this3.props.cols !== nextProps.cols;
     };
 
+    this.touchStartHandler = function (event) {
+        _this3.touch = (0, _helpers.getTouches)(event.touches);
+    };
+
+    this.touchMoveHandler = function (event) {
+        event.preventDefault();
+    };
+
+    this.touchEndHandler = function (event) {
+        if (!_this3.touch.x || !_this3.touch.y || _this3.moveQueue.length > 0 || _this3.props.pause) return;
+
+        var _getTouches = (0, _helpers.getTouches)(event.changedTouches),
+            x = _getTouches.x,
+            y = _getTouches.y;
+
+        var dx = _this3.touch.x - x;
+        var dy = _this3.touch.y - y;
+
+        var vector = { x: 0, y: 0 };
+
+        if (Math.abs(dx) >= Math.abs(dy)) {
+            vector = dx > 0 ? _this3.getDirection('LEFT') : _this3.getDirection('RIGHT');
+        } else {
+            vector = dy > 0 ? _this3.getDirection('UP') : _this3.getDirection('DOWN');
+        }
+
+        _this3.moveInDirection(vector);
+    };
+
     this.keyDownHandler = function (event) {
+        event.preventDefault();
         // Do nothing until the previous event is finished
         if (_this3.moveQueue.length > 0 || _this3.props.pause) return;
 
@@ -28652,11 +28761,28 @@ var _initialiseProps = function _initialiseProps() {
         }));
     };
 
-    this.newCell = function (r, c) {
+    this.adjustCellsPosition = function () {
         var _props2 = _this3.props,
             gridSpacing = _props2.gridSpacing,
             cellWidth = _props2.cellWidth,
             cellHeight = _props2.cellHeight;
+
+
+        return _this3.state.grid.map(function (row, r) {
+            return row.map(function (cell, c) {
+                return cell.merge({
+                    x: gridSpacing * (c + 1) + c * cellWidth,
+                    y: gridSpacing * (r + 1) + r * cellHeight
+                });
+            });
+        });
+    };
+
+    this.newCell = function (r, c) {
+        var _props3 = _this3.props,
+            gridSpacing = _props3.gridSpacing,
+            cellWidth = _props3.cellWidth,
+            cellHeight = _props3.cellHeight;
 
         return (0, _immutable.Map)({
             x: gridSpacing * (c + 1) + c * cellWidth,

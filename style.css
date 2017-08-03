@@ -403,11 +403,12 @@ body {
   -webkit-transform: translateX(-50%);
   -ms-transform: translateX(-50%);
   transform: translateX(-50%);
-  display: inline-block;
-  min-width: 360px; }
+  max-width: 360px;
+  display: inline-block; }
 
 .game-heading {
-  padding: 10px 0;
+  margin-top: 20px;
+  padding: 0 5px;
   display: flex;
   flex-direction: row;
   justify-content: space-between; }
@@ -459,7 +460,8 @@ body {
     animation-fill-mode: forwards; }
 
 .game-ctrl {
-  margin: 15px 0 30px 0;
+  margin: 10px 0 20px 0;
+  padding: 0 5px;
   height: 40px;
   display: flex;
   flex-direction: row;
@@ -489,9 +491,14 @@ body {
 
 .grid-container {
   position: relative;
+  left: 50%;
+  -webkit-transform: translateX(-50%);
+  -ms-transform: translateX(-50%);
+  transform: translateX(-50%);
   display: inline-block;
   width: 360px;
-  height: 360px; }
+  height: 360px;
+  overflow: hidden; }
 
 .grid,
 .board {
@@ -652,9 +659,10 @@ body {
   .button-container .replay:before {
     content: "\2B6E"; }
 
-#footer p {
-  max-width: 360px;
-  text-align: center;
-  font-size: 15px; }
+#footer {
+  width: 100%; }
+  #footer p {
+    text-align: center;
+    font-size: 15px; }
 
 /*# sourceMappingURL=style.css.map*/
