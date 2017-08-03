@@ -31,7 +31,10 @@ module.exports = {
     },
     plugins: [
         new ExtractTextPlugin('style.css'),
-        new HtmlWebpackPlugin({ template: './src/index.html' })
+        new HtmlWebpackPlugin({ template: './src/index.html' }),
+        new webpack.optimize.UglifyJsPlugin({
+            sourceMap: true
+        })
     ],
     devtool: 'source-map',
     devServer: {
