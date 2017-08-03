@@ -41,7 +41,7 @@ export default class Grid extends React.Component {
         }
 
         return (
-            <div key={key} className="grid-row" style={rowStyles}>
+            <div key={`row-${key}`} className="grid-row" style={rowStyles}>
                 {gridRows}
             </div>
         );
@@ -53,7 +53,7 @@ export default class Grid extends React.Component {
             height: `${this.props.cellHeight}px`,
             marginRight: `${this.props.gridSpacing}px`
         };
-        return <div key={key} className="grid-cell" style={cellStyles}></div>;
+        return <div key={`cell-${key}`} className="grid-cell" style={cellStyles}></div>;
     }
 
     render () {

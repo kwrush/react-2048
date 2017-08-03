@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Immutable, {Map, List} from 'immutable';
 import {keyCodes, VECTORS} from '../utils/constants';
-import {randomCellValue, within2dList, newId} from '../utils/helpers';
+import {randomCellValue, within2dList, newId, getTouches} from '../utils/helpers';
 import Tile from './Tile';
 
 export default class Board extends React.Component {
@@ -17,6 +17,9 @@ export default class Board extends React.Component {
 
     // Collection of tile components
     tilesView = []
+
+    // Save touchstart event object
+    touch = {x: 0, y: 0}
 
     static propTypes = {
         startTiles: PropTypes.number.isRequired,
@@ -51,7 +54,9 @@ export default class Board extends React.Component {
     }
 
     shouldComponentUpdate (nextProps, nextState) {
-        return this.isResized(nextProps) || !Immutable.is(this.state.grid, nextState.grid);
+        return this.isResized(nextProps) || 
+            !Immutable.is(this.state.grid, nextState.grid) || 
+            this.props.gridSize !== nextProps.gridSize;
     }
 
     componentWillUpdate (nextProps, nextState) {
@@ -78,11 +83,19 @@ export default class Board extends React.Component {
     }
 
     componentDidUpdate (prevProps, nextState) {
+        // If there's different row or columns
         if (this.isResized(prevProps)) {
             this.setup();
 
+        } else if (this.props.gridSize !== prevProps.gridSize) {
+            // Adjust tiles position if the browser windows is resized
+            this.setState({
+                grid: this.adjustCellsPosition()
+            });
         } else {
+            // Otherwise check if there're empty cells left
             const availableCells = this.findEmptyCells();
+
             // Do the expensive checking when all cells are occupied
             if (availableCells.length === 0 && !this.canMove()) {
                 this.props.gameOver();
@@ -92,7 +105,14 @@ export default class Board extends React.Component {
 
     render () {
         return (
-            <div className="board" onTransitionEnd={this.transitionEndHandler} onAnimationEnd={this.animationEndHandler}>
+            <div 
+                className="board" 
+                onTransitionEnd={this.transitionEndHandler} 
+                onAnimationEnd={this.animationEndHandler}
+                onTouchStart={this.touchStartHandler}
+                onTouchMove={this.touchMoveHandler}
+                onTouchEnd={this.touchEndHandler}
+            >
                 {this.tilesView}
             </div>
         );
@@ -106,13 +126,40 @@ export default class Board extends React.Component {
     isResized = (nextProps) => {
         return this.props.rows !== nextProps.rows || this.props.cols !== nextProps.cols;
     }
+
+    touchStartHandler = (event) => {
+        this.touch = getTouches(event.touches);
+    }
+
+    touchMoveHandler = (event) => {
+        event.preventDefault();
+    }
+
+    touchEndHandler = (event) => {
+        if (!this.touch.x || !this.touch.y || this.moveQueue.length > 0 || this.props.pause) return;
     
-    
+        const {x, y} = getTouches(event.changedTouches);
+        const dx = this.touch.x - x;
+        const dy = this.touch.y - y;
+
+        let vector = {x:0, y: 0}
+
+        if (Math.abs(dx) >= Math.abs(dy)) {
+            vector = dx > 0 ? this.getDirection('LEFT') : this.getDirection('RIGHT');
+        } else {
+            vector = dy > 0 ? this.getDirection('UP') : this.getDirection('DOWN');
+        }
+
+        this.moveInDirection(vector);
+    }
+
+
     /**
      * Handle keydown event
      * @param {object} event object
      */
     keyDownHandler = (event) => {
+        event.preventDefault();
         // Do nothing until the previous event is finished
         if (this.moveQueue.length > 0 || this.props.pause) return;
 
@@ -483,6 +530,23 @@ export default class Board extends React.Component {
                 return this.newCell(r, c);
             }));
         }));
+    }
+
+    /**
+     * Adjust positions of cells based on current width of the browser window
+     * @return {List} grid adjusted
+     */
+    adjustCellsPosition = () => {
+        const {gridSpacing, cellWidth, cellHeight} = this.props;
+
+        return this.state.grid.map((row, r) => {
+            return row.map((cell, c) => {
+                return cell.merge({
+                    x: gridSpacing * (c + 1) + c * cellWidth,
+                    y: gridSpacing * (r + 1) + r * cellHeight,
+                });
+            });
+        });
     }
 
     /**

@@ -30,3 +30,10 @@ export function newId () {
     return '' + id++;
 }
 
+export function getTouches (touches) {
+    return Object.assign({}, {
+        x: touches[0].clientX,
+        y: touches[0].clientY
+    });
+}
+

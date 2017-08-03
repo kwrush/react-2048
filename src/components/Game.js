@@ -19,8 +19,10 @@ export default class Game extends React.Component {
         maxCol: PropTypes.number,
         minRow: PropTypes.number,
         minCol: PropTypes.number,
-        gridSize: PropTypes.number,
-        max: PropTypes.number
+        initialGridSize: PropTypes.number,
+        padding: PropTypes.number,
+        max: PropTypes.number,
+        maxGridSize: PropTypes.number
     }
 
     static defaultProps = {
@@ -30,11 +32,16 @@ export default class Game extends React.Component {
         maxCol: 10,
         max: 2048,
         startTiles: 2,
-        gridSize: 360
+        padding: 5,
+        initialGridSize: 360,
+        maxGridSize: 360
     }
 
     constructor (props) {
         super(props);
+
+        const width = this.props.initialGridSize > this.props.maxGridSize ? 
+            this.props.maxGridSize : this.props.initialGridSize;
 
         this.state = {
             rows: this.props.minRow,
@@ -45,18 +52,27 @@ export default class Game extends React.Component {
             continue: false,
             scoreAdded: 0,
             score: 0,
-            bestScore: 0
+            bestScore: 0,
+            gridSize: width - 2 * this.props.padding
         }
     }
 
     componentWillMount () {
         if (Store.getBestScore() === null) {
-            Store.init();
+            Store.init(); 
         }
 
+        window.addEventListener('resize', this._windowResize, false);
+    }
+
+    componentDidMount () {
         this.setState({
             bestScore: Store.getBestScore()
         });
+    }
+
+    componentWillUnmount () {
+        window.removeEventListener('resize', this._windowResize, false);
     }
 
     componentDidUpdate (prevProps, prevState) {
@@ -71,10 +87,8 @@ export default class Game extends React.Component {
     }
 
     render () {
-        const gridSize = this.props.gridSize;
-        const rows = this.state.rows;
-        const cols = this.state.cols;
-        const gridSpacing = calcGridSpacing(gridSize, rows >= cols ? rows : cols);
+        
+        const {gridSize, rows, cols, gridSpacing} = this.calcDemension();
         
         const props = {
             gridSize: gridSize,
@@ -88,7 +102,7 @@ export default class Game extends React.Component {
         }
 
         return (
-            <div id="game">
+            <div id="game" style={{width: `${gridSize}px`}}>
                 <header className="game-heading">
                     <h1>2048</h1>
                     <Score 
@@ -103,7 +117,7 @@ export default class Game extends React.Component {
                     <Resize label='Rows:' number={this.state.rows} resize={this.changeRow} />
                     <Resize label='Columns:' number={this.state.cols} resize={this.changeCol} />
                 </div>
-                <div className="grid-container">
+                <div className="grid-container" style={{width: `${gridSize}px`, height: `${gridSize}px`}}>
                     <Overlay 
                         win={this.state.win}
                         lose={this.state.lose}
@@ -122,10 +136,29 @@ export default class Game extends React.Component {
                     />
                 </div>
                 <footer id="footer">
-                    <p>Join tiles with the same value and get to the 2048 tile</p>
+                    <p>Join tiles with the same value to get the 2048 tile</p>
                 </footer>
             </div>
         );
+    }
+
+    _windowResize = (event) => {
+        const width = window.outerWidth > this.props.maxGridSize ? this.props.maxGridSize : window.outerWidth;
+        this.setState({
+            gridSize: width - this.props.padding * 2
+        });
+    }
+
+    calcDemension = () => {
+        const r = this.state.rows;
+        const c = this.state.cols;
+        const width = this.state.gridSize;
+        return {
+            gridSize: this.state.gridSize,
+            rows: r,
+            cols: c,
+            gridSpacing: calcGridSpacing(width, r >= c ? r : c)
+        }
     }
 
     reset = () => {

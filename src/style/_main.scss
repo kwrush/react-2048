@@ -51,12 +51,13 @@ body {
 
 #game {
     @include horiz-center;
+    max-width: $grid-size;
     display: inline-block;
-    min-width: $grid-size;
 }
 
 .game-heading {
-    padding: 10px 0;
+    margin-top: 20px;
+    padding: 0 5px;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -127,7 +128,8 @@ body {
 }
 
 .game-ctrl {
-    margin: 15px 0 30px 0;
+    margin: 10px 0 20px 0;
+    padding: 0 5px;
     height: 40px;
     display: flex;
     flex-direction: row;
@@ -163,12 +165,12 @@ body {
 }
 
 .grid-container {
-    position: relative;
+    @include horiz-center;
     display: inline-block;
     width: $grid-size;
     height: $grid-size;
+    overflow: hidden;
 }
-
 
 .grid, 
 .board {
@@ -400,9 +402,12 @@ body {
 }
 
 
-#footer p {
-    max-width: 360px;
-    text-align: center;
-    font-size: 15px;
+#footer {
+    width: 100%;
+
+    & p {
+        text-align: center;
+        font-size: 15px;
+    }
 }
 
