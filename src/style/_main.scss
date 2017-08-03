@@ -53,7 +53,6 @@ body {
     @include horiz-center;
     max-width: $grid-size;
     display: inline-block;
-    touch-action: none;
 }
 
 .game-heading {

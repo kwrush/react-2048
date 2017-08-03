@@ -40,11 +40,13 @@ export default class Board extends React.Component {
 
     componentDidMount () {
         document.addEventListener('keydown', this.keyDownHandler, false);
+        this.board.addEventListener('touchmove', this.touchMoveHandler, {passive: false});
         this.addStartTiles();
     }
 
     componentWillUnmount () {
         document.removeEventListener('keydown', this.keyDownHandler, false);
+        this.board.removeEventListener('touchmove', this.touchMoveHandler, {passive: false});
     }
 
     componentWillReceiveProps (nextProps) {
@@ -105,7 +107,8 @@ export default class Board extends React.Component {
 
     render () {
         return (
-            <div 
+            <div
+                ref={(board) => {this.board = board}} 
                 className="board" 
                 onTransitionEnd={this.transitionEndHandler} 
                 onAnimationEnd={this.animationEndHandler}
