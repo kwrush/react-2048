@@ -1,6 +1,13 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
-export default function Resize (props) {
+const propTypes = {
+  label: PropTypes.string.isRequired,
+  number: PropTypes.number.isRequired,
+  resize: PropTypes.func.isRequired
+};
+
+function Resize (props) {
     return (
         <div className="resize-ctrl">
             <span>{props.label}</span>
@@ -10,3 +17,7 @@ export default function Resize (props) {
         </div>
     );
 } 
+
+Resize.propTypes = propTypes;
+
+export default Resize;

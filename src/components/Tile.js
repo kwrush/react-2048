@@ -1,6 +1,17 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
-export default function Tile (props) {
+const propTypes = {
+  width: PropTypes.number.isRequired,
+  height: PropTypes.number.isRequired,
+  value: PropTypes.number.isRequired,
+  x: PropTypes.number.isRequired,
+  y: PropTypes.number.isRequired,
+  isNew: PropTypes.bool.isRequired,
+  isMerged: PropTypes.bool.isRequired
+};
+
+function Tile (props) {
     const average = (props.width + props.height) / 2;
     const tileStyles = {
         width: `${props.width}px`,
@@ -19,4 +30,8 @@ export default function Tile (props) {
             <div className={innerClasses.join(' ')}>{props.value}</div>
         </div>
     );
-}
+};
+
+Tile.propTypes = propTypes;
+
+export default Tile;

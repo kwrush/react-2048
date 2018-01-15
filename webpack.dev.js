@@ -42,7 +42,7 @@ module.exports = {
     new HtmlWebpackPlugin({template: './src/index.html'}),
     new webpack.HotModuleReplacementPlugin()
   ],
-  devtool: 'cheap-module-eval-source-map',
+  devtool: 'cheap-eval-source-map',
   devServer: {
     contentBase: path.resolve(__dirname, 'dist'),
     inline: true,

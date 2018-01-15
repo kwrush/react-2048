@@ -199,10 +199,9 @@ export default class Board extends React.Component {
 
         if (event.target.classList.contains('tile')) {
             // pop queue till the last element left
-            if (this.moveQueue.length > 1) {
-                this.moveQueue.shift();
-            } else {
-                this.moveQueue.shift();
+            this.moveQueue.shift();
+            
+            if (this.moveQueue.length === 0) {
                 this.moved = false;
 
                 // merge and add new tile after all tiles have been moved
@@ -264,12 +263,13 @@ export default class Board extends React.Component {
      */
     mergeTiles = () => {
         let scoreAdded = 0;
-        const grid = this.state.grid.map((row, r) => {
-            return row.map((cell, c) => {
+        const grid = this.state.grid.map((row, r) => (
+            row.map((cell, c) => {
+                // There're two tiles in the given cell that need to be merged
                 if (cell.get('tile').size > 1) {
-                    const value = cell.get('tile').reduce((t1, t2) => {
-                        return t1.get('value') + t2.get('value');
-                    });
+                    const value = cell.get('tile').reduce((t1, t2) => (
+                        t1.get('value') + t2.get('value')
+                    ));
 
                     scoreAdded += value;
 
@@ -286,8 +286,8 @@ export default class Board extends React.Component {
                 } else {
                     return cell;
                 }
-            })
-        });
+            }))
+        );
 
         this.props.addScore(scoreAdded);
 
@@ -320,22 +320,20 @@ export default class Board extends React.Component {
      * @return {List} grid with the new tile
      */
     insertNewTile = (grid, r, c) => {
+        let updatedGrid = grid;
         if (within2dList(grid, r, c)) {
-            grid = grid.updateIn([r, c], (cell) => {
-                const tileProps = {
+            updatedGrid = grid.updateIn([r, c], (cell) => (
+                cell.update('tile', tile => tile.push(this.newTile({
                     row: r,
                     col: c,
                     value: randomCellValue(),
                     isNew: true,
                     isMerged: false
-                };
-
-                return cell.update('tile', 
-                    tile => tile.push(this.newTile(tileProps)));
-            });
+                })))
+            ));
         }
 
-        return grid;
+        return updatedGrid;
     }
 
     /**
@@ -417,27 +415,26 @@ export default class Board extends React.Component {
 
         let nextRow = nextPos.nextRow + vector.y;
         let nextCol = nextPos.nextCol + vector.x;
-
+        
+        // Move to the farthest possible cell in the direction of the given vector
         while (within2dList(grid, nextRow, nextCol)) {
             let nextCell = grid.getIn([nextRow, nextCol]);
             // Move the tile to the next position if it's empty
             if (nextCell.get('tile').size === 0) {
-                nextPos = Object.assign(nextPos, {
-                    nextRow: nextRow,
-                    nextCol: nextCol
-                });
-            } else {
-                // If the cell is occurpied, then check if we can merge two tiles
-                if (nextCell.get('tile').size === 1 && 
-                    currCell.getIn(['tile', 0, 'value']) === nextCell.getIn(['tile', 0, 'value'])) {
-                    nextPos = Object.assign(nextPos, {
-                        nextRow: nextRow,
-                        nextCol: nextCol
-                    });
-                }
+              
+                nextPos.nextRow = nextRow;
+                nextPos.nextCol = nextCol;
+                
+            } else if (nextCell.get('tile').size === 1 && 
+                currCell.getIn(['tile', 0, 'value']) === nextCell.getIn(['tile', 0, 'value'])) {
+                // If the cell is occurpied, check if we can merge two tiles, 
+                // and stop moving if they can be merged
+                nextPos.nextRow = nextRow;
+                nextPos.nextCol = nextCol;
+                
                 break;
             }
-
+            // Move to the next avaiable cell
             nextRow += vector.y;
             nextCol += vector.x;
         }
@@ -446,27 +443,28 @@ export default class Board extends React.Component {
     }  
     
     /**
-     * Move all tiles to their next positions
+     * Move all tiles to the given positions
      * @param {List} grid to be moved
      * @param {pos} object of next position
      * @return {List} updated grid
      */
     moveTo = (grid, pos) => {
+        let updatedGrid = grid;
         // Get the tile to be moved
-        let tmpTile = grid.getIn([pos.row, pos.col]).get('tile').first().merge({
-            isNew: false
-        });
-
-        grid = grid.updateIn([pos.nextRow, pos.nextCol], cell => {
-            return cell.update('tile', tile => tile.push(tmpTile));
-        });
+        let tmpTile = grid.getIn([pos.row, pos.col])
+                          .get('tile')
+                          .first()
+                          .set('isNew', false);
+        
+        updatedGrid = grid.updateIn([pos.nextRow, pos.nextCol], 
+            cell => cell.update('tile', tile => tile.push(tmpTile)));
 
         // Remove this tile from old position
-        grid = grid.updateIn([pos.row, pos.col], cell => {
+        updatedGrid = updatedGrid.updateIn([pos.row, pos.col], cell => {
             return cell.update('tile', tile => tile.clear());
         });  
 
-        return grid;
+        return updatedGrid;
     }
 
     /**
@@ -553,7 +551,7 @@ export default class Board extends React.Component {
     }
 
     /**
-     * Empty new cell
+     * Create an empty cell
      * @param {number} row index
      * @param {number} column index
      * @return {Map} empty cell map
@@ -568,12 +566,12 @@ export default class Board extends React.Component {
     }
 
     /**
-     * Empty tile
+     * Initiate a new tile
      * @param {object} tile propertie
      * @return {Map} map of a tile 
      */
     newTile = (props) => {
-        const {row, col, value, isNew, isMerged} = props;
+        const {value, isNew, isMerged} = props;
         return Map({
             id: newId(),
             value: randomCellValue(),

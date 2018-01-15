@@ -1,17 +1,26 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
-// Needed to recreated DOM element in order to 
-// abort the current animation and render the new result
-let _resultKey = 0;
+const propTypes = {
+  score: PropTypes.number.isRequired,
+  scoreAdded: PropTypes.number.isRequired,
+  bestScore: PropTypes.number.isRequired,
+  resetScoreAdded: PropTypes.func.isRequired
+};
 
-export default function Score (props) {
+function Score (props) {
+    //Assign a key to force React to update adding score animation
     return (
         <div className="score-board" onAnimationEnd={props.resetScoreAdded}>
             <div className="score">
                 <span>{props.score}</span>
-                {!!props.scoreAdded && <div key={_resultKey++} className="scoreAdded" >+{props.scoreAdded}</div>}    
+                {!!props.scoreAdded && <div key={props.score + ''} className="scoreAdded" >+{props.scoreAdded}</div>}    
             </div>
             <div className="record">{props.bestScore}</div> 
         </div>
     );
-} 
+};
+
+Score.propTypes = propTypes;
+
+export default Score;

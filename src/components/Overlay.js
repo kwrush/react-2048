@@ -1,6 +1,18 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
-export default function Overlay (props) {
+const propTypes = {
+  win: PropTypes.bool,
+  lose: PropTypes.bool,
+  continue: PropTypes.func.isRequired
+};
+
+const defaultProps = {
+  win: false,
+  lose: false
+};
+
+function Overlay (props) {
 
     let text = null;
     let continueButton = null;
@@ -22,4 +34,9 @@ export default function Overlay (props) {
     );
 
     return props.win || props.lose ? overlay : null;
-}
+};
+
+Overlay.propTypes = propTypes;
+Overlay.defaultProps = defaultProps;
+
+export default Overlay;
