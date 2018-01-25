@@ -282,7 +282,7 @@ export default class Board extends React.Component {
                             isNew: false,
                             isMerged: true
                         }));
-                    })
+                    });
                 } else {
                     return cell;
                 }
@@ -425,13 +425,16 @@ export default class Board extends React.Component {
                 nextPos.nextRow = nextRow;
                 nextPos.nextCol = nextCol;
                 
-            } else if (nextCell.get('tile').size === 1 && 
-                currCell.getIn(['tile', 0, 'value']) === nextCell.getIn(['tile', 0, 'value'])) {
+            } else {
                 // If the cell is occurpied, check if we can merge two tiles, 
                 // and stop moving if they can be merged
-                nextPos.nextRow = nextRow;
-                nextPos.nextCol = nextCol;
-                
+                if (nextCell.get('tile').size === 1 && 
+                    currCell.getIn(['tile', 0, 'value']) === nextCell.getIn(['tile', 0, 'value'])) {
+                    
+                    nextPos.nextRow = nextRow;
+                    nextPos.nextCol = nextCol;
+                } 
+
                 break;
             }
             // Move to the next avaiable cell
@@ -456,13 +459,14 @@ export default class Board extends React.Component {
                           .first()
                           .set('isNew', false);
         
-        updatedGrid = grid.updateIn([pos.nextRow, pos.nextCol], 
-            cell => cell.update('tile', tile => tile.push(tmpTile)));
+        updatedGrid = grid.updateIn([pos.nextRow, pos.nextCol], cell => 
+            cell.update('tile', tile => tile.push(tmpTile))
+        );
 
         // Remove this tile from old position
-        updatedGrid = updatedGrid.updateIn([pos.row, pos.col], cell => {
-            return cell.update('tile', tile => tile.clear());
-        });  
+        updatedGrid = updatedGrid.updateIn([pos.row, pos.col], cell => 
+            cell.update('tile', tile => tile.clear())
+        );  
 
         return updatedGrid;
     }
