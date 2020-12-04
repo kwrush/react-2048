@@ -117,9 +117,10 @@ a {
  */
 
 a {
-  &:active, &:hover {
+  &:active,
+  &:hover {
     outline: 0;
-  };
+  }
 }
 
 /* Text-level semantics
@@ -203,7 +204,6 @@ mark {
 }
 
 @if $legacy_browser_support {
-
   /**
    * Addresses margins set differently in IE 6/7.
    */
@@ -261,7 +261,6 @@ sub {
 }
 
 @if $legacy_browser_support {
-
   /* ==========================================================================
      Lists
      ========================================================================== */
@@ -300,7 +299,6 @@ sub {
     *list-style: none;
     *list-style-image: none;
   }
-
 }
 
 /* Embedded content
@@ -437,7 +435,7 @@ input[type="submit"] {
   -webkit-appearance: button; /* 2 */
   cursor: pointer; /* 3 */
   @if $legacy_browser_support {
-    *overflow: visible;  /* 4 */
+    *overflow: visible; /* 4 */
   }
 }
 
@@ -475,8 +473,8 @@ input {
  *  Known issue: excess padding remains in IE 6.
  */
 
-input[type="checkbox"],
-input[type="radio"] {
+input[type='checkbox'],
+input[type='radio'] {
   box-sizing: border-box; /* 1 */
   padding: 0; /* 2 */
   @if $legacy_browser_support {
@@ -491,8 +489,8 @@ input[type="radio"] {
  * decrement button to change from `default` to `text`.
  */
 
-input[type="number"]::-webkit-inner-spin-button,
-input[type="number"]::-webkit-outer-spin-button {
+input[type='number']::-webkit-inner-spin-button,
+input[type='number']::-webkit-outer-spin-button {
   height: auto;
 }
 
@@ -501,7 +499,7 @@ input[type="number"]::-webkit-outer-spin-button {
  * 2. Address `box-sizing` set to `border-box` in Safari and Chrome.
  */
 
-input[type="search"] {
+input[type='search'] {
   -webkit-appearance: textfield; /* 1 */
   box-sizing: content-box; /* 2 */
 }
@@ -512,8 +510,8 @@ input[type="search"] {
  * padding (and `textfield` appearance).
  */
 
-input[type="search"]::-webkit-search-cancel-button,
-input[type="search"]::-webkit-search-decoration {
+input[type='search']::-webkit-search-cancel-button,
+input[type='search']::-webkit-search-decoration {
   -webkit-appearance: none;
 }
 
