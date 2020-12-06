@@ -20,5 +20,10 @@ module.exports = {
     project: ['./tsconfig.json', './tsconfig.eslint.json'],
   },
   plugins: ['react', '@typescript-eslint'],
-  rules: {},
+  rules: {
+    'no-nested-ternary': 'off',
+    'react/prop-types': 'off',
+    'react/jsx-props-no-spreading': 'off',
+    '@typescript-eslint/explicit-module-boundary-types': 'off',
+  },
 };
