@@ -9,7 +9,7 @@ export interface StyledGridProps {
 }
 
 const StyledGrid = styled.div<StyledGridProps>`
-  box-sizing: border-box;
+  box-sizing: content-box;
   position: relative;
   display: grid;
   width: ${({ width }) => `${width}px`};
@@ -19,7 +19,7 @@ const StyledGrid = styled.div<StyledGridProps>`
   grid-gap: ${({ spacing }) => `${spacing}px ${spacing}px`};
   background-color: #bbada0;
   border-radius: 3px;
-  border: ${({ spacing }) => `${spacing}px solid #bbada0`};
+  box-shadow: ${({ spacing }) => `0 0 0 ${spacing}px #bbada0`};
 `;
 
 export default StyledGrid;

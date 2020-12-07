@@ -1,6 +1,6 @@
 import { keyframes } from 'styled-components';
 
-export const fadeIn = keyframes`
+export const scaleUp = keyframes`
   from {
     transform: scale(0);
   }
@@ -21,5 +21,17 @@ export const pop = keyframes`
 
   100% {
     transform: scale(1);
+  }
+`;
+
+export const fadeOut = keyframes`
+  from {
+    transform: translateY(0);
+    opacity: 0.9;
+  }
+
+  to {
+    transform: translateY(-50px);
+    opacity: 0;
   }
 `;

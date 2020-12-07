@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components';
-import { fadeIn, pop } from '../../utils/animation';
-import { getTileColor, getTileFontSize } from '../../utils/common';
+import { scaleUp, pop } from '../../../utils/animation';
+import { getTileColor, getTileFontSize } from '../../../utils/common';
 
 export interface StyledTileProps {
   width: number;
@@ -23,7 +23,7 @@ const getCommonProps = ({
   height: ${height}px;
   font-size: ${getTileFontSize(width, height, value)}px;
   background-color: ${getTileColor(value)};
-  animation-name: ${isNew ? fadeIn : merging ? pop : ''};
+  animation-name: ${isNew ? scaleUp : merging ? pop : ''};
   animation-duration: 0.2s;
   animation-fill-mode: forwards;
 `;

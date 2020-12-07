@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import StyledTile, { StyledTileProps } from './StyledTile';
+import { StyledTile, StyledTileProps } from './styled';
 
 type TileProps = StyledTileProps;
 

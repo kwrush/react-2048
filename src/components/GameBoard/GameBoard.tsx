@@ -1,33 +1,31 @@
-import React, { FC, ReactElement } from 'react';
-import { calcGridSpacing, createCells } from '../../utils/common';
-import { GRID_SIZE } from '../../utils/constants';
-import StyledCell from './StyledCell';
-import StyledGrid from './StyledGrid';
+import React, { forwardRef, PropsWithChildren } from 'react';
+import { createCells } from '../../utils/common';
+import Box from '../Box';
+import { StyledCell, StyledGrid, StyledGridProps } from './styled';
 
-export interface GridProps {
-  rows: number;
-  cols: number;
-  children: ReactElement;
-}
+export type GameBoardProps = StyledGridProps;
 
-const GameBoard: FC<GridProps> = ({ rows, cols, children }) => {
-  const spacing = calcGridSpacing(GRID_SIZE, Math.max(rows, cols));
-  const cells = createCells(rows * cols);
+const GameBoard = forwardRef<HTMLDivElement, PropsWithChildren<GameBoardProps>>(
+  ({ rows, cols, width, height, spacing, children }, ref) => {
+    const cells = createCells(rows * cols);
 
-  return (
-    <StyledGrid
-      width={GRID_SIZE}
-      height={GRID_SIZE}
-      rows={rows}
-      cols={cols}
-      spacing={spacing}
-    >
-      {cells.map((c) => (
-        <StyledCell key={c} />
-      ))}
-      {children}
-    </StyledGrid>
-  );
-};
+    return (
+      <Box paddingBlock={spacing} ref={ref}>
+        <StyledGrid
+          width={width}
+          height={height}
+          rows={rows}
+          cols={cols}
+          spacing={spacing}
+        >
+          {cells.map((c) => (
+            <StyledCell key={c} />
+          ))}
+          {children}
+        </StyledGrid>
+      </Box>
+    );
+  },
+);
 
 export default React.memo(GameBoard);

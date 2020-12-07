@@ -14,7 +14,7 @@ export const calcCellWidth = (
   gridSize: number,
   cellsNum: number,
   spacing: number,
-) => (gridSize - (cellsNum + 1) * spacing) / cellsNum;
+) => (gridSize - (cellsNum - 1) * spacing) / cellsNum;
 
 export const calcTileSize = (
   gridSize: number,
