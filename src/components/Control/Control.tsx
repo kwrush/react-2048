@@ -18,11 +18,21 @@ const Control: FC<ControlProps> = ({
   onChangeRow,
   onChangeCol,
 }) => (
-  <Box paddingBlock={16} justifyContent="space-between">
-    <Button onClick={onReset}>New Game</Button>
-    <Box>
-      <Box paddingInline={2}>
-        <Box paddingInline={2}>
+  <Box
+    boxSizing="border-box"
+    inlineSize="100%"
+    paddingInline="s3"
+    paddingBlock="s5"
+    justifyContent="space-between"
+  >
+    <Button onClick={onReset}>
+      <Text color="white" fontSize={16} textTransform="capitalize">
+        new game
+      </Text>
+    </Button>
+    <Box marginInlineStart="s5">
+      <Box marginInlineEnd="s2">
+        <Box marginInlineEnd="s1">
           <Text textTransform="uppercase" fontSize={14}>
             rows:
           </Text>
@@ -30,15 +40,15 @@ const Control: FC<ControlProps> = ({
         <Button mini onClick={() => onChangeRow(rows - 1)}>
           -
         </Button>
-        <Box paddingInline={2}>
+        <Box marginInline="s1">
           <Text fontSize={16}>{rows}</Text>
         </Box>
         <Button mini onClick={() => onChangeRow(rows + 1)}>
           +
         </Button>
       </Box>
-      <Box paddingInline={2}>
-        <Box paddingInline={2}>
+      <Box>
+        <Box marginInlineEnd="s1">
           <Text textTransform="uppercase" fontSize={14}>
             columns:
           </Text>
@@ -46,7 +56,7 @@ const Control: FC<ControlProps> = ({
         <Button mini onClick={() => onChangeCol(cols - 1)}>
           -
         </Button>
-        <Box paddingInline={2}>
+        <Box marginInline="s1">
           <Text fontSize={16}>{cols}</Text>
         </Box>
         <Button mini onClick={() => onChangeCol(cols + 1)}>

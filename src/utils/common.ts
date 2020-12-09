@@ -28,3 +28,6 @@ export const calcTileSize = (
 
 export const createCells = (num: number) =>
   Array.from(Array(num)).map((_, index) => index);
+
+export const clamp = (d: number, min: number, max: number) =>
+  Math.max(Math.min(max, d), min);

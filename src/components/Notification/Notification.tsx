@@ -2,6 +2,7 @@ import React, { FC, useCallback, useEffect, useState } from 'react';
 import { StyledBackdrop, StyledModal } from './styled';
 import Button from '../Button';
 import Box from '../Box';
+import Text from '../Text';
 
 export interface NotificationProps {
   win?: boolean;
@@ -12,6 +13,7 @@ const Notification: FC<NotificationProps> = ({ win, onClose }) => {
   const [open, setOpen] = useState(win != null);
 
   useEffect(() => {
+    console.log(win != null);
     setOpen(win != null);
   }, [win, setOpen]);
 
@@ -23,8 +25,10 @@ const Notification: FC<NotificationProps> = ({ win, onClose }) => {
   return open ? (
     <StyledModal>
       <StyledBackdrop />
-      <Box fontSize={22} paddingBlock={16}>
-        {win ? 'You win! Continue?' : 'Oops...Game Over!'}
+      <Box paddingBlock="s5">
+        <Text fontSize={22}>
+          {win ? 'You win! Continue?' : 'Oops...Game Over!'}
+        </Text>
       </Box>
       <Button onClick={handleClose}>{win ? 'Continue' : 'Retry'}</Button>
     </StyledModal>

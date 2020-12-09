@@ -10,7 +10,7 @@ const GameBoard = forwardRef<HTMLDivElement, PropsWithChildren<GameBoardProps>>(
     const cells = createCells(rows * cols);
 
     return (
-      <Box paddingBlock={spacing} ref={ref}>
+      <Box position="relative" margin="s4" ref={ref}>
         <StyledGrid
           width={width}
           height={height}
@@ -21,8 +21,16 @@ const GameBoard = forwardRef<HTMLDivElement, PropsWithChildren<GameBoardProps>>(
           {cells.map((c) => (
             <StyledCell key={c} />
           ))}
-          {children}
         </StyledGrid>
+        <Box
+          position="absolute"
+          top={0}
+          left={0}
+          blockSize={`${height.toFixed(0)}px`}
+          inlineSize={`${width.toFixed(0)}px`}
+        >
+          {children}
+        </Box>
       </Box>
     );
   },

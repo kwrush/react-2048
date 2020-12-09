@@ -18,17 +18,23 @@ const Score: FC<ScoreProps> = ({ total, title }) => {
 
   return (
     <Box
-      marginInline={4}
-      paddingBlock={8}
-      paddingInline={16}
-      minInlineSize={70}
+      marginInline="s2"
+      paddingBlock="s3"
+      paddingInline="s5"
+      minInlineSize="75px"
       background="#bbada0"
       flexDirection="column"
       borderRadius={3}
       position="relative"
       justifyContent="center"
+      boxSizing="border-box"
     >
-      <Text textTransform="uppercase" fontWeight="bold" color="#eee4da">
+      <Text
+        fontSize={12}
+        textTransform="uppercase"
+        fontWeight="bold"
+        color="#eee4da"
+      >
         {title}
       </Text>
       <Text color="white" fontWeight="bold" fontSize={18}>

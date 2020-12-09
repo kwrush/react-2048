@@ -9,6 +9,7 @@ const getMiniProps = () => css`
   height: 22px;
   font-size: 12px;
   line-height: 22px;
+  padding: 0;
 `;
 
 const StyledButton = styled.button<StyledButtonProps>`
@@ -17,7 +18,7 @@ const StyledButton = styled.button<StyledButtonProps>`
   border: none;
   border-radius: 3px;
   color: white;
-  padding: ${({ mini }) => (mini ? '0' : '4px 12px')};
+  padding: 8px 16px;
   line-height: 2;
   margin: 0;
   box-sizing: border-box;

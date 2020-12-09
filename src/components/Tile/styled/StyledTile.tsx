@@ -1,45 +1,38 @@
 import styled, { css } from 'styled-components';
-import { scaleUp, pop } from '../../../utils/animation';
-import { getTileColor, getTileFontSize } from '../../../utils/common';
+import { getTileFontSize } from '../../../utils/common';
 
 export interface StyledTileProps {
   width: number;
   height: number;
+  value: number;
   x: number;
   y: number;
-  isNew: boolean;
-  merging: boolean;
-  value: number;
+  isNew?: boolean;
 }
 
-const getCommonProps = ({
+const getCommonTileStyles = ({
   width,
   height,
   value,
-  isNew,
-  merging,
+  x,
+  y,
 }: StyledTileProps) => css`
   width: ${width}px;
   height: ${height}px;
+  color: ${value > 4 ? 'white' : '#776e65'};
   font-size: ${getTileFontSize(width, height, value)}px;
-  background-color: ${getTileColor(value)};
-  animation-name: ${isNew ? scaleUp : merging ? pop : ''};
-  animation-duration: 0.2s;
-  animation-fill-mode: forwards;
+  transform: ${`translate(${x}px, ${y}px)`};
 `;
 
 const StyledTile = styled.div<StyledTileProps>`
   position: absolute;
+  top: 0;
+  left: 0;
   display: flex;
-  font-weight: bold;
-  text-align: center;
-  flex-direction: column;
   justify-content: center;
   transition: transform 0.2s cubic-bezier(0.785, 0.115, 0.27, 0.895);
-  border-radius: 3px;
-  color: white;
-  transform: ${({ x, y }) => `translate(${x}px,${y}px)`};
-  ${getCommonProps}
+  background: none;
+  ${getCommonTileStyles}
 `;
 
 export default StyledTile;
