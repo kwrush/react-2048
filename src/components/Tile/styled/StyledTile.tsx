@@ -7,7 +7,6 @@ export interface StyledTileProps {
   value: number;
   x: number;
   y: number;
-  isNew?: boolean;
 }
 
 const getCommonTileStyles = ({

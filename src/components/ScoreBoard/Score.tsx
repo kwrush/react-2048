@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useRef } from 'react';
+import React, { FC, useEffect, useRef, useState } from 'react';
 import Box from '../Box';
 import Text from '../Text';
 import StyledScore from './styled';
@@ -10,11 +10,12 @@ export interface ScoreProps {
 
 const Score: FC<ScoreProps> = ({ total, title }) => {
   const totalRef = useRef(total);
-  const score = total - totalRef.current;
+  const [score, setScore] = useState(total - totalRef.current);
 
   useEffect(() => {
+    setScore(total - totalRef.current);
     totalRef.current = total;
-  }, [total, totalRef]);
+  }, [total]);
 
   return (
     <Box
