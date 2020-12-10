@@ -2,7 +2,8 @@ import styled from 'styled-components';
 import { pop, scaleUp } from '../../../utils/animation';
 
 export interface StyledTileValueProps {
-  isMerging?: boolean;
+  isNew: boolean;
+  isMerging: boolean;
   backgroundColor: string;
 }
 
@@ -17,8 +18,9 @@ const StyledTileValue = styled.div<StyledTileValueProps>`
   border-radius: 3px;
   color: inherit;
   background-color: ${({ backgroundColor }) => backgroundColor};
-  animation-name: ${({ isMerging }) => (isMerging ? pop : scaleUp)};
-  animation-duration: 0.2s;
+  animation-name: ${({ isMerging, isNew }) =>
+    isMerging ? pop : isNew ? scaleUp : ''};
+  animation-duration: 0.12s;
   animation-fill-mode: forwards;
 `;
 

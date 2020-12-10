@@ -20,6 +20,8 @@ export enum Direction {
 export type ArrowKeyType = keyof typeof ArrowKey;
 export type DirectionType = keyof typeof Direction;
 
+export const NAME = 'react-2048';
+
 export const DIR: Record<ArrowKeyType | DirectionType, Vector> = {
   ArrowLeft: { r: 0, c: -1 },
   ArrowRight: { r: 0, c: 1 },
@@ -31,6 +33,18 @@ export const DIR: Record<ArrowKeyType | DirectionType, Vector> = {
   Down: { r: 1, c: 0 },
 };
 
+export const GRID_SIZE = 350;
+export const MIN_SCALE = 4;
+export const MAX_SCALE = 8;
+
+export enum GameStatus {
+  WIN,
+  LOSE,
+  CONTINUE,
+  PENDING,
+}
+
+// TODO: Move colors and spacing to theme
 export const TILE_COLORS: Record<string, string> = {
   '2': '#eeeeee',
   '4': '#eeeecc',
@@ -44,10 +58,6 @@ export const TILE_COLORS: Record<string, string> = {
   '1024': '#eecc33',
   '2048': '#eecc11',
 };
-
-export const GRID_SIZE = 350;
-export const MIN_SCALE = 4;
-export const MAX_SCALE = 8;
 
 export type Spacing =
   | 's0'

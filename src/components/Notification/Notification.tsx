@@ -13,7 +13,6 @@ const Notification: FC<NotificationProps> = ({ win, onClose }) => {
   const [open, setOpen] = useState(win != null);
 
   useEffect(() => {
-    console.log(win != null);
     setOpen(win != null);
   }, [win, setOpen]);
 
