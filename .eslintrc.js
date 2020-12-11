@@ -23,8 +23,21 @@ module.exports = {
   plugins: ['react', '@typescript-eslint'],
   rules: {
     'no-nested-ternary': 'off',
+    'jsx-a11y/accessible-emoji': 'off',
     'react/prop-types': 'off',
     'react/jsx-props-no-spreading': 'off',
     '@typescript-eslint/explicit-module-boundary-types': 'off',
   },
+  overrides: [
+    {
+      files: ['*.js'],
+      rules: {
+        'import/no-extraneous-dependencies': [
+          'error',
+          { devDependencies: true },
+        ],
+        '@typescript-eslint/no-var-requires': 'off',
+      },
+    },
+  ],
 };

@@ -31,7 +31,7 @@ const GameBoard: FC<PropsWithChildren<GameBoardProps>> = ({
   useSwipe(boardRef, onMove);
 
   return (
-    <Box position="relative" margin="s4" ref={boardRef}>
+    <Box position="relative" ref={boardRef}>
       <StyledGrid
         width={width}
         height={height}

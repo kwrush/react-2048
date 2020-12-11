@@ -1,1 +1,1 @@
-export { default as StyledText, StyledTextProps } from './StyledText';
+export { default, StyledTextProps } from './StyledText';

@@ -1,4 +1,10 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from 'react';
 import {
   clamp,
   createIndexArray,
@@ -287,7 +293,7 @@ const useGameBoard = ({
     pendingQueueRef.current.pop();
   }, []);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!moving) {
       const {
         tiles: newTiles,
