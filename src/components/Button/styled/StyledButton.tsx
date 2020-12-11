@@ -1,6 +1,7 @@
 import styled, { css } from 'styled-components';
 
 export interface StyledButtonProps {
+  disable?: boolean;
   mini?: boolean;
 }
 
@@ -19,11 +20,13 @@ const StyledButton = styled.button<StyledButtonProps>`
   border-radius: 3px;
   color: white;
   padding: 8px 16px;
-  line-height: 2;
+  line-height: 1.75;
   margin: 0;
   box-sizing: border-box;
-  ${({ mini }) => mini && getMiniProps};
   white-space: nowrap;
+  ${({ mini }) => mini && getMiniProps};
+  opacity: ${({ disable }) => disable && 0.7};
+  cursor: ${({ disable }) => (disable ? 'not-allowed' : 'pointer')};
 `;
 
 export default StyledButton;

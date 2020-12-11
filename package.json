@@ -6,6 +6,7 @@
   "scripts": {
     "build": "webpack --config scripts/webpack.prod.js",
     "start": "webpack-dev-server --config scripts/webpack.dev.js",
+    "start:host": "webpack-dev-server --config scripts/webpack.dev.js --host 0.0.0.0",
     "lint": "eslint . --ext .js,.ts,.tsx --max-warnings 0",
     "format": "prettier --write .",
     "deploy": "npm run build && gh-pages -d dist"
@@ -18,11 +19,10 @@
   "author": "Kai Wang",
   "license": "ISC",
   "dependencies": {
-    "immutable": "^3.8.1",
-    "prop-types": "^15.5.10",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
-    "styled-components": "^5.2.1"
+    "styled-components": "^5.2.1",
+    "styled-normalize": "^8.0.7"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
@@ -49,12 +49,11 @@
     "eslint-plugin-react-hooks": "^4.0.0",
     "gh-pages": "^3.1.0",
     "html-webpack-plugin": "^4.5.0",
-    "mini-css-extract-plugin": "^1.3.2",
     "prettier": "^2.2.1",
     "sass": "^1.30.0",
     "sass-loader": "^10.1.0",
     "style-loader": "^2.0.0",
-    "ts-loader": "^8.0.11",
+    "ts-node": "^9.1.1",
     "typescript": "^4.1.2",
     "webpack": "^4.41.3",
     "webpack-cli": "^3.3.11",

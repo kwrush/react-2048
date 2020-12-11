@@ -6,7 +6,7 @@ module.exports = {
   mode: 'development',
   entry: path.resolve(__dirname, '../src/index.tsx'),
   output: {
-    path: path.resolve(__dirname, 'dist'),
+    path: path.resolve(__dirname, '../dist'),
     filename: 'bundle.js',
   },
   module: {
@@ -15,10 +15,6 @@ module.exports = {
         test: /\.tsx?$/,
         exclude: [/node_modules/],
         use: 'babel-loader',
-      },
-      {
-        test: /\.s?css$/,
-        use: ['style-loader', 'css-loader', 'sass-loader'],
       },
     ],
   },
@@ -32,7 +28,7 @@ module.exports = {
   ],
   devtool: 'eval-cheap-module-source-map',
   devServer: {
-    contentBase: path.resolve(__dirname, 'dist'),
+    contentBase: path.resolve(__dirname, '../dist'),
     inline: true,
     hot: true,
     port: 3000,

@@ -1,4 +1,5 @@
 import React, { FC } from 'react';
+import { MAX_SCALE, MIN_SCALE } from '../../utils/constants';
 import Box from '../Box';
 import Button from '../Button';
 import Text from '../Text';
@@ -18,13 +19,7 @@ const Control: FC<ControlProps> = ({
   onChangeRow,
   onChangeCol,
 }) => (
-  <Box
-    boxSizing="border-box"
-    inlineSize="100%"
-    paddingInline="s3"
-    paddingBlock="s5"
-    justifyContent="space-between"
-  >
+  <Box boxSizing="border-box" inlineSize="100%" justifyContent="space-between">
     <Button onClick={onReset}>
       <Text color="white" fontSize={16} textTransform="capitalize">
         new game
@@ -37,13 +32,21 @@ const Control: FC<ControlProps> = ({
             rows:
           </Text>
         </Box>
-        <Button mini onClick={() => onChangeRow(rows - 1)}>
+        <Button
+          mini
+          onClick={() => onChangeRow(rows - 1)}
+          disable={rows === MIN_SCALE}
+        >
           -
         </Button>
-        <Box marginInline="s1">
+        <Box marginInline="s2">
           <Text fontSize={16}>{rows}</Text>
         </Box>
-        <Button mini onClick={() => onChangeRow(rows + 1)}>
+        <Button
+          mini
+          onClick={() => onChangeRow(rows + 1)}
+          disable={rows === MAX_SCALE}
+        >
           +
         </Button>
       </Box>
@@ -53,13 +56,21 @@ const Control: FC<ControlProps> = ({
             columns:
           </Text>
         </Box>
-        <Button mini onClick={() => onChangeCol(cols - 1)}>
+        <Button
+          mini
+          onClick={() => onChangeCol(cols - 1)}
+          disable={cols === MIN_SCALE}
+        >
           -
         </Button>
-        <Box marginInline="s1">
+        <Box marginInline="s2">
           <Text fontSize={16}>{cols}</Text>
         </Box>
-        <Button mini onClick={() => onChangeCol(cols + 1)}>
+        <Button
+          mini
+          onClick={() => onChangeCol(cols + 1)}
+          disable={cols === MAX_SCALE}
+        >
           +
         </Button>
       </Box>

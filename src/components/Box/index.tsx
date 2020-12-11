@@ -1,1 +1,1 @@
-export { default } from './Box';
+export { default, StyledBoxProps as BoxProps } from './styled';
