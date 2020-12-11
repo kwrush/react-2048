@@ -1,1 +1,2 @@
-export { default as StyledButton, StyledButtonProps } from './StyledButton';
+export { default as StyledButton } from './StyledButton';
+export type { StyledButtonProps } from './StyledButton';

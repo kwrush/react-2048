@@ -3,12 +3,12 @@ import Box from '../Box';
 import Text from '../Text';
 import StyledScore from './styled';
 
-export interface ScoreProps {
+export interface ScoreBoardProps {
   title: string;
   total: number;
 }
 
-const ScoreBoard: FC<ScoreProps> = ({ total, title }) => {
+const ScoreBoard: FC<ScoreBoardProps> = ({ total, title }) => {
   const totalRef = useRef(total);
   const [score, setScore] = useState(total - totalRef.current);
 
