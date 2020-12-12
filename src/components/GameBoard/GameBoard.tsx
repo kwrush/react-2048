@@ -13,6 +13,8 @@ export type BoardSize = {
 
 export interface GameBoardProps extends StyledGridProps {
   onMove: (dir: Vector) => void;
+  onMovePending: () => void;
+  onMergePending: () => void;
 }
 
 const GameBoard: FC<PropsWithChildren<GameBoardProps>> = ({
@@ -22,6 +24,8 @@ const GameBoard: FC<PropsWithChildren<GameBoardProps>> = ({
   height,
   spacing,
   onMove,
+  onMovePending,
+  onMergePending,
   children,
 }) => {
   const boardRef = useRef<HTMLDivElement>(null);
@@ -49,6 +53,8 @@ const GameBoard: FC<PropsWithChildren<GameBoardProps>> = ({
         left={0}
         blockSize={`${height.toFixed(0)}px`}
         inlineSize={`${width.toFixed(0)}px`}
+        onTransitionEnd={onMovePending}
+        onAnimationEnd={onMergePending}
       >
         {children}
       </Box>

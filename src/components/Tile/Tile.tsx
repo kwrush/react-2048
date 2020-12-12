@@ -6,8 +6,6 @@ import StyledTileValue from './styled/StyledTileValue';
 export interface TileProps extends StyledTileProps {
   isNew?: boolean;
   isMerging?: boolean;
-  onMoveEnd: () => void;
-  onMergeEnd: () => void;
 }
 
 const Tile: FC<TileProps> = ({
@@ -18,22 +16,12 @@ const Tile: FC<TileProps> = ({
   height,
   isNew = false,
   isMerging = false,
-  onMoveEnd,
-  onMergeEnd,
 }) => (
-  <StyledTile
-    value={value}
-    x={x}
-    y={y}
-    width={width}
-    height={height}
-    onTransitionEnd={() => onMoveEnd()}
-  >
+  <StyledTile value={value} x={x} y={y} width={width} height={height}>
     <StyledTileValue
       backgroundColor={getTileColor(value)}
       isNew={isNew}
       isMerging={isMerging}
-      onAnimationEnd={() => onMergeEnd()}
     >
       {value}
     </StyledTileValue>

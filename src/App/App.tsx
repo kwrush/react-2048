@@ -92,6 +92,8 @@ const App: FC = () => {
             cols={cols}
             spacing={spacing}
             onMove={onMove}
+            onMovePending={onMovePending}
+            onMergePending={onMergePending}
           >
             <Notification win={gameStatus.win} onClose={onCloseNotification} />
             {tiles?.map(({ r, c, id, value, isMerging, isNew }) => (
@@ -104,8 +106,6 @@ const App: FC = () => {
                 value={value}
                 isNew={isNew}
                 isMerging={isMerging}
-                onMoveEnd={onMovePending}
-                onMergeEnd={onMergePending}
               />
             ))}
           </GameBoard>
