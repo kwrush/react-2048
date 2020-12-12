@@ -36,13 +36,7 @@ export const DIR: Record<ArrowKeyType | DirectionType, Vector> = {
 export const GRID_SIZE = 360;
 export const MIN_SCALE = 4;
 export const MAX_SCALE = 8;
-
-export enum GameStatus {
-  WIN,
-  LOSE,
-  CONTINUE,
-  PENDING,
-}
+export const SPACING = 10;
 
 // TODO: Move colors and spacing to theme
 export const TILE_COLORS: Record<string, string> = {

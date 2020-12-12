@@ -1,27 +1,19 @@
-import React, { FC, useCallback, useEffect, useState } from 'react';
+import React, { FC } from 'react';
 import { StyledBackdrop, StyledModal } from './styled';
 import Button from '../Button';
 import Box from '../Box';
 import Text from '../Text';
+import { GameStatus } from '../../hooks/useGameState';
 
 export interface NotificationProps {
-  win?: boolean;
+  gameStatus: GameStatus;
   onClose: () => void;
 }
 
-const Notification: FC<NotificationProps> = ({ win, onClose }) => {
-  const [open, setOpen] = useState(win != null);
-
-  useEffect(() => {
-    setOpen(win != null);
-  }, [win, setOpen]);
-
-  const handleClose = useCallback(() => {
-    setOpen(false);
-    onClose();
-  }, [onClose]);
-
-  return open ? (
+const Notification: FC<NotificationProps> = ({ gameStatus, onClose }) => {
+  const win = gameStatus === 'win';
+  const show = win || gameStatus === 'lose';
+  return show ? (
     <StyledModal>
       <StyledBackdrop />
       <Box paddingBlock="s5">
@@ -29,7 +21,7 @@ const Notification: FC<NotificationProps> = ({ win, onClose }) => {
           {win ? 'You win! Continue?' : 'Oops...Game Over!'}
         </Text>
       </Box>
-      <Button onClick={handleClose}>{win ? 'Continue' : 'Retry'}</Button>
+      <Button onClick={onClose}>{win ? 'Continue' : 'Retry'}</Button>
     </StyledModal>
   ) : null;
 };

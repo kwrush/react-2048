@@ -19,16 +19,16 @@ const Control: FC<ControlProps> = ({
   onChangeRow,
   onChangeCol,
 }) => (
-  <Box boxSizing="border-box" inlineSize="100%" justifyContent="space-between">
+  <Box inlineSize="100%" justifyContent="space-between">
     <Button onClick={onReset}>
       <Text color="white" fontSize={16} textTransform="capitalize">
         new game
       </Text>
     </Button>
-    <Box marginInlineStart="s5">
-      <Box marginInlineEnd="s2">
+    <Box>
+      <Box marginInlineEnd="s3">
         <Box marginInlineEnd="s1">
-          <Text textTransform="uppercase" fontSize={14}>
+          <Text textTransform="uppercase" fontSize={13}>
             rows:
           </Text>
         </Box>
@@ -52,8 +52,8 @@ const Control: FC<ControlProps> = ({
       </Box>
       <Box>
         <Box marginInlineEnd="s1">
-          <Text textTransform="uppercase" fontSize={14}>
-            columns:
+          <Text textTransform="uppercase" fontSize={13}>
+            cols:
           </Text>
         </Box>
         <Button
@@ -78,4 +78,4 @@ const Control: FC<ControlProps> = ({
   </Box>
 );
 
-export default Control;
+export default React.memo(Control);

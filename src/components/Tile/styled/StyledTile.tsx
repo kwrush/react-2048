@@ -29,7 +29,7 @@ const StyledTile = styled.div<StyledTileProps>`
   left: 0;
   display: flex;
   justify-content: center;
-  transition: transform 0.2s cubic-bezier(0.785, 0.115, 0.27, 0.895);
+  transition: transform 0.13s ease-in-out;
   background: none;
   ${getCommonTileStyles}
 `;

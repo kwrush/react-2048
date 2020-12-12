@@ -13,7 +13,7 @@ import {
   resetIndex,
 } from '../utils/common';
 import { DIR, Vector } from '../utils/constants';
-import { GameStatus } from './useGameStatus';
+import { GameStatus } from './useGameState';
 
 export interface Location {
   r: number;
@@ -36,7 +36,9 @@ export type Cell = {
 export type GameBoardParams = {
   rows: number;
   cols: number;
+  pause: boolean;
   gameStatus: GameStatus;
+  setGameStatus: (nextStatus: GameStatus) => void;
   addScore: (score: number) => void;
 };
 
@@ -48,7 +50,7 @@ const createEmptyGrid = (rows: number, cols: number) =>
 
 const createNewTile = (r: number, c: number): Tile => {
   const index = nextIndex();
-  const id = `${index}_${getId()}`;
+  const id = getId(index);
   return {
     index,
     id,
@@ -57,7 +59,7 @@ const createNewTile = (r: number, c: number): Tile => {
     isNew: true,
     canMerge: false,
     isMerging: false,
-    value: 2,
+    value: Math.random() > 0.99 ? 4 : 2,
   };
 };
 
@@ -70,9 +72,10 @@ const getEmptyCellsLocation = (grid: Cell[][]) =>
   );
 
 const createRandomTiles = (emptyCells: Location[], amount: number) => {
-  if (emptyCells.length === 0) return [];
-
   const tilesNumber = emptyCells.length < amount ? emptyCells.length : amount;
+
+  if (!tilesNumber) return [];
+
   return Array.from(Array(tilesNumber)).map<Tile>(() => {
     const [{ r, c }] = emptyCells.splice(
       Math.floor(Math.random() * emptyCells.length),
@@ -123,8 +126,10 @@ const canMoveTile = (grid: Cell[][], tiles: Tile[]) => {
 
 const mergeAndCreateNewTiles = (grid: Cell[][]) => {
   const tiles: Tile[] = [];
-  const mergeQueue: number[] = [];
+  const mergeStack: number[] = [];
   let score = 0;
+  const rows = grid.length;
+  const cols = grid[0].length;
 
   const newGrid = grid.map((row) => {
     return row.map((cell) => {
@@ -144,7 +149,7 @@ const mergeAndCreateNewTiles = (grid: Cell[][]) => {
         tiles.push(newTile);
 
         if (canMerge) {
-          mergeQueue.push(index);
+          mergeStack.push(index);
           score += newValue;
         }
 
@@ -156,19 +161,19 @@ const mergeAndCreateNewTiles = (grid: Cell[][]) => {
   });
 
   const emptyCells = getEmptyCellsLocation(newGrid);
-  const newTiles = createRandomTiles(emptyCells, 1);
+  const newTiles = createRandomTiles(emptyCells, rows * cols > 24 ? 2 : 1);
   newTiles.forEach((tile) => {
     newGrid[tile.r][tile.c] = { tile };
   });
 
   tiles.push(...newTiles);
-  mergeQueue.push(...newTiles.map(({ index }) => index));
+  mergeStack.push(...newTiles.map(({ index }) => index));
 
   return {
     grid: newGrid,
     tiles: sortTiles(tiles),
     score,
-    mergeQueue,
+    mergeStack,
   };
 };
 
@@ -177,7 +182,7 @@ const moveInDirection = (grid: Cell[][], dir: Vector) => {
   const totalRows = newGrid.length;
   const totalCols = newGrid[0].length;
   const tiles: Tile[] = [];
-  const moveQueue: number[] = [];
+  const moveStack: number[] = [];
 
   const traversal = createTraveralMap(totalRows, totalCols, dir);
   traversal.rows.forEach((row) => {
@@ -225,7 +230,7 @@ const moveInDirection = (grid: Cell[][], dir: Vector) => {
           newGrid[currRow][currCol] = { tile: updatedTile };
           newGrid[row][col] = {};
           tiles.push(updatedTile);
-          moveQueue.push(updatedTile.index);
+          moveStack.push(updatedTile.index);
         } else if (currentTile != null) {
           tiles.push({ ...currentTile, isNew: false, isMerging: false });
         }
@@ -234,10 +239,12 @@ const moveInDirection = (grid: Cell[][], dir: Vector) => {
   });
 
   return {
-    // sort by index to persist iteration order of tiles array so that React won't rerender when id is not changed
+    // Sort by index to persist iteration order of tiles array
+    // so that transform animation won't be interrupted by rerending
+    // when id is not changed.
     tiles: sortTiles(tiles),
     grid: newGrid,
-    moveQueue,
+    moveStack,
   };
 };
 
@@ -246,7 +253,7 @@ const resetGameBoard = (rows: number, cols: number) => {
   resetIndex();
   const grid = createEmptyGrid(rows, cols);
   const emptyCells = getEmptyCellsLocation(grid);
-  const newTiles = createRandomTiles(emptyCells, 2);
+  const newTiles = createRandomTiles(emptyCells, rows * cols > 24 ? 4 : 2);
 
   newTiles.forEach((tile) => {
     grid[tile.r][tile.c] = { tile };
@@ -261,25 +268,26 @@ const resetGameBoard = (rows: number, cols: number) => {
 const useGameBoard = ({
   rows,
   cols,
+  pause,
   gameStatus,
+  setGameStatus,
   addScore,
 }: GameBoardParams) => {
   const gridRef = useRef(createEmptyGrid(rows, cols));
   const [tiles, setTiles] = useState<Tile[]>([]);
   const pendingQueueRef = useRef<number[]>([]);
   const [moving, setMoving] = useState(false);
-  const [winGame, setWinGame] = useState<boolean | undefined>();
-  const pauseRef = useRef(gameStatus.pause);
+  const pauseRef = useRef(pause);
 
   const onMove = useCallback((dir: Vector) => {
     if (pendingQueueRef.current.length === 0 && !pauseRef.current) {
-      const { tiles: newTiles, moveQueue, grid } = moveInDirection(
+      const { tiles: newTiles, moveStack, grid } = moveInDirection(
         gridRef.current,
         dir,
       );
       gridRef.current = grid;
-      pendingQueueRef.current = moveQueue;
-      setMoving(moveQueue.length > 0);
+      pendingQueueRef.current = moveStack;
+      setMoving(moveStack.length > 0);
       setTiles(newTiles);
     }
   }, []);
@@ -297,53 +305,57 @@ const useGameBoard = ({
     if (!moving) {
       const {
         tiles: newTiles,
-        mergeQueue,
+        mergeStack,
         score,
         grid,
       } = mergeAndCreateNewTiles(gridRef.current);
       gridRef.current = grid;
-      pendingQueueRef.current = mergeQueue;
+      pendingQueueRef.current = mergeStack;
 
       addScore(score);
       setTiles(newTiles);
     }
   }, [moving, addScore]);
 
+  useLayoutEffect(() => {
+    pauseRef.current = pause;
+  }, [pause]);
+
   useEffect(() => {
     const { grid, tiles: newTiles } = resetGameBoard(rows, cols);
     gridRef.current = grid;
-    setWinGame(undefined);
     setTiles(newTiles);
-  }, [rows, cols]);
+    setGameStatus('restart');
+  }, [rows, cols, setGameStatus]);
 
   useEffect(() => {
-    if (!pauseRef.current) {
-      if (winGame == null && tiles.some(({ value }) => value === 2048)) {
-        setWinGame(true);
+    if (!pause) {
+      if (
+        gameStatus !== 'continue' &&
+        tiles.some(({ value }) => value === 2048)
+      ) {
+        setGameStatus('win');
       }
 
-      if (!canMoveTile(gridRef.current, tiles)) {
-        setWinGame(false);
+      if (gameStatus !== 'lose' && !canMoveTile(gridRef.current, tiles)) {
+        setGameStatus('lose');
       }
     }
-  }, [tiles, winGame]);
+  }, [tiles, gameStatus, pause, setGameStatus]);
 
   useEffect(() => {
-    const { win, pause } = gameStatus;
-    pauseRef.current = pause;
-
-    if (win == null) {
+    if (gameStatus === 'restart') {
       const r = gridRef.current.length;
       const c = gridRef.current[0].length;
       const { grid, tiles: newTiles } = resetGameBoard(r, c);
 
       gridRef.current = grid;
       setTiles(newTiles);
-      setWinGame(undefined);
+      setGameStatus('running');
     }
-  }, [gameStatus]);
+  }, [gameStatus, setGameStatus]);
 
-  return { tiles, winGame, onMove, onMovePending, onMergePending };
+  return { tiles, onMove, onMovePending, onMergePending };
 };
 
 export default useGameBoard;

@@ -20,7 +20,7 @@ const StyledTileValue = styled.div<StyledTileValueProps>`
   background-color: ${({ backgroundColor }) => backgroundColor};
   animation-name: ${({ isMerging, isNew }) =>
     isMerging ? pop : isNew ? scaleUp : ''};
-  animation-duration: 0.12s;
+  animation-duration: 0.13s;
   animation-fill-mode: forwards;
 `;
 

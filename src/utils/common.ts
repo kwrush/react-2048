@@ -9,14 +9,18 @@ export const resetIndex = () => {
   index = 0;
 };
 
-export const getId = () => Date.now().toFixed(0);
+export const getId = (ind: number) => `${ind}_${Date.now()}`;
+
+export const clamp = (d: number, min: number, max: number) =>
+  Math.max(Math.min(max, d), min);
 
 export const getTileFontSize = (w: number, h: number, v: number) => {
-  const mid = (w + h) / 2;
-  return v >= 1024 ? mid / 2.8 : mid / 2;
+  const min = Math.min(w, h);
+  return v >= 1024 ? min / 2.8 : min / 2;
 };
 
-export const getTileColor = (v: number) => TILE_COLORS[v.toFixed(0)];
+export const getTileColor = (v: number) =>
+  TILE_COLORS[clamp(v, 2, 2048).toFixed(0)];
 
 export const calcGridSpacing = (gridSize: number, rows: number) =>
   gridSize / (rows + 1.5) ** 2;
@@ -38,6 +42,3 @@ export const calcTileSize = (
 });
 
 export const createIndexArray = (num: number) => Array.from(Array(num).keys());
-
-export const clamp = (d: number, min: number, max: number) =>
-  Math.max(Math.min(max, d), min);

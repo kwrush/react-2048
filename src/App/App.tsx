@@ -8,62 +8,55 @@ import Text from '../components/Text';
 import Tile from '../components/Tile';
 import useGameBoard from '../hooks/useGameBoard';
 import useGameScore from '../hooks/useGameScore';
-import useGameStatus from '../hooks/useGameStatus';
+import useGameState from '../hooks/useGameState';
 import useScaleControl from '../hooks/useScaleControl';
-import { calcGridSpacing, calcTileSize } from '../utils/common';
-import { GRID_SIZE, MIN_SCALE } from '../utils/constants';
+import { calcTileSize } from '../utils/common';
+import { GRID_SIZE, MIN_SCALE, SPACING } from '../utils/constants';
 
 const App: FC = () => {
-  const [gameStatus, setGameStatus] = useGameStatus();
+  const [{ status: gameStatus, pause }, setGameStatus] = useGameState();
   const [rows, setRows] = useScaleControl(MIN_SCALE);
   const [cols, setCols] = useScaleControl(MIN_SCALE);
-  const [spacing, setSpacing] = useState(
-    calcGridSpacing(GRID_SIZE, Math.max(rows, cols)),
-  );
+
   const [tileSize, setTileSize] = useState(
-    calcTileSize(GRID_SIZE, rows, cols, spacing),
+    calcTileSize(GRID_SIZE, rows, cols, SPACING),
   );
 
   const { total, best, addScore, setTotal } = useGameScore();
-  const {
-    tiles,
-    winGame,
-    onMove,
-    onMovePending,
-    onMergePending,
-  } = useGameBoard({
+  const { tiles, onMove, onMovePending, onMergePending } = useGameBoard({
     rows,
     cols,
+    pause,
     gameStatus,
+    setGameStatus,
     addScore,
   });
 
   const onCloseNotification = useCallback(() => {
-    const { win } = gameStatus;
-    setGameStatus({ type: win ? 'continue' : 'restart' });
+    setGameStatus(gameStatus === 'win' ? 'continue' : 'restart');
   }, [gameStatus, setGameStatus]);
 
+  const onResetGame = useCallback(() => {
+    setGameStatus('restart');
+  }, [setGameStatus]);
+
   useEffect(() => {
-    if (gameStatus.win == null) {
+    if (gameStatus === 'restart') {
       setTotal(0);
     }
   }, [gameStatus, setTotal]);
 
   useEffect(() => {
-    if (winGame != null) {
-      setGameStatus({ type: winGame ? 'win' : 'lose' });
-    }
-  }, [winGame, setGameStatus]);
-
-  useEffect(() => {
-    const newSpacing = calcGridSpacing(GRID_SIZE, Math.max(rows, cols));
-    setSpacing(newSpacing);
-    setTileSize(calcTileSize(GRID_SIZE, rows, cols, newSpacing));
-  }, [rows, cols, setTileSize, setSpacing]);
+    setTileSize(calcTileSize(GRID_SIZE, rows, cols, SPACING));
+  }, [rows, cols, setTileSize]);
 
   return (
     <Box justifyContent="center">
-      <Box justifyContent="center" flexDirection="column" padding="s5">
+      <Box
+        justifyContent="center"
+        flexDirection="column"
+        inlineSize={`${GRID_SIZE}px`}
+      >
         <Box inlineSize="100%" justifyContent="space-between">
           <Box>
             <Text fontSize={64} fontWeight="bold">
@@ -75,11 +68,11 @@ const App: FC = () => {
             <ScoreBoard total={best} title="best" />
           </Box>
         </Box>
-        <Box marginBlock="s5">
+        <Box marginBlock="s5" inlineSize="100%">
           <Control
             rows={rows}
             cols={cols}
-            onReset={() => setGameStatus({ type: 'restart' })}
+            onReset={onResetGame}
             onChangeRow={setRows}
             onChangeCol={setCols}
           />
@@ -90,19 +83,22 @@ const App: FC = () => {
             height={GRID_SIZE}
             rows={rows}
             cols={cols}
-            spacing={spacing}
+            spacing={SPACING}
             onMove={onMove}
             onMovePending={onMovePending}
             onMergePending={onMergePending}
           >
-            <Notification win={gameStatus.win} onClose={onCloseNotification} />
+            <Notification
+              gameStatus={gameStatus}
+              onClose={onCloseNotification}
+            />
             {tiles?.map(({ r, c, id, value, isMerging, isNew }) => (
               <Tile
                 key={id}
                 width={tileSize.width}
                 height={tileSize.height}
-                x={(spacing + tileSize.width) * c}
-                y={(spacing + tileSize.height) * r}
+                x={(SPACING + tileSize.width) * c}
+                y={(SPACING + tileSize.height) * r}
                 value={value}
                 isNew={isNew}
                 isMerging={isMerging}
