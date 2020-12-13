@@ -7,7 +7,7 @@ const StyledBackdrop = styled.div`
   width: 100%;
   height: 100%;
   background: ${({ theme: { palette } }) => palette.backdrop};
-  opacity: 0.5;
+  opacity: 0.7;
   z-index: -1;
 `;
 

@@ -27,6 +27,8 @@ export const SpacingValues: Record<Spacing, string> = {
 
 export type Color =
   | 'transparent'
+  | 'black'
+  | 'white'
   | 'primary'
   | 'secondary'
   | 'tertiary'

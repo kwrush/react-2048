@@ -40,6 +40,7 @@ export interface StyledBoxProps {
   flexDirection?: 'row' | 'column'; // omit other properties
   justifyContent?:
     | 'start'
+    | 'end'
     | 'center'
     | 'space-between'
     | 'space-evenly'
@@ -105,7 +106,12 @@ const StyledBox = styled.div<StyledBoxProps>`
   display: flex;
   flex-direction: ${({ flexDirection = 'row' }) => flexDirection};
   align-items: center;
-  justify-content: ${({ justifyContent }) => justifyContent};
+  justify-content: ${({ justifyContent }) => {
+    if (justifyContent === 'start' || justifyContent === 'end') {
+      return `flex-${justifyContent}`;
+    }
+    return justifyContent;
+  }};
   align-items: ${({ alignItems }) => alignItems};
   background-color: ${({ theme: { palette }, background = 'background' }) =>
     palette[background]};

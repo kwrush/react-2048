@@ -5,13 +5,15 @@ import Control from '../components/Control/Control';
 import GameBoard from '../components/GameBoard';
 import Notification from '../components/Notification';
 import ScoreBoard from '../components/ScoreBoard';
+import Switch from '../components/Switch';
 import Text from '../components/Text';
 import Tile from '../components/Tile';
 import useGameBoard from '../hooks/useGameBoard';
 import useGameScore from '../hooks/useGameScore';
 import useGameState from '../hooks/useGameState';
 import useScaleControl from '../hooks/useScaleControl';
-import theme from '../themes/default';
+import defaultTheme from '../themes/default';
+import darkTheme from '../themes/dark';
 import { calcTileSize } from '../utils/common';
 import { GRID_SIZE, MIN_SCALE, SPACING } from '../utils/constants';
 
@@ -19,6 +21,7 @@ const App: FC = () => {
   const [{ status: gameStatus, pause }, setGameStatus] = useGameState();
   const [rows, setRows] = useScaleControl(MIN_SCALE);
   const [cols, setCols] = useScaleControl(MIN_SCALE);
+  const [theme, setTheme] = useState('default');
 
   const [tileSize, setTileSize] = useState(
     calcTileSize(GRID_SIZE, rows, cols, SPACING),
@@ -53,7 +56,7 @@ const App: FC = () => {
   }, [rows, cols, setTileSize]);
 
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={theme === 'default' ? defaultTheme : darkTheme}>
       <Box
         justifyContent="center"
         inlineSize="100%"
@@ -65,6 +68,18 @@ const App: FC = () => {
           flexDirection="column"
           inlineSize={`${GRID_SIZE}px`}
         >
+          <Box marginBlockStart="s5" inlineSize="100%" justifyContent="end">
+            <Switch
+              title="dark mode"
+              value="default"
+              activeValue="dark"
+              inactiveValue="default"
+              knobColor="background"
+              activeColor="white"
+              inactiveColor="black"
+              onChange={setTheme}
+            />
+          </Box>
           <Box inlineSize="100%" justifyContent="space-between">
             <Box>
               <Text fontSize={64} fontWeight="bold" color="primary">
@@ -76,7 +91,7 @@ const App: FC = () => {
               <ScoreBoard total={best} title="best" />
             </Box>
           </Box>
-          <Box marginBlock="s5" inlineSize="100%">
+          <Box marginBlockStart="s3" marginBlockEnd="s7" inlineSize="100%">
             <Control
               rows={rows}
               cols={cols}
@@ -85,40 +100,38 @@ const App: FC = () => {
               onChangeCol={setCols}
             />
           </Box>
-          <Box marginBlock="s4">
-            <GameBoard
-              width={GRID_SIZE}
-              height={GRID_SIZE}
-              rows={rows}
-              cols={cols}
-              spacing={SPACING}
-              onMove={onMove}
-              onMovePending={onMovePending}
-              onMergePending={onMergePending}
-            >
-              <Notification
-                gameStatus={gameStatus}
-                onClose={onCloseNotification}
+          <GameBoard
+            width={GRID_SIZE}
+            height={GRID_SIZE}
+            rows={rows}
+            cols={cols}
+            spacing={SPACING}
+            onMove={onMove}
+            onMovePending={onMovePending}
+            onMergePending={onMergePending}
+          >
+            <Notification
+              gameStatus={gameStatus}
+              onClose={onCloseNotification}
+            />
+            {tiles?.map(({ r, c, id, value, isMerging, isNew }) => (
+              <Tile
+                key={id}
+                width={tileSize.width}
+                height={tileSize.height}
+                x={(SPACING + tileSize.width) * c}
+                y={(SPACING + tileSize.height) * r}
+                value={value}
+                isNew={isNew}
+                isMerging={isMerging}
               />
-              {tiles?.map(({ r, c, id, value, isMerging, isNew }) => (
-                <Tile
-                  key={id}
-                  width={tileSize.width}
-                  height={tileSize.height}
-                  x={(SPACING + tileSize.width) * c}
-                  y={(SPACING + tileSize.height) * r}
-                  value={value}
-                  isNew={isNew}
-                  isMerging={isMerging}
-                />
-              ))}
-            </GameBoard>
-          </Box>
+            ))}
+          </GameBoard>
           <Box marginBlock="s4" justifyContent="center" flexDirection="column">
-            <Text fontSize={16} as="p">
+            <Text fontSize={16} as="p" color="primary">
               ✨ Join tiles with the same value to get 2048
             </Text>
-            <Text fontSize={16} as="p">
+            <Text fontSize={16} as="p" color="primary">
               🕹️ Play with arrow keys or swipe
             </Text>
           </Box>

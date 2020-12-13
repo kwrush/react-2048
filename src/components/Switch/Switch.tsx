@@ -49,7 +49,7 @@ const Switch: FC<SwitchProps> = ({
         </Box>
       )}
       <StyledSwitch>
-        <StyledInput checked={currentValue === activeValue} />
+        <StyledInput defaultChecked={currentValue === activeValue} />
         <StyledKnob
           active={currentValue === activeValue}
           knobColor={knobColor}

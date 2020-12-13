@@ -2,6 +2,8 @@ import 'styled-components';
 
 export type Color =
   | 'transparent'
+  | 'black'
+  | 'white'
   | 'primary'
   | 'secondary'
   | 'tertiary'

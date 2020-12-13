@@ -26,6 +26,7 @@ const StyledTileValue = styled.div<StyledTileValueProps>`
   animation-fill-mode: forwards;
   color: ${({ theme: { palette }, value }) =>
     value > 4 ? palette.foreground : palette.primary};
+  user-select: none;
 `;
 
 export default StyledTileValue;
