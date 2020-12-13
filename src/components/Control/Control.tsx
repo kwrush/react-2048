@@ -21,14 +21,14 @@ const Control: FC<ControlProps> = ({
 }) => (
   <Box inlineSize="100%" justifyContent="space-between">
     <Button onClick={onReset}>
-      <Text color="white" fontSize={16} textTransform="capitalize">
+      <Text fontSize={16} textTransform="capitalize">
         new game
       </Text>
     </Button>
     <Box>
       <Box marginInlineEnd="s3">
         <Box marginInlineEnd="s1">
-          <Text textTransform="uppercase" fontSize={13}>
+          <Text textTransform="uppercase" fontSize={13} color="primary">
             rows:
           </Text>
         </Box>
@@ -40,7 +40,9 @@ const Control: FC<ControlProps> = ({
           -
         </Button>
         <Box marginInline="s2">
-          <Text fontSize={16}>{rows}</Text>
+          <Text fontSize={16} color="primary">
+            {rows}
+          </Text>
         </Box>
         <Button
           mini
@@ -52,7 +54,7 @@ const Control: FC<ControlProps> = ({
       </Box>
       <Box>
         <Box marginInlineEnd="s1">
-          <Text textTransform="uppercase" fontSize={13}>
+          <Text textTransform="uppercase" fontSize={13} color="primary">
             cols:
           </Text>
         </Box>
@@ -64,7 +66,9 @@ const Control: FC<ControlProps> = ({
           -
         </Button>
         <Box marginInline="s2">
-          <Text fontSize={16}>{cols}</Text>
+          <Text fontSize={16} color="primary">
+            {cols}
+          </Text>
         </Box>
         <Button
           mini

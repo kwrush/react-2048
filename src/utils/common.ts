@@ -1,4 +1,4 @@
-import { TILE_COLORS } from './constants';
+import { Color } from '../themes/common';
 
 let index = 0;
 
@@ -19,8 +19,7 @@ export const getTileFontSize = (w: number, h: number, v: number) => {
   return v >= 1024 ? min / 2.8 : min / 2;
 };
 
-export const getTileColor = (v: number) =>
-  TILE_COLORS[clamp(v, 2, 2048).toFixed(0)];
+export const getTileColor = (v: number) => `tile${clamp(v, 2, 2048)}` as Color;
 
 export const calcGridSpacing = (gridSize: number, rows: number) =>
   gridSize / (rows + 1.5) ** 2;

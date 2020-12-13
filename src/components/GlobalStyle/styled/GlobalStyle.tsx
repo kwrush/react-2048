@@ -8,10 +8,14 @@ const GlobalStyle = createGlobalStyle`
   body {
     font-size: 18px;
     font-family: 'Roboto', Arial, sans-serif;
-    color: #776e65;
     /** Disable eslastic scrolling on mobile */
     overflow: hidden;
     overscroll-behavior: none;
+  }
+
+  #game {
+    width: 100vw;
+    height: 100vh;
   }
 `;
 

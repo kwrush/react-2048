@@ -10,7 +10,7 @@ const StyledScore = styled.div`
   background: none;
   transition: all 0.2s ease-in;
   animation-name: ${fadeOut};
-  animation-duration: 0.6s;
+  animation-duration: 0.5s;
   animation-fill-mode: forwards;
 `;
 

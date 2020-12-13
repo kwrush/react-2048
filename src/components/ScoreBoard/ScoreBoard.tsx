@@ -23,7 +23,7 @@ const ScoreBoard: FC<ScoreBoardProps> = ({ total, title }) => {
       paddingBlock="s3"
       paddingInline="s4"
       inlineSize="90px"
-      background="#bbada0"
+      background="secondary"
       flexDirection="column"
       borderRadius={3}
       position="relative"
@@ -34,17 +34,17 @@ const ScoreBoard: FC<ScoreBoardProps> = ({ total, title }) => {
         fontSize={12}
         textTransform="uppercase"
         fontWeight="bold"
-        color="#eee4da"
+        color="tertiary"
       >
         {title}
       </Text>
-      <Text color="white" fontWeight="bold" fontSize={18}>
+      <Text color="foreground" fontWeight="bold" fontSize={18}>
         {total}
       </Text>
       {score > 0 && (
         // Assign a different key to let React render the animation from beginning
         <StyledScore key={total.toFixed(0)}>
-          <Text fontSize={18} fontWeight="bold">
+          <Text fontSize={18} fontWeight="bold" color="primary">
             +{score}
           </Text>
         </StyledScore>

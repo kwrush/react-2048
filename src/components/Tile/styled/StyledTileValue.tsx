@@ -1,9 +1,11 @@
 import styled from 'styled-components';
 import { pop, scaleUp } from '../../../utils/animation';
+import { getTileColor } from '../../../utils/common';
 
 export interface StyledTileValueProps {
   isNew: boolean;
   isMerging: boolean;
+  value: number;
   backgroundColor: string;
 }
 
@@ -15,13 +17,15 @@ const StyledTileValue = styled.div<StyledTileValueProps>`
   text-align: center;
   flex-direction: column;
   justify-content: center;
-  border-radius: 3px;
-  color: inherit;
-  background-color: ${({ backgroundColor }) => backgroundColor};
+  border-radius: ${({ theme }) => theme.borderRadius};
+  background-color: ${({ theme: { palette }, value }) =>
+    palette[getTileColor(value)]};
   animation-name: ${({ isMerging, isNew }) =>
     isMerging ? pop : isNew ? scaleUp : ''};
   animation-duration: 0.13s;
   animation-fill-mode: forwards;
+  color: ${({ theme: { palette }, value }) =>
+    value > 4 ? palette.foreground : palette.primary};
 `;
 
 export default StyledTileValue;

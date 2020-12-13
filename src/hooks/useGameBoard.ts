@@ -275,30 +275,30 @@ const useGameBoard = ({
 }: GameBoardParams) => {
   const gridRef = useRef(createEmptyGrid(rows, cols));
   const [tiles, setTiles] = useState<Tile[]>([]);
-  const pendingQueueRef = useRef<number[]>([]);
+  const pendingStackRef = useRef<number[]>([]);
   const [moving, setMoving] = useState(false);
   const pauseRef = useRef(pause);
 
   const onMove = useCallback((dir: Vector) => {
-    if (pendingQueueRef.current.length === 0 && !pauseRef.current) {
+    if (pendingStackRef.current.length === 0 && !pauseRef.current) {
       const { tiles: newTiles, moveStack, grid } = moveInDirection(
         gridRef.current,
         dir,
       );
       gridRef.current = grid;
-      pendingQueueRef.current = moveStack;
+      pendingStackRef.current = moveStack;
       setMoving(moveStack.length > 0);
       setTiles(newTiles);
     }
   }, []);
 
   const onMovePending = useCallback(() => {
-    pendingQueueRef.current.pop();
-    setMoving(pendingQueueRef.current.length > 0);
+    pendingStackRef.current.pop();
+    setMoving(pendingStackRef.current.length > 0);
   }, []);
 
   const onMergePending = useCallback(() => {
-    pendingQueueRef.current.pop();
+    pendingStackRef.current.pop();
   }, []);
 
   useLayoutEffect(() => {
@@ -310,7 +310,7 @@ const useGameBoard = ({
         grid,
       } = mergeAndCreateNewTiles(gridRef.current);
       gridRef.current = grid;
-      pendingQueueRef.current = mergeStack;
+      pendingStackRef.current = mergeStack;
 
       addScore(score);
       setTiles(newTiles);

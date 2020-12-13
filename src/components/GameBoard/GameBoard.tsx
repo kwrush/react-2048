@@ -51,6 +51,7 @@ const GameBoard: FC<PropsWithChildren<GameBoardProps>> = ({
         position="absolute"
         top={0}
         left={0}
+        background="transparent"
         blockSize={`${height.toFixed(0)}px`}
         inlineSize={`${width.toFixed(0)}px`}
         onTransitionEnd={onMovePending}

@@ -1,8 +1,9 @@
 import styled, { css } from 'styled-components';
+import { Color } from '../../../themes/common';
 
 export interface StyledTextProps {
   as?: 'p' | 'span';
-  color?: string;
+  color?: Color;
   fontSize?: number;
   fontWeight?: 'bold' | 'normal';
   textTransform?: 'capitalize' | 'lowercase' | 'uppercase' | 'none';
@@ -11,14 +12,12 @@ export interface StyledTextProps {
 const getFontStyle = ({
   as,
   textTransform,
-  color,
   fontSize = 14,
   fontWeight,
 }: StyledTextProps) => css`
   margin: ${as === 'p' && 0};
   line-height: ${as === 'p' ? 2 : 1.5};
   text-transform: ${textTransform};
-  color: ${color};
   font-size: ${fontSize}px;
   font-weight: ${fontWeight};
 `;
@@ -26,7 +25,8 @@ const getFontStyle = ({
 const StyledText = styled.span<StyledTextProps>`
   line-height: 1.25;
   white-space: nowrap;
-  ${getFontStyle}
+  color: ${({ theme: { palette }, color }) => color && palette[color]};
+  ${getFontStyle};
 `;
 
 export default StyledText;

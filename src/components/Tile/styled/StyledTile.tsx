@@ -18,7 +18,6 @@ const getCommonTileStyles = ({
 }: StyledTileProps) => css`
   width: ${width}px;
   height: ${height}px;
-  color: ${value > 4 ? 'white' : '#776e65'};
   font-size: ${getTileFontSize(width, height, value)}px;
   transform: ${`translate(${x}px, ${y}px)`};
 `;
@@ -31,7 +30,7 @@ const StyledTile = styled.div<StyledTileProps>`
   justify-content: center;
   transition: transform 0.13s ease-in-out;
   background: none;
-  ${getCommonTileStyles}
+  ${getCommonTileStyles};
 `;
 
 export default StyledTile;

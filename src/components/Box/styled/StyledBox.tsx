@@ -1,5 +1,5 @@
 import styled, { css } from 'styled-components';
-import { Spacing, SpacingValues } from '../../../utils/constants';
+import { Color, Spacing, SpacingValues } from '../../../themes/common';
 
 export type Length = string | 0;
 export type BoxSpacing = Spacing | 0;
@@ -44,7 +44,8 @@ export interface StyledBoxProps {
     | 'space-between'
     | 'space-evenly'
     | 'space-around';
-  background?: string;
+  alignItems?: 'center' | 'start' | 'end' | 'stretch';
+  background?: Color;
   borderRadius?: number;
 }
 
@@ -105,8 +106,11 @@ const StyledBox = styled.div<StyledBoxProps>`
   flex-direction: ${({ flexDirection = 'row' }) => flexDirection};
   align-items: center;
   justify-content: ${({ justifyContent }) => justifyContent};
-  background: ${({ background }) => background};
-  border-radius: ${({ borderRadius }) => borderRadius && `${borderRadius}px`};
+  align-items: ${({ alignItems }) => alignItems};
+  background-color: ${({ theme: { palette }, background = 'background' }) =>
+    palette[background]};
+  border-radius: ${({ theme }) => theme.borderRadius};
+  color: ${({ theme: { palette } }) => palette.foreground};
   ${getBoxSizeStyles}
 `;
 

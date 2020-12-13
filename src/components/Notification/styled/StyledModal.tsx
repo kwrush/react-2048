@@ -12,7 +12,7 @@ const StyledModal = styled.div`
   animation-name: ${scaleUp};
   animation-duration: 0.2s;
   animation-fill-mode: forwards;
-  border-radius: 3px;
+  border-radius: ${({ theme }) => theme.borderRadius};
   overflow: hidden;
   display: flex;
   flex-direction: column;

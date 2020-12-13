@@ -16,9 +16,10 @@ const StyledGrid = styled.div<StyledGridProps>`
   grid-template-rows: ${({ rows }) => `repeat(${rows}, 1fr)`};
   grid-template-columns: ${({ cols }) => `repeat(${cols}, 1fr)`};
   grid-gap: ${({ spacing }) => `${spacing}px ${spacing}px`};
-  background-color: #bbada0;
-  border-radius: 3px;
-  box-shadow: ${({ spacing }) => `0 0 0 ${spacing}px #bbada0`};
+  background-color: ${({ theme: { palette } }) => palette.secondary};
+  border-radius: ${({ theme: { borderRadius } }) => borderRadius};
+  box-shadow: ${({ spacing, theme: { palette } }) =>
+    `0 0 0 ${spacing}px ${palette.secondary}`};
 `;
 
 export default StyledGrid;

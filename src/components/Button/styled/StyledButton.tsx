@@ -14,17 +14,16 @@ const getMiniProps = () => css`
 `;
 
 const StyledButton = styled.button<StyledButtonProps>`
-  background: #776e65;
   outline: none;
   border: none;
-  border-radius: 3px;
-  color: white;
   padding: 8px 16px;
   line-height: 1.75;
   margin: 0;
-  box-sizing: border-box;
   white-space: nowrap;
   ${({ mini }) => mini && getMiniProps};
+  border-radius: ${({ theme }) => theme.borderRadius};
+  background: ${({ theme: { palette } }) => palette.primary};
+  color: ${({ theme: { palette } }) => palette.foreground};
   opacity: ${({ disable }) => disable && 0.7};
   cursor: ${({ disable }) => (disable ? 'not-allowed' : 'pointer')};
 `;

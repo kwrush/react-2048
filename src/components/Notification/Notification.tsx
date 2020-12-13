@@ -16,8 +16,8 @@ const Notification: FC<NotificationProps> = ({ gameStatus, onClose }) => {
   return show ? (
     <StyledModal>
       <StyledBackdrop />
-      <Box paddingBlock="s5">
-        <Text fontSize={22}>
+      <Box paddingBlock="s5" background="transparent">
+        <Text fontSize={22} color="primary">
           {win ? 'You win! Continue?' : 'Oops...Game Over!'}
         </Text>
       </Box>
