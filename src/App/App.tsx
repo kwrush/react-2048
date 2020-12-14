@@ -15,19 +15,43 @@ import useScaleControl from '../hooks/useScaleControl';
 import defaultTheme from '../themes/default';
 import darkTheme from '../themes/dark';
 import { calcTileSize } from '../utils/common';
-import { GRID_SIZE, MIN_SCALE, SPACING } from '../utils/constants';
+import { APP_NAME, GRID_SIZE, MIN_SCALE, SPACING } from '../utils/constants';
+import useLocalStorage from '../hooks/useLocalStorage';
+
+export type ThemeValue = 'default' | 'dark';
+
+export type Configuration = {
+  theme: ThemeValue;
+  bestScore: number;
+  rows: number;
+  cols: number;
+};
+
+const isThemeValue = (t: string): t is ThemeValue => {
+  return t === 'default' || t === 'dark';
+};
 
 const App: FC = () => {
   const [{ status: gameStatus, pause }, setGameStatus] = useGameState();
-  const [rows, setRows] = useScaleControl(MIN_SCALE);
-  const [cols, setCols] = useScaleControl(MIN_SCALE);
-  const [theme, setTheme] = useState('default');
+  const [config, setConfig] = useLocalStorage<Configuration>(APP_NAME, {
+    theme: 'default',
+    bestScore: 0,
+    rows: MIN_SCALE,
+    cols: MIN_SCALE,
+  });
+  // The fallback values make sure the game can be rendered correctly
+  // if no such items in localStorage
+  const [theme, setTheme] = useState(config.theme ?? 'default');
+  const [rows, setRows] = useScaleControl(config.rows ?? MIN_SCALE);
+  const [cols, setCols] = useScaleControl(config.cols ?? MIN_SCALE);
+  const { total, best, addScore, setTotal } = useGameScore(
+    config.bestScore ?? 0,
+  );
 
   const [tileSize, setTileSize] = useState(
     calcTileSize(GRID_SIZE, rows, cols, SPACING),
   );
 
-  const { total, best, addScore, setTotal } = useGameScore();
   const { tiles, onMove, onMovePending, onMergePending } = useGameBoard({
     rows,
     cols,
@@ -45,15 +69,31 @@ const App: FC = () => {
     setGameStatus('restart');
   }, [setGameStatus]);
 
-  useEffect(() => {
-    if (gameStatus === 'restart') {
-      setTotal(0);
+  const onChangeTheme = useCallback((newTheme: string) => {
+    if (isThemeValue(newTheme)) {
+      setTheme(newTheme);
     }
-  }, [gameStatus, setTotal]);
+  }, []);
 
   useEffect(() => {
     setTileSize(calcTileSize(GRID_SIZE, rows, cols, SPACING));
   }, [rows, cols, setTileSize]);
+
+  useEffect(() => {
+    if (gameStatus === 'restart') setTotal(0);
+  }, [gameStatus, setTotal]);
+
+  useEffect(() => {
+    const { rows: currentRows, cols: currentCols } = config;
+    if (rows !== currentRows) setConfig({ ...config, rows });
+    if (cols !== currentCols) setConfig({ ...config, cols });
+  }, [cols, config, rows, setConfig]);
+
+  useEffect(() => {
+    const { bestScore, theme: currentTheme } = config;
+    if (bestScore !== best) setConfig({ ...config, bestScore: best });
+    if (currentTheme !== theme) setConfig({ ...config, theme });
+  }, [best, theme, config, setConfig]);
 
   return (
     <ThemeProvider theme={theme === 'default' ? defaultTheme : darkTheme}>
@@ -71,13 +111,13 @@ const App: FC = () => {
           <Box marginBlockStart="s5" inlineSize="100%" justifyContent="end">
             <Switch
               title="dark mode"
-              value="default"
+              value={config.theme}
               activeValue="dark"
               inactiveValue="default"
               knobColor="background"
               activeColor="white"
               inactiveColor="black"
-              onChange={setTheme}
+              onChange={onChangeTheme}
             />
           </Box>
           <Box inlineSize="100%" justifyContent="space-between">

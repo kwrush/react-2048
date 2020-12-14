@@ -1,21 +1,14 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { NAME } from '../utils/constants';
-import ScoreStorage from '../utils/ScoreStorage';
+import { useCallback, useEffect, useState } from 'react';
 
-const useGameScore = () => {
-  const storageRef = useRef(new ScoreStorage(NAME));
+const useGameScore = (initialBest: number) => {
   const [total, setTotal] = useState(0);
-  const [best, setBest] = useState(storageRef.current.getScore());
+  const [best, setBest] = useState(initialBest);
 
   const addScore = useCallback((s: number) => setTotal((t) => t + s), []);
 
   useEffect(() => {
     setBest((b) => (total > b ? total : b));
   }, [total]);
-
-  useEffect(() => {
-    storageRef.current.saveScore(best);
-  }, [best]);
 
   return {
     total,

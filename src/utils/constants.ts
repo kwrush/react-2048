@@ -20,7 +20,7 @@ export enum Direction {
 export type ArrowKeyType = keyof typeof ArrowKey;
 export type DirectionType = keyof typeof Direction;
 
-export const NAME = 'react-2048';
+export const APP_NAME = 'react-2048';
 
 export const DIR: Record<ArrowKeyType | DirectionType, Vector> = {
   ArrowLeft: { r: 0, c: -1 },

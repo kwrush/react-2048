@@ -161,7 +161,7 @@ const mergeAndCreateNewTiles = (grid: Cell[][]) => {
   });
 
   const emptyCells = getEmptyCellsLocation(newGrid);
-  const newTiles = createRandomTiles(emptyCells, rows * cols > 24 ? 2 : 1);
+  const newTiles = createRandomTiles(emptyCells, rows * cols >= 24 ? 2 : 1);
   newTiles.forEach((tile) => {
     newGrid[tile.r][tile.c] = { tile };
   });
@@ -253,7 +253,7 @@ const resetGameBoard = (rows: number, cols: number) => {
   resetIndex();
   const grid = createEmptyGrid(rows, cols);
   const emptyCells = getEmptyCellsLocation(grid);
-  const newTiles = createRandomTiles(emptyCells, rows * cols > 24 ? 4 : 2);
+  const newTiles = createRandomTiles(emptyCells, rows * cols >= 24 ? 4 : 2);
 
   newTiles.forEach((tile) => {
     grid[tile.r][tile.c] = { tile };
