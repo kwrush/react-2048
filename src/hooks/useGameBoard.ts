@@ -29,9 +29,7 @@ export interface Tile extends Location {
   value: number;
 }
 
-export type Cell = {
-  tile?: Tile;
-};
+export type Cell = Tile | undefined;
 
 export type GameBoardParams = {
   rows: number;
@@ -46,7 +44,7 @@ const createRow = <T>(rows: number, cb: (r: number) => T) =>
   Array.from(Array(rows)).map((_, r) => cb(r));
 
 const createEmptyGrid = (rows: number, cols: number) =>
-  createRow(rows, () => createRow<Cell>(cols, () => ({})));
+  createRow(rows, () => createRow<Cell>(cols, () => undefined));
 
 const createNewTile = (r: number, c: number): Tile => {
   const index = nextIndex();
@@ -66,7 +64,7 @@ const createNewTile = (r: number, c: number): Tile => {
 const getEmptyCellsLocation = (grid: Cell[][]) =>
   grid.flatMap((row, r) =>
     row.reduce<Location[]>((acc, cell, c) => {
-      if (cell.tile == null) acc.push({ r, c });
+      if (cell == null) acc.push({ r, c });
       return acc;
     }, []),
   );
@@ -76,7 +74,7 @@ const createRandomTiles = (emptyCells: Location[], amount: number) => {
 
   if (!tilesNumber) return [];
 
-  return Array.from(Array(tilesNumber)).map<Tile>(() => {
+  return createRow(tilesNumber, () => {
     const [{ r, c }] = emptyCells.splice(
       Math.floor(Math.random() * emptyCells.length),
       1,
@@ -85,7 +83,7 @@ const createRandomTiles = (emptyCells: Location[], amount: number) => {
   });
 };
 
-const createTraveralMap = (rows: number, cols: number, dir: Vector) => {
+const createTraversalMap = (rows: number, cols: number, dir: Vector) => {
   const rowsMap = createIndexArray(rows);
   const colsMap = createIndexArray(cols);
   return {
@@ -115,7 +113,7 @@ const canMoveTile = (grid: Cell[][], tiles: Tile[]) => {
       const nextCol = clamp(c + dir.c, 0, totalCols - 1);
 
       if (nextRow !== r || nextCol !== c) {
-        const { tile } = grid[nextRow][nextCol];
+        const tile = grid[nextRow][nextCol];
         if (tile == null || tile.value === value) return true;
       }
     }
@@ -132,8 +130,7 @@ const mergeAndCreateNewTiles = (grid: Cell[][]) => {
   const cols = grid[0].length;
 
   const newGrid = grid.map((row) => {
-    return row.map((cell) => {
-      const { tile } = cell;
+    return row.map((tile) => {
       if (tile != null) {
         const { canMerge, value, index, ...rest } = tile;
         const newValue = canMerge ? 2 * value : value;
@@ -153,21 +150,20 @@ const mergeAndCreateNewTiles = (grid: Cell[][]) => {
           score += newValue;
         }
 
-        return { tile: newTile };
+        return newTile;
       }
 
-      return cell;
+      return tile;
     });
   });
 
   const emptyCells = getEmptyCellsLocation(newGrid);
   const newTiles = createRandomTiles(emptyCells, rows * cols >= 24 ? 2 : 1);
   newTiles.forEach((tile) => {
-    newGrid[tile.r][tile.c] = { tile };
+    newGrid[tile.r][tile.c] = tile;
+    tiles.push(tile);
+    mergeStack.push(tile.index);
   });
-
-  tiles.push(...newTiles);
-  mergeStack.push(...newTiles.map(({ index }) => index));
 
   return {
     grid: newGrid,
@@ -184,10 +180,10 @@ const moveInDirection = (grid: Cell[][], dir: Vector) => {
   const tiles: Tile[] = [];
   const moveStack: number[] = [];
 
-  const traversal = createTraveralMap(totalRows, totalCols, dir);
+  const traversal = createTraversalMap(totalRows, totalCols, dir);
   traversal.rows.forEach((row) => {
     traversal.cols.forEach((col) => {
-      const { tile } = newGrid[row][col];
+      const tile = newGrid[row][col];
       if (tile != null) {
         const pos = {
           currRow: row,
@@ -199,7 +195,7 @@ const moveInDirection = (grid: Cell[][], dir: Vector) => {
 
         while (pos.nextRow !== pos.currRow || pos.nextCol !== pos.currCol) {
           const { nextRow, nextCol } = pos;
-          const { tile: nextTile } = newGrid[nextRow][nextCol];
+          const nextTile = newGrid[nextRow][nextCol];
           if (nextTile != null) {
             // Move to the next cell if the tile inside has the same value and not been merged
             if (nextTile.value === tile.value && !nextTile.canMerge) {
@@ -216,7 +212,7 @@ const moveInDirection = (grid: Cell[][], dir: Vector) => {
         }
 
         const { currRow, currCol } = pos;
-        const { tile: currentTile } = newGrid[currRow][currCol];
+        const currentTile = newGrid[currRow][currCol];
         // If the tile has been moved
         if (currRow !== row || currCol !== col) {
           const updatedTile = {
@@ -227,8 +223,8 @@ const moveInDirection = (grid: Cell[][], dir: Vector) => {
             isNew: false,
             isMerging: false,
           };
-          newGrid[currRow][currCol] = { tile: updatedTile };
-          newGrid[row][col] = {};
+          newGrid[currRow][currCol] = updatedTile;
+          newGrid[row][col] = undefined;
           tiles.push(updatedTile);
           moveStack.push(updatedTile.index);
         } else if (currentTile != null) {
@@ -256,7 +252,7 @@ const resetGameBoard = (rows: number, cols: number) => {
   const newTiles = createRandomTiles(emptyCells, rows * cols >= 24 ? 4 : 2);
 
   newTiles.forEach((tile) => {
-    grid[tile.r][tile.c] = { tile };
+    grid[tile.r][tile.c] = tile;
   });
 
   return {
@@ -335,9 +331,10 @@ const useGameBoard = ({
         tiles.some(({ value }) => value === 2048)
       ) {
         setGameStatus('win');
-      }
-
-      if (gameStatus !== 'lose' && !canMoveTile(gridRef.current, tiles)) {
+      } else if (
+        gameStatus !== 'lose' &&
+        !canMoveTile(gridRef.current, tiles)
+      ) {
         setGameStatus('lose');
       }
     }
