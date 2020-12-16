@@ -18,8 +18,8 @@ const StyledGrid = styled.div<StyledGridProps>`
   grid-gap: ${({ spacing }) => `${spacing}px ${spacing}px`};
   background-color: ${({ theme: { palette } }) => palette.secondary};
   border-radius: ${({ theme: { borderRadius } }) => borderRadius};
-  box-shadow: ${({ spacing, theme: { palette } }) =>
-    `0 0 0 ${spacing}px ${palette.secondary}`};
+  border: ${({ spacing, theme: { palette } }) =>
+    `${spacing}px solid ${palette.secondary}`};
 `;
 
 export default StyledGrid;

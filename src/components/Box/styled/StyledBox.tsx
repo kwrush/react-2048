@@ -47,7 +47,7 @@ export interface StyledBoxProps {
     | 'space-around';
   alignItems?: 'center' | 'start' | 'end' | 'stretch';
   background?: Color;
-  borderRadius?: number;
+  borderRadius?: Length;
 }
 
 const getBoxSizeStyles = ({
@@ -115,7 +115,8 @@ const StyledBox = styled.div<StyledBoxProps>`
   align-items: ${({ alignItems }) => alignItems};
   background-color: ${({ theme: { palette }, background = 'background' }) =>
     palette[background]};
-  border-radius: ${({ theme }) => theme.borderRadius};
+  border-radius: ${({ theme, borderRadius }) =>
+    borderRadius ?? theme.borderRadius};
   color: ${({ theme: { palette } }) => palette.foreground};
   ${getBoxSizeStyles}
 `;

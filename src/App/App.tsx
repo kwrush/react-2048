@@ -14,7 +14,7 @@ import useGameState from '../hooks/useGameState';
 import useScaleControl from '../hooks/useScaleControl';
 import defaultTheme from '../themes/default';
 import darkTheme from '../themes/dark';
-import { calcTileSize } from '../utils/common';
+import { calcLocation, calcTileSize } from '../utils/common';
 import { APP_NAME, GRID_SIZE, MIN_SCALE, SPACING } from '../utils/constants';
 import useLocalStorage from '../hooks/useLocalStorage';
 
@@ -102,6 +102,7 @@ const App: FC = () => {
         inlineSize="100%"
         blockSize="100%"
         alignItems="start"
+        borderRadius={0}
       >
         <Box
           justifyContent="center"
@@ -131,7 +132,7 @@ const App: FC = () => {
               <ScoreBoard total={best} title="best" />
             </Box>
           </Box>
-          <Box marginBlockStart="s3" marginBlockEnd="s7" inlineSize="100%">
+          <Box marginBlockStart="s3" marginBlockEnd="s6" inlineSize="100%">
             <Control
               rows={rows}
               cols={cols}
@@ -159,8 +160,8 @@ const App: FC = () => {
                 key={id}
                 width={tileSize.width}
                 height={tileSize.height}
-                x={(SPACING + tileSize.width) * c}
-                y={(SPACING + tileSize.height) * r}
+                x={calcLocation(tileSize.width, c, SPACING)}
+                y={calcLocation(tileSize.height, r, SPACING)}
                 value={value}
                 isNew={isNew}
                 isMerging={isMerging}

@@ -33,7 +33,7 @@ export const DIR: Record<ArrowKeyType | DirectionType, Vector> = {
   Down: { r: 1, c: 0 },
 };
 
-export const GRID_SIZE = 360;
+export const GRID_SIZE = 370;
 export const MIN_SCALE = 4;
 export const MAX_SCALE = 8;
 export const SPACING = 10;

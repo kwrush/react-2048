@@ -21,14 +21,11 @@ export const getTileFontSize = (w: number, h: number, v: number) => {
 
 export const getTileColor = (v: number) => `tile${clamp(v, 2, 2048)}` as Color;
 
-export const calcGridSpacing = (gridSize: number, rows: number) =>
-  gridSize / (rows + 1.5) ** 2;
-
 export const calcCellWidth = (
   gridSize: number,
   cellsNum: number,
   spacing: number,
-) => (gridSize - (cellsNum - 1) * spacing) / cellsNum;
+) => (gridSize - (cellsNum + 1) * spacing) / cellsNum;
 
 export const calcTileSize = (
   gridSize: number,
@@ -39,5 +36,8 @@ export const calcTileSize = (
   width: calcCellWidth(gridSize, cols, spacing),
   height: calcCellWidth(gridSize, rows, spacing),
 });
+
+export const calcLocation = (w: number, c: number, spacing: number) =>
+  (spacing + w) * c + spacing;
 
 export const createIndexArray = (num: number) => Array.from(Array(num).keys());
