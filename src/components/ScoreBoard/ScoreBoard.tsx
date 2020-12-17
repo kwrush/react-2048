@@ -25,7 +25,6 @@ const ScoreBoard: FC<ScoreBoardProps> = ({ total, title }) => {
       inlineSize="90px"
       background="secondary"
       flexDirection="column"
-      borderRadius={3}
       position="relative"
       justifyContent="center"
       boxSizing="border-box"

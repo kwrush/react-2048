@@ -3,18 +3,15 @@ import { ThemeProvider } from 'styled-components';
 import Box from '../components/Box';
 import Control from '../components/Control/Control';
 import GameBoard from '../components/GameBoard';
-import Notification from '../components/Notification';
 import ScoreBoard from '../components/ScoreBoard';
 import Switch from '../components/Switch';
 import Text from '../components/Text';
-import Tile from '../components/Tile';
 import useGameBoard from '../hooks/useGameBoard';
 import useGameScore from '../hooks/useGameScore';
-import useGameState from '../hooks/useGameState';
+import useGameState, { GameStatus } from '../hooks/useGameState';
 import useScaleControl from '../hooks/useScaleControl';
 import defaultTheme from '../themes/default';
 import darkTheme from '../themes/dark';
-import { calcLocation, calcTileSize } from '../utils/common';
 import { APP_NAME, GRID_SIZE, MIN_SCALE, SPACING } from '../utils/constants';
 import useLocalStorage from '../hooks/useLocalStorage';
 
@@ -48,10 +45,6 @@ const App: FC = () => {
     config.bestScore ?? 0,
   );
 
-  const [tileSize, setTileSize] = useState(
-    calcTileSize(GRID_SIZE, rows, cols, SPACING),
-  );
-
   const { tiles, onMove, onMovePending, onMergePending } = useGameBoard({
     rows,
     cols,
@@ -61,13 +54,16 @@ const App: FC = () => {
     addScore,
   });
 
-  const onCloseNotification = useCallback(() => {
-    setGameStatus(gameStatus === 'win' ? 'continue' : 'restart');
-  }, [gameStatus, setGameStatus]);
-
   const onResetGame = useCallback(() => {
     setGameStatus('restart');
   }, [setGameStatus]);
+
+  const onCloseNotification = useCallback(
+    (currentStatus: GameStatus) => {
+      setGameStatus(currentStatus === 'win' ? 'continue' : 'restart');
+    },
+    [setGameStatus],
+  );
 
   const onChangeTheme = useCallback((newTheme: string) => {
     if (isThemeValue(newTheme)) {
@@ -76,18 +72,15 @@ const App: FC = () => {
   }, []);
 
   useEffect(() => {
-    setTileSize(calcTileSize(GRID_SIZE, rows, cols, SPACING));
-  }, [rows, cols, setTileSize]);
-
-  useEffect(() => {
     if (gameStatus === 'restart') setTotal(0);
   }, [gameStatus, setTotal]);
 
   useEffect(() => {
     const { rows: currentRows, cols: currentCols } = config;
-    if (rows !== currentRows) setConfig({ ...config, rows });
-    if (cols !== currentCols) setConfig({ ...config, cols });
-  }, [cols, config, rows, setConfig]);
+    if (rows !== currentRows || cols !== currentCols) {
+      setConfig({ ...config, rows, cols });
+    }
+  }, [cols, rows, config, setConfig]);
 
   useEffect(() => {
     const { bestScore, theme: currentTheme } = config;
@@ -142,32 +135,17 @@ const App: FC = () => {
             />
           </Box>
           <GameBoard
-            width={GRID_SIZE}
-            height={GRID_SIZE}
+            tiles={tiles}
+            boardSize={GRID_SIZE}
             rows={rows}
             cols={cols}
             spacing={SPACING}
+            gameStatus={gameStatus}
             onMove={onMove}
             onMovePending={onMovePending}
             onMergePending={onMergePending}
-          >
-            <Notification
-              gameStatus={gameStatus}
-              onClose={onCloseNotification}
-            />
-            {tiles?.map(({ r, c, id, value, isMerging, isNew }) => (
-              <Tile
-                key={id}
-                width={tileSize.width}
-                height={tileSize.height}
-                x={calcLocation(tileSize.width, c, SPACING)}
-                y={calcLocation(tileSize.height, r, SPACING)}
-                value={value}
-                isNew={isNew}
-                isMerging={isMerging}
-              />
-            ))}
-          </GameBoard>
+            onCloseNotification={onCloseNotification}
+          />
           <Box marginBlock="s4" justifyContent="center" flexDirection="column">
             <Text fontSize={16} as="p" color="primary">
               ✨ Join tiles with the same value to get 2048

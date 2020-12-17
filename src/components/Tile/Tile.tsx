@@ -1,7 +1,6 @@
 import React, { FC } from 'react';
 import { getTileColor } from '../../utils/common';
-import { StyledTile, StyledTileProps } from './styled';
-import StyledTileValue from './styled/StyledTileValue';
+import { StyledTile, StyledTileValue, StyledTileProps } from './styled';
 
 export interface TileProps extends StyledTileProps {
   isNew?: boolean;

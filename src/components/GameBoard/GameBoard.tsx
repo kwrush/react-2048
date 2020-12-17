@@ -1,64 +1,89 @@
-import React, { FC, PropsWithChildren, useRef } from 'react';
+import React, { FC, useEffect, useRef, useState } from 'react';
 import useArrowKeyPress from '../../hooks/useArrowKeyPress';
+import { Tile as TileType } from '../../hooks/useGameBoard';
+import { GameStatus } from '../../hooks/useGameState';
 import useSwipe from '../../hooks/useSwipe';
-import { createIndexArray } from '../../utils/common';
+import { calcLocation, calcTileSize } from '../../utils/common';
 import { Vector } from '../../utils/constants';
 import Box from '../Box';
-import { StyledCell, StyledGrid, StyledGridProps } from './styled';
+import Grid from '../Grid';
+import Notification from '../Notification';
+import Tile from '../Tile';
 
-export type BoardSize = {
-  width: number;
-  height: number;
-};
-
-export interface GameBoardProps extends StyledGridProps {
+export interface GameBoardProps {
+  tiles?: TileType[];
+  gameStatus: GameStatus;
+  rows: number;
+  cols: number;
+  boardSize: number;
+  spacing: number;
   onMove: (dir: Vector) => void;
   onMovePending: () => void;
   onMergePending: () => void;
+  onCloseNotification: (currentStatus: GameStatus) => void;
 }
 
-const GameBoard: FC<PropsWithChildren<GameBoardProps>> = ({
+const GameBoard: FC<GameBoardProps> = ({
+  tiles,
+  gameStatus,
   rows,
   cols,
-  width,
-  height,
+  boardSize,
   spacing,
   onMove,
   onMovePending,
   onMergePending,
-  children,
+  onCloseNotification,
 }) => {
+  const [{ width: tileWidth, height: tileHeight }, setTileSize] = useState(() =>
+    calcTileSize(boardSize, rows, cols, spacing),
+  );
   const boardRef = useRef<HTMLDivElement>(null);
-  const cells = createIndexArray(rows * cols);
-
   useArrowKeyPress(onMove);
   useSwipe(boardRef, onMove);
 
+  useEffect(() => {
+    setTileSize(calcTileSize(boardSize, rows, cols, spacing));
+  }, [boardSize, cols, rows, spacing]);
+
   return (
     <Box position="relative" ref={boardRef}>
-      <StyledGrid
-        width={width}
-        height={height}
+      <Grid
+        width={boardSize}
+        height={boardSize}
         rows={rows}
         cols={cols}
         spacing={spacing}
-      >
-        {cells.map((c) => (
-          <StyledCell key={c} />
-        ))}
-      </StyledGrid>
+      />
       <Box
         position="absolute"
         top={0}
         left={0}
         background="transparent"
-        blockSize={`${height.toFixed(0)}px`}
-        inlineSize={`${width.toFixed(0)}px`}
+        blockSize="100%"
+        inlineSize="100%"
         onTransitionEnd={onMovePending}
         onAnimationEnd={onMergePending}
       >
-        {children}
+        {tiles?.map(({ r, c, id, value, isMerging, isNew }) => (
+          <Tile
+            key={id}
+            width={tileWidth}
+            height={tileHeight}
+            x={calcLocation(tileWidth, c, spacing)}
+            y={calcLocation(tileHeight, r, spacing)}
+            value={value}
+            isNew={isNew}
+            isMerging={isMerging}
+          />
+        ))}
       </Box>
+      {(gameStatus === 'win' || gameStatus === 'lose') && (
+        <Notification
+          win={gameStatus === 'win'}
+          onClose={() => onCloseNotification(gameStatus)}
+        />
+      )}
     </Box>
   );
 };

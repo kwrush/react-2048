@@ -1,4 +1,4 @@
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import { getTileFontSize } from '../../../utils/common';
 
 export interface StyledTileProps {
@@ -9,28 +9,23 @@ export interface StyledTileProps {
   y: number;
 }
 
-const getCommonTileStyles = ({
-  width,
-  height,
-  value,
-  x,
-  y,
-}: StyledTileProps) => css`
-  width: ${width}px;
-  height: ${height}px;
-  font-size: ${getTileFontSize(width, height, value)}px;
-  transform: ${`translate(${x}px, ${y}px)`};
-`;
-
-const StyledTile = styled.div<StyledTileProps>`
+const StyledTile = styled.div.attrs<StyledTileProps>(
+  ({ width, height, value, x, y }) => ({
+    style: {
+      width: `${width}px`,
+      height: `${height}px`,
+      fontSize: `${getTileFontSize(width, height, value)}px`,
+      transform: `${`translate(${x}px, ${y}px)`}`,
+    },
+  }),
+)<StyledTileProps>`
   position: absolute;
   top: 0;
   left: 0;
   display: flex;
   justify-content: center;
-  transition: transform 0.13s ease-in-out;
+  transition: transform 0.12s ease-in-out;
   background: none;
-  ${getCommonTileStyles};
 `;
 
 export default StyledTile;
