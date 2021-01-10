@@ -36,14 +36,11 @@ const App: FC = () => {
     rows: MIN_SCALE,
     cols: MIN_SCALE,
   });
-  // The fallback values make sure the game can be rendered correctly
-  // if no such items in localStorage
-  const [theme, setTheme] = useState(config.theme ?? 'default');
-  const [rows, setRows] = useScaleControl(config.rows ?? MIN_SCALE);
-  const [cols, setCols] = useScaleControl(config.cols ?? MIN_SCALE);
-  const { total, best, addScore, setTotal } = useGameScore(
-    config.bestScore ?? 0,
-  );
+
+  const [theme, setTheme] = useState(config.theme);
+  const [rows, setRows] = useScaleControl(config.rows);
+  const [cols, setCols] = useScaleControl(config.cols);
+  const { total, best, addScore, setTotal } = useGameScore(config.bestScore);
 
   const { tiles, onMove, onMovePending, onMergePending } = useGameBoard({
     rows,
