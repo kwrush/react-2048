@@ -1,12 +1,13 @@
 import { Color } from '../themes/common';
 
-let index = 0;
+// eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle
+let _tileIndex = 0;
 
 // eslint-disable-next-line no-plusplus
-export const nextIndex = () => index++;
+export const nextTileIndex = () => _tileIndex++;
 
-export const resetIndex = () => {
-  index = 0;
+export const resetTileIndex = () => {
+  _tileIndex = 0;
 };
 
 export const getId = (ind: number) => `${ind}_${Date.now()}`;
@@ -21,11 +22,11 @@ export const getTileFontSize = (w: number, h: number, v: number) => {
 
 export const getTileColor = (v: number) => `tile${clamp(v, 2, 2048)}` as Color;
 
-export const calcCellWidth = (
-  gridSize: number,
-  cellsNum: number,
+export const calcSegmentSize = (
+  length: number,
+  segmentNum: number,
   spacing: number,
-) => (gridSize - (cellsNum + 1) * spacing) / cellsNum;
+) => (length - (segmentNum + 1) * spacing) / segmentNum;
 
 export const calcTileSize = (
   gridSize: number,
@@ -33,11 +34,11 @@ export const calcTileSize = (
   cols: number,
   spacing: number,
 ) => ({
-  width: calcCellWidth(gridSize, cols, spacing),
-  height: calcCellWidth(gridSize, rows, spacing),
+  width: calcSegmentSize(gridSize, cols, spacing),
+  height: calcSegmentSize(gridSize, rows, spacing),
 });
 
-export const calcLocation = (w: number, c: number, spacing: number) =>
-  (spacing + w) * c + spacing;
+export const calcLocation = (l: number, c: number, spacing: number) =>
+  (spacing + l) * c + spacing;
 
 export const createIndexArray = (num: number) => Array.from(Array(num).keys());

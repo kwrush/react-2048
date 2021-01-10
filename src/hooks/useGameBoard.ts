@@ -8,9 +8,9 @@ import {
 import {
   clamp,
   createIndexArray,
-  nextIndex,
+  nextTileIndex,
   getId,
-  resetIndex,
+  resetTileIndex,
 } from '../utils/common';
 import { DIR, Vector } from '../utils/constants';
 import { GameStatus } from './useGameState';
@@ -47,7 +47,7 @@ const createEmptyGrid = (rows: number, cols: number) =>
   createRow(rows, () => createRow<Cell>(cols, () => undefined));
 
 const createNewTile = (r: number, c: number): Tile => {
-  const index = nextIndex();
+  const index = nextTileIndex();
   const id = getId(index);
   return {
     index,
@@ -63,10 +63,7 @@ const createNewTile = (r: number, c: number): Tile => {
 
 const getEmptyCellsLocation = (grid: Cell[][]) =>
   grid.flatMap((row, r) =>
-    row.reduce<Location[]>((acc, cell, c) => {
-      if (cell == null) acc.push({ r, c });
-      return acc;
-    }, []),
+    row.flatMap<Location>((cell, c) => (cell == null ? { r, c } : [])),
   );
 
 const createRandomTiles = (emptyCells: Location[], amount: number) => {
@@ -75,10 +72,7 @@ const createRandomTiles = (emptyCells: Location[], amount: number) => {
   if (!tilesNumber) return [];
 
   return createRow(tilesNumber, () => {
-    const [{ r, c }] = emptyCells.splice(
-      Math.floor(Math.random() * emptyCells.length),
-      1,
-    );
+    const { r, c } = emptyCells[Math.floor(Math.random() * emptyCells.length)];
     return createNewTile(r, c);
   });
 };
@@ -134,7 +128,7 @@ const mergeAndCreateNewTiles = (grid: Cell[][]) => {
       if (tile != null) {
         const { canMerge, value, index, ...rest } = tile;
         const newValue = canMerge ? 2 * value : value;
-        const newTile = {
+        const mergedTile = {
           ...rest,
           index,
           value: newValue,
@@ -143,14 +137,14 @@ const mergeAndCreateNewTiles = (grid: Cell[][]) => {
           isNew: false,
         };
 
-        tiles.push(newTile);
+        tiles.push(mergedTile);
 
         if (canMerge) {
           mergeStack.push(index);
           score += newValue;
         }
 
-        return newTile;
+        return mergedTile;
       }
 
       return tile;
@@ -246,7 +240,7 @@ const moveInDirection = (grid: Cell[][], dir: Vector) => {
 
 const resetGameBoard = (rows: number, cols: number) => {
   // Index restarts from 0 on reset
-  resetIndex();
+  resetTileIndex();
   const grid = createEmptyGrid(rows, cols);
   const emptyCells = getEmptyCellsLocation(grid);
   const newTiles = createRandomTiles(emptyCells, rows * cols >= 24 ? 4 : 2);
@@ -332,10 +326,10 @@ const useGameBoard = ({
       ) {
         setGameStatus('win');
       } else if (
-        gameStatus !== 'lose' &&
+        gameStatus !== 'lost' &&
         !canMoveTile(gridRef.current, tiles)
       ) {
-        setGameStatus('lose');
+        setGameStatus('lost');
       }
     }
   }, [tiles, gameStatus, pause, setGameStatus]);

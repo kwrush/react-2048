@@ -78,7 +78,7 @@ const GameBoard: FC<GameBoardProps> = ({
           />
         ))}
       </Box>
-      {(gameStatus === 'win' || gameStatus === 'lose') && (
+      {(gameStatus === 'win' || gameStatus === 'lost') && (
         <Notification
           win={gameStatus === 'win'}
           onClose={() => onCloseNotification(gameStatus)}

@@ -1,6 +1,6 @@
 import { useCallback, useReducer } from 'react';
 
-export type GameStatus = 'win' | 'lose' | 'continue' | 'restart' | 'running';
+export type GameStatus = 'win' | 'lost' | 'continue' | 'restart' | 'running';
 
 export type GameState = {
   status: GameStatus;
@@ -19,7 +19,7 @@ const reducer = (
 ): GameState => {
   switch (action.type) {
     case 'win':
-    case 'lose':
+    case 'lost':
       return { ...state, status: action.type, pause: true };
     case 'continue':
     case 'restart':
