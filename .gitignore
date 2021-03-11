@@ -50,3 +50,5 @@ Temporary Items
 
 # vscode config
 **/.vscode/
+
+**/dist/
