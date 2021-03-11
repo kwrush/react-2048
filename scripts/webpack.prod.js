@@ -1,6 +1,5 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 module.exports = {
   mode: 'production',
@@ -8,6 +7,7 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, '../dist'),
     filename: 'bundle.js',
+    clean: true,
   },
   module: {
     rules: [
@@ -19,11 +19,7 @@ module.exports = {
     ],
   },
   resolve: {
-    // Add .ts and .tsx as a resolvable extension.
     extensions: ['.ts', '.tsx', '.js'],
   },
-  plugins: [
-    new CleanWebpackPlugin(),
-    new HtmlWebpackPlugin({ template: './src/index.html' }),
-  ],
+  plugins: [new HtmlWebpackPlugin({ template: './src/index.html' })],
 };

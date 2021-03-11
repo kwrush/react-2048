@@ -24,9 +24,8 @@ export type Configuration = {
   cols: number;
 };
 
-const isThemeValue = (t: string): t is ThemeValue => {
-  return t === 'default' || t === 'dark';
-};
+const isThemeValue = (t: string): t is ThemeValue =>
+  t === 'default' || t === 'dark';
 
 const App: FC = () => {
   const [{ status: gameStatus, pause }, setGameStatus] = useGameState();

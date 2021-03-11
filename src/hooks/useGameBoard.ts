@@ -123,8 +123,8 @@ const mergeAndCreateNewTiles = (grid: Cell[][]) => {
   const rows = grid.length;
   const cols = grid[0].length;
 
-  const newGrid = grid.map((row) => {
-    return row.map((tile) => {
+  const newGrid = grid.map((row) =>
+    row.map((tile) => {
       if (tile != null) {
         const { canMerge, value, index, ...rest } = tile;
         const newValue = canMerge ? 2 * value : value;
@@ -148,8 +148,8 @@ const mergeAndCreateNewTiles = (grid: Cell[][]) => {
       }
 
       return tile;
-    });
-  });
+    }),
+  );
 
   const emptyCells = getEmptyCellsLocation(newGrid);
   const newTiles = createRandomTiles(emptyCells, rows * cols >= 24 ? 2 : 1);
