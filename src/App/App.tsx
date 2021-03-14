@@ -72,17 +72,8 @@ const App: FC = () => {
   }, [gameStatus, setTotal]);
 
   useEffect(() => {
-    const { rows: currentRows, cols: currentCols } = config;
-    if (rows !== currentRows || cols !== currentCols) {
-      setConfig({ ...config, rows, cols });
-    }
-  }, [cols, rows, config, setConfig]);
-
-  useEffect(() => {
-    const { bestScore, theme: currentTheme } = config;
-    if (bestScore !== best) setConfig({ ...config, bestScore: best });
-    if (currentTheme !== theme) setConfig({ ...config, theme });
-  }, [best, theme, config, setConfig]);
+    setConfig({ rows, cols, bestScore: best, theme });
+  }, [rows, cols, best, theme, setConfig]);
 
   return (
     <ThemeProvider theme={theme === 'default' ? defaultTheme : darkTheme}>
@@ -101,7 +92,7 @@ const App: FC = () => {
           <Box marginBlockStart="s5" inlineSize="100%" justifyContent="end">
             <Switch
               title="dark mode"
-              value={config.theme}
+              value={theme}
               activeValue="dark"
               inactiveValue="default"
               knobColor="background"

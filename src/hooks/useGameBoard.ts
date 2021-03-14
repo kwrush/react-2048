@@ -90,10 +90,12 @@ const createTraversalMap = (rows: number, cols: number, dir: Vector) => {
 const sortTiles = (tiles: Tile[]) =>
   tiles.sort((t1, t2) => t1.index - t2.index);
 
-const canMoveTile = (grid: Cell[][], tiles: Tile[]) => {
+const isWinning = (tiles: Tile[]) => tiles.some(({ value }) => value === 2048);
+
+const canGameContinue = (grid: Cell[][], tiles: Tile[]) => {
   const totalRows = grid.length;
   const totalCols = grid[0].length;
-  // We can always move when there're empty cells,
+  // We can always continue the game when there're empty cells,
   if (tiles.length < totalRows * totalCols) return true;
 
   const dirs = [DIR.Left, DIR.Right, DIR.Up, DIR.Down];
@@ -161,7 +163,7 @@ const mergeAndCreateNewTiles = (grid: Cell[][]) => {
 
   return {
     grid: newGrid,
-    tiles: sortTiles(tiles),
+    tiles,
     score,
     mergeStack,
   };
@@ -229,10 +231,7 @@ const moveInDirection = (grid: Cell[][], dir: Vector) => {
   });
 
   return {
-    // Sort by index to persist iteration order of tiles array
-    // so that transform animation won't be interrupted by rerending
-    // when id is not changed.
-    tiles: sortTiles(tiles),
+    tiles,
     grid: newGrid,
     moveStack,
   };
@@ -277,8 +276,15 @@ const useGameBoard = ({
       );
       gridRef.current = grid;
       pendingStackRef.current = moveStack;
-      setMoving(moveStack.length > 0);
-      setTiles(newTiles);
+
+      // Don't trigger upates if no movments
+      if (moveStack.length > 0) {
+        setMoving(true);
+        // Sort by index to persist iteration order of tiles array
+        // so that transform animation won't be interrupted by rerending
+        // when id is not changed.
+        setTiles(sortTiles(newTiles));
+      }
     }
   }, []);
 
@@ -303,7 +309,7 @@ const useGameBoard = ({
       pendingStackRef.current = mergeStack;
 
       addScore(score);
-      setTiles(newTiles);
+      setTiles(sortTiles(newTiles));
     }
   }, [moving, addScore]);
 
@@ -319,20 +325,15 @@ const useGameBoard = ({
   }, [rows, cols, setGameStatus]);
 
   useEffect(() => {
-    if (!pause) {
-      if (
-        gameStatus !== 'continue' &&
-        tiles.some(({ value }) => value === 2048)
-      ) {
-        setGameStatus('win');
-      } else if (
-        gameStatus !== 'lost' &&
-        !canMoveTile(gridRef.current, tiles)
-      ) {
-        setGameStatus('lost');
-      }
+    if (gameStatus !== 'continue' && isWinning(tiles)) {
+      setGameStatus('win');
+    } else if (
+      gameStatus !== 'lost' &&
+      !canGameContinue(gridRef.current, tiles)
+    ) {
+      setGameStatus('lost');
     }
-  }, [tiles, gameStatus, pause, setGameStatus]);
+  }, [tiles, gameStatus, setGameStatus]);
 
   useEffect(() => {
     if (gameStatus === 'restart') {
