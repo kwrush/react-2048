@@ -90,7 +90,7 @@ const createTraversalMap = (rows: number, cols: number, dir: Vector) => {
 const sortTiles = (tiles: Tile[]) =>
   tiles.sort((t1, t2) => t1.index - t2.index);
 
-const isWinning = (tiles: Tile[]) => tiles.some(({ value }) => value === 2048);
+const isWin = (tiles: Tile[]) => tiles.some(({ value }) => value === 2048);
 
 const canGameContinue = (grid: Cell[][], tiles: Tile[]) => {
   const totalRows = grid.length;
@@ -120,7 +120,6 @@ const canGameContinue = (grid: Cell[][], tiles: Tile[]) => {
 
 const mergeAndCreateNewTiles = (grid: Cell[][]) => {
   const tiles: Tile[] = [];
-  const mergeStack: number[] = [];
   let score = 0;
   const rows = grid.length;
   const cols = grid[0].length;
@@ -142,7 +141,6 @@ const mergeAndCreateNewTiles = (grid: Cell[][]) => {
         tiles.push(mergedTile);
 
         if (canMerge) {
-          mergeStack.push(index);
           score += newValue;
         }
 
@@ -158,14 +156,12 @@ const mergeAndCreateNewTiles = (grid: Cell[][]) => {
   newTiles.forEach((tile) => {
     newGrid[tile.r][tile.c] = tile;
     tiles.push(tile);
-    mergeStack.push(tile.index);
   });
 
   return {
     grid: newGrid,
     tiles,
     score,
-    mergeStack,
   };
 };
 
@@ -293,20 +289,12 @@ const useGameBoard = ({
     setMoving(pendingStackRef.current.length > 0);
   }, []);
 
-  const onMergePending = useCallback(() => {
-    pendingStackRef.current.pop();
-  }, []);
-
   useLayoutEffect(() => {
     if (!moving) {
-      const {
-        tiles: newTiles,
-        mergeStack,
-        score,
-        grid,
-      } = mergeAndCreateNewTiles(gridRef.current);
+      const { tiles: newTiles, score, grid } = mergeAndCreateNewTiles(
+        gridRef.current,
+      );
       gridRef.current = grid;
-      pendingStackRef.current = mergeStack;
 
       addScore(score);
       setTiles(sortTiles(newTiles));
@@ -321,11 +309,10 @@ const useGameBoard = ({
     const { grid, tiles: newTiles } = resetGameBoard(rows, cols);
     gridRef.current = grid;
     setTiles(newTiles);
-    setGameStatus('restart');
   }, [rows, cols, setGameStatus]);
 
   useEffect(() => {
-    if (gameStatus !== 'continue' && isWinning(tiles)) {
+    if (gameStatus !== 'continue' && isWin(tiles)) {
       setGameStatus('win');
     } else if (
       gameStatus !== 'lost' &&
@@ -347,7 +334,7 @@ const useGameBoard = ({
     }
   }, [gameStatus, setGameStatus]);
 
-  return { tiles, onMove, onMovePending, onMergePending };
+  return { tiles, onMove, onMovePending };
 };
 
 export default useGameBoard;

@@ -9,6 +9,7 @@
     "start:host": "webpack serve --config scripts/webpack.dev.js --host 0.0.0.0",
     "lint": "eslint . --ext .js,.ts,.tsx --max-warnings 0",
     "format": "prettier --write .",
+    "tsc": "tsc -p tsconfig.json --noEmit",
     "deploy": "npm run build && gh-pages -d dist"
   },
   "keywords": [
@@ -17,7 +18,7 @@
     "JavaScript"
   ],
   "author": "Kai Wang",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
@@ -58,7 +59,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "npm run lint"
+      "pre-commit": "npm run lint && npm run tsc"
     }
   }
 }

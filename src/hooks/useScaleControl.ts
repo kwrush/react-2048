@@ -1,15 +1,13 @@
-import { useCallback, useState } from 'react';
+import { useReducer } from 'react';
 import { clamp } from '../utils/common';
 import { MAX_SCALE, MIN_SCALE } from '../utils/constants';
 
-const useScaleControl = (initScale: number): [number, (s: number) => void] => {
-  const [scale, setScale] = useState(clamp(initScale, MIN_SCALE, MAX_SCALE));
+const scaleReducer = (s: number, change: number) =>
+  clamp(s + change, MIN_SCALE, MAX_SCALE);
 
-  const onSetScale = useCallback((s: number) => {
-    setScale(clamp(s, MIN_SCALE, MAX_SCALE));
-  }, []);
-
-  return [scale, onSetScale];
-};
+const useScaleControl = (
+  initScale: number,
+): [number, (change: number) => void] =>
+  useReducer(scaleReducer, clamp(initScale, MIN_SCALE, MAX_SCALE));
 
 export default useScaleControl;

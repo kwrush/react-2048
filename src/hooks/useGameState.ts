@@ -1,4 +1,4 @@
-import { useCallback, useReducer } from 'react';
+import { useReducer } from 'react';
 
 export type GameStatus = 'win' | 'lost' | 'continue' | 'restart' | 'running';
 
@@ -7,37 +7,26 @@ export type GameState = {
   pause: boolean;
 };
 
-export type ChangeStateAction = {
-  type: GameStatus;
-};
-
-const initState: GameState = { status: 'running', pause: false };
-
-const reducer = (
-  state: GameState = initState,
-  action: ChangeStateAction,
+const gameStateReducer = (
+  state: GameState,
+  nextStatus: GameStatus,
 ): GameState => {
-  switch (action.type) {
+  switch (nextStatus) {
     case 'win':
     case 'lost':
-      return { ...state, status: action.type, pause: true };
+      return { status: nextStatus, pause: true };
     case 'continue':
     case 'restart':
-      return { ...state, status: action.type, pause: false };
     case 'running':
-      return { ...initState };
+      return { status: nextStatus, pause: false };
     default:
       return state;
   }
 };
 
-const useGameState = (): [GameState, (nextStatus: GameStatus) => void] => {
-  const [gameState, dipatcher] = useReducer(reducer, initState);
-  const setGameState = useCallback((nextStatus: GameStatus) => {
-    dipatcher({ type: nextStatus });
-  }, []);
-
-  return [gameState, setGameState];
-};
+const useGameState = (
+  initState: GameState,
+): [GameState, (nextStatus: GameStatus) => void] =>
+  useReducer(gameStateReducer, initState);
 
 export default useGameState;

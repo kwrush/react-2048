@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useEffect, useState } from 'react';
+import React, { FC, useCallback, useEffect } from 'react';
 import { ThemeProvider } from 'styled-components';
 import Box from '../components/Box';
 import Control from '../components/Control/Control';
@@ -14,8 +14,8 @@ import defaultTheme from '../themes/default';
 import darkTheme from '../themes/dark';
 import { APP_NAME, GRID_SIZE, MIN_SCALE, SPACING } from '../utils/constants';
 import useLocalStorage from '../hooks/useLocalStorage';
-
-export type ThemeValue = 'default' | 'dark';
+import { ThemeValue } from '../themes/types';
+import useTheme from '../hooks/useTheme';
 
 export type Configuration = {
   theme: ThemeValue;
@@ -24,11 +24,12 @@ export type Configuration = {
   cols: number;
 };
 
-const isThemeValue = (t: string): t is ThemeValue =>
-  t === 'default' || t === 'dark';
-
 const App: FC = () => {
-  const [{ status: gameStatus, pause }, setGameStatus] = useGameState();
+  const [{ status: gameStatus, pause }, setGameStatus] = useGameState({
+    status: 'running',
+    pause: false,
+  });
+
   const [config, setConfig] = useLocalStorage<Configuration>(APP_NAME, {
     theme: 'default',
     bestScore: 0,
@@ -36,12 +37,14 @@ const App: FC = () => {
     cols: MIN_SCALE,
   });
 
-  const [theme, setTheme] = useState(config.theme);
+  const [theme, setTheme] = useTheme(config.theme);
+
   const [rows, setRows] = useScaleControl(config.rows);
   const [cols, setCols] = useScaleControl(config.cols);
+
   const { total, best, addScore, setTotal } = useGameScore(config.bestScore);
 
-  const { tiles, onMove, onMovePending, onMergePending } = useGameBoard({
+  const { tiles, onMove, onMovePending } = useGameBoard({
     rows,
     cols,
     pause,
@@ -60,12 +63,6 @@ const App: FC = () => {
     },
     [setGameStatus],
   );
-
-  const onChangeTheme = useCallback((newTheme: string) => {
-    if (isThemeValue(newTheme)) {
-      setTheme(newTheme);
-    }
-  }, []);
 
   useEffect(() => {
     if (gameStatus === 'restart') setTotal(0);
@@ -98,7 +95,7 @@ const App: FC = () => {
               knobColor="background"
               activeColor="white"
               inactiveColor="black"
-              onChange={onChangeTheme}
+              onChange={setTheme}
             />
           </Box>
           <Box inlineSize="100%" justifyContent="space-between">
@@ -130,7 +127,6 @@ const App: FC = () => {
             gameStatus={gameStatus}
             onMove={onMove}
             onMovePending={onMovePending}
-            onMergePending={onMergePending}
             onCloseNotification={onCloseNotification}
           />
           <Box marginBlock="s4" justifyContent="center" flexDirection="column">

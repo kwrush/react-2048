@@ -34,7 +34,7 @@ const Control: FC<ControlProps> = ({
         </Box>
         <Button
           mini
-          onClick={() => onChangeRow(rows - 1)}
+          onClick={() => onChangeRow(-1)}
           disable={rows === MIN_SCALE}
         >
           -
@@ -46,7 +46,7 @@ const Control: FC<ControlProps> = ({
         </Box>
         <Button
           mini
-          onClick={() => onChangeRow(rows + 1)}
+          onClick={() => onChangeRow(1)}
           disable={rows === MAX_SCALE}
         >
           +
@@ -60,7 +60,7 @@ const Control: FC<ControlProps> = ({
         </Box>
         <Button
           mini
-          onClick={() => onChangeCol(cols - 1)}
+          onClick={() => onChangeCol(-1)}
           disable={cols === MIN_SCALE}
         >
           -
@@ -72,7 +72,7 @@ const Control: FC<ControlProps> = ({
         </Box>
         <Button
           mini
-          onClick={() => onChangeCol(cols + 1)}
+          onClick={() => onChangeCol(1)}
           disable={cols === MAX_SCALE}
         >
           +

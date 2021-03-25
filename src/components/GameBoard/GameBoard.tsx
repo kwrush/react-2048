@@ -19,7 +19,6 @@ export interface GameBoardProps {
   spacing: number;
   onMove: (dir: Vector) => void;
   onMovePending: () => void;
-  onMergePending: () => void;
   onCloseNotification: (currentStatus: GameStatus) => void;
 }
 
@@ -32,7 +31,7 @@ const GameBoard: FC<GameBoardProps> = ({
   spacing,
   onMove,
   onMovePending,
-  onMergePending,
+  // onMergePending,
   onCloseNotification,
 }) => {
   const [{ width: tileWidth, height: tileHeight }, setTileSize] = useState(() =>
@@ -63,7 +62,6 @@ const GameBoard: FC<GameBoardProps> = ({
         blockSize="100%"
         inlineSize="100%"
         onTransitionEnd={onMovePending}
-        onAnimationEnd={onMergePending}
       >
         {tiles?.map(({ r, c, id, value, isMerging, isNew }) => (
           <Tile
