@@ -10,6 +10,18 @@ export const resetTileIndex = () => {
   _tileIndex = 0;
 };
 
+// https://en.wikipedia.org/wiki/Fisher–Yates_shuffle
+export const shuffle = <T>(arr: T[]) => {
+  const shuffled = arr.slice(0);
+  // eslint-disable-next-line no-plusplus
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+
+  return shuffled;
+};
+
 export const getId = (ind: number) => `${ind}_${Date.now()}`;
 
 export const clamp = (d: number, min: number, max: number) =>

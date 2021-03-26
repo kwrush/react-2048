@@ -24,7 +24,7 @@ const StyledTile = styled.div.attrs<StyledTileProps>(
   left: 0;
   display: flex;
   justify-content: center;
-  transition: transform 0.12s ease-in-out;
+  transition: transform 0.15s ease-in-out;
   background: none;
 `;
 

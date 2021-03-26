@@ -11,6 +11,7 @@ import {
   nextTileIndex,
   getId,
   resetTileIndex,
+  shuffle,
 } from '../utils/common';
 import { DIR, Vector } from '../utils/constants';
 import { GameStatus } from './useGameState';
@@ -71,10 +72,9 @@ const createRandomTiles = (emptyCells: Location[], amount: number) => {
 
   if (!tilesNumber) return [];
 
-  return createRow(tilesNumber, () => {
-    const { r, c } = emptyCells[Math.floor(Math.random() * emptyCells.length)];
-    return createNewTile(r, c);
-  });
+  return shuffle(emptyCells)
+    .slice(0, tilesNumber)
+    .map(({ r, c }) => createNewTile(r, c));
 };
 
 const createTraversalMap = (rows: number, cols: number, dir: Vector) => {
