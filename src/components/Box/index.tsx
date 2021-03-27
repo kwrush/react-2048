@@ -1,2 +1,2 @@
-export { default } from './styled';
-export type { StyledBoxProps as BoxProps } from './styled';
+export { default } from './StyledBox';
+export type { StyledBoxProps as BoxProps } from './StyledBox';

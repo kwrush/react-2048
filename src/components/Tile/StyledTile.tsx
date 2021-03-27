@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { getTileFontSize } from '../../../utils/common';
+import { getTileFontSize } from '../../utils/common';
 
 export interface StyledTileProps {
   width: number;

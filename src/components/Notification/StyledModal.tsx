@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { scaleUp } from '../../../utils/animation';
+import { scaleUp } from '../../utils/animation';
 
 const StyledModal = styled.div`
   position: absolute;

@@ -1,7 +1,7 @@
 import React, { FC, useEffect, useRef, useState } from 'react';
 import Box from '../Box';
 import Text from '../Text';
-import StyledScore from './styled';
+import StyledScore from './StyledScore';
 
 export interface ScoreBoardProps {
   title: string;

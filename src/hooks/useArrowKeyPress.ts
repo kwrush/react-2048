@@ -1,5 +1,6 @@
 import { useCallback, useEffect } from 'react';
-import { ArrowKey, ArrowKeyType, DIR, Vector } from '../utils/constants';
+import { DIRECTION_MAP } from '../utils/constants';
+import { ArrowKey, ArrowKeyType, Vector } from '../utils/types';
 
 const isArrowKey = (key: string): key is ArrowKeyType =>
   Object.keys(ArrowKey).includes(key);
@@ -10,7 +11,7 @@ const useArrowKeyPress = (cb: (dir: Vector) => void) => {
   const onKeyDown = useCallback(
     ({ key }: KeyboardEvent) => {
       if (isArrowKey(key)) {
-        cb(DIR[key]);
+        cb(DIRECTION_MAP[key]);
       }
     },
     [cb],

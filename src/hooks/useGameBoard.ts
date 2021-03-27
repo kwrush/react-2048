@@ -13,7 +13,8 @@ import {
   resetTileIndex,
   shuffle,
 } from '../utils/common';
-import { DIR, Vector } from '../utils/constants';
+import { DIRECTION_MAP } from '../utils/constants';
+import { Vector } from '../utils/types';
 import { GameStatus } from './useGameState';
 
 export interface Location {
@@ -98,9 +99,13 @@ const canGameContinue = (grid: Cell[][], tiles: Tile[]) => {
   // We can always continue the game when there're empty cells,
   if (tiles.length < totalRows * totalCols) return true;
 
-  const dirs = [DIR.Left, DIR.Right, DIR.Up, DIR.Down];
+  const dirs = [
+    DIRECTION_MAP.Left,
+    DIRECTION_MAP.Right,
+    DIRECTION_MAP.Up,
+    DIRECTION_MAP.Down,
+  ];
 
-  /* eslint-disable no-plusplus */
   for (let ind = 0; ind < tiles.length; ind++) {
     const { r, c, value } = tiles[ind];
     for (let d = 0; d < dirs.length; d++) {
@@ -114,7 +119,6 @@ const canGameContinue = (grid: Cell[][], tiles: Tile[]) => {
       }
     }
   }
-  /* eslint-enable no-plusplus */
   return false;
 };
 

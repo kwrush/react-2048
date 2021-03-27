@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { fadeOut } from '../../../utils/animation';
+import { fadeOut } from '../../utils/animation';
 
 const StyledScore = styled.div`
   position: absolute;

@@ -1,5 +1,5 @@
 import styled, { css } from 'styled-components';
-import { Color } from '../../../themes/common';
+import { Color } from '../../themes/types';
 
 export interface StyledTextProps {
   as?: 'p' | 'span';

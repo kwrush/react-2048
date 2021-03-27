@@ -1,6 +1,6 @@
 import styled from 'styled-components';
-import { pop, scaleUp } from '../../../utils/animation';
-import { getTileColor } from '../../../utils/common';
+import { pop, scaleUp } from '../../utils/animation';
+import { getTileColor } from '../../utils/common';
 
 export interface StyledTileValueProps {
   isNew: boolean;

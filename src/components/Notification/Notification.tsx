@@ -1,5 +1,6 @@
 import React, { FC } from 'react';
-import { StyledBackdrop, StyledModal } from './styled';
+import StyledBackdrop from './StyledBackdrop';
+import StyledModal from './StyledModal';
 import Button from '../Button';
 import Box from '../Box';
 import Text from '../Text';

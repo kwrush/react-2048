@@ -1,6 +1,7 @@
 import React, { FC, useMemo } from 'react';
 import { createIndexArray } from '../../utils/common';
-import { StyledCell, StyledGrid, StyledGridProps } from './styled';
+import StyledCell from './StyledCell';
+import StyledGrid, { StyledGridProps } from './StyledGrid';
 
 export type GridProps = StyledGridProps;
 

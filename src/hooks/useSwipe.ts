@@ -1,5 +1,6 @@
 import { RefObject, useCallback, useEffect, useRef } from 'react';
-import { DIR, Vector } from '../utils/constants';
+import { DIRECTION_MAP } from '../utils/constants';
+import { Vector } from '../utils/types';
 
 const isTouchDevice = () => 'ontouchstart' in window;
 
@@ -30,9 +31,9 @@ const useSwipe = (
         const dy = cy - y;
 
         if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > threshold) {
-          cb(cx > x ? DIR.Right : DIR.Left);
+          cb(cx > x ? DIRECTION_MAP.Right : DIRECTION_MAP.Left);
         } else if (Math.abs(dy) > Math.abs(dx) && Math.abs(dy) > threshold) {
-          cb(cy > y ? DIR.Down : DIR.Up);
+          cb(cy > y ? DIRECTION_MAP.Down : DIRECTION_MAP.Up);
         }
       }
     },

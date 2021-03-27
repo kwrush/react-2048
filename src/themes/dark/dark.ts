@@ -1,4 +1,4 @@
-import { Theme } from '../common';
+import { Theme } from '../types';
 import defaultTheme from '../default';
 import { defaultPalette } from '../default/default';
 

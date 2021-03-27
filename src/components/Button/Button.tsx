@@ -1,5 +1,5 @@
 import React, { forwardRef, PropsWithChildren } from 'react';
-import { StyledButton, StyledButtonProps } from './styled';
+import StyledButton, { StyledButtonProps } from './StyledButton';
 
 export interface ButtonProps extends StyledButtonProps {
   onClick: () => void;

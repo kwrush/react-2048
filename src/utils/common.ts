@@ -1,4 +1,4 @@
-import { Color } from '../themes/common';
+import { Color } from '../themes/types';
 
 // eslint-disable-next-line @typescript-eslint/naming-convention, no-underscore-dangle
 let _tileIndex = 0;
@@ -13,7 +13,6 @@ export const resetTileIndex = () => {
 // https://en.wikipedia.org/wiki/Fisher–Yates_shuffle
 export const shuffle = <T>(arr: T[]) => {
   const shuffled = arr.slice(0);
-  // eslint-disable-next-line no-plusplus
   for (let i = shuffled.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
@@ -28,8 +27,8 @@ export const clamp = (d: number, min: number, max: number) =>
   Math.max(Math.min(max, d), min);
 
 export const getTileFontSize = (w: number, h: number, v: number) => {
-  const min = Math.min(w, h);
-  return v >= 1024 ? min / 2.8 : min / 2;
+  const factor = v >= 1024 ? 2.8 : 2;
+  return Math.min(w, h) / factor;
 };
 
 export const getTileColor = (v: number) => `tile${clamp(v, 2, 2048)}` as Color;
@@ -53,4 +52,4 @@ export const calcTileSize = (
 export const calcLocation = (l: number, c: number, spacing: number) =>
   (spacing + l) * c + spacing;
 
-export const createIndexArray = (num: number) => Array.from(Array(num).keys());
+export const createIndexArray = (len: number) => Array.from(Array(len).keys());

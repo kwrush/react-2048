@@ -1,6 +1,8 @@
 import React, { FC, useCallback, useEffect, useState } from 'react';
-import { Color } from '../../themes/common';
-import { StyledInput, StyledKnob, StyledSwitch } from './styled';
+import { Color } from '../../themes/types';
+import StyledInput from './StyledInput';
+import StyledKnob from './StyledKnob';
+import StyledSwitch from './StyledSwitch';
 import Box from '../Box';
 import Text from '../Text';
 

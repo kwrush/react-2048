@@ -1,5 +1,6 @@
 import styled, { css } from 'styled-components';
-import { Color, Spacing, SpacingValues } from '../../../themes/common';
+import { SpacingValues } from '../../themes/constants';
+import { Color, Spacing } from '../../themes/types';
 
 export type Length = string | 0;
 export type BoxSpacing = Spacing | 0;

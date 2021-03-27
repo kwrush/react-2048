@@ -4,7 +4,7 @@ import { Tile as TileType } from '../../hooks/useGameBoard';
 import { GameStatus } from '../../hooks/useGameState';
 import useSwipe from '../../hooks/useSwipe';
 import { calcLocation, calcTileSize } from '../../utils/common';
-import { Vector } from '../../utils/constants';
+import { Vector } from '../../utils/types';
 import Box from '../Box';
 import Grid from '../Grid';
 import Notification from '../Notification';
