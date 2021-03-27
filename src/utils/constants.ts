@@ -1,7 +1,5 @@
 import { ArrowKeyType, DirectionType, Vector } from './types';
 
-export const APP_NAME = 'react-2048';
-
 export const DIRECTION_MAP: Record<ArrowKeyType | DirectionType, Vector> = {
   ArrowLeft: { r: 0, c: -1 },
   ArrowRight: { r: 0, c: 1 },

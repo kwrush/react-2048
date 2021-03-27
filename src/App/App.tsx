@@ -12,7 +12,7 @@ import useGameState, { GameStatus } from '../hooks/useGameState';
 import useScaleControl from '../hooks/useScaleControl';
 import defaultTheme from '../themes/default';
 import darkTheme from '../themes/dark';
-import { APP_NAME, GRID_SIZE, MIN_SCALE, SPACING } from '../utils/constants';
+import { GRID_SIZE, MIN_SCALE, SPACING } from '../utils/constants';
 import useLocalStorage from '../hooks/useLocalStorage';
 import { ThemeValue } from '../themes/types';
 import useTheme from '../hooks/useTheme';
@@ -23,6 +23,8 @@ export type Configuration = {
   rows: number;
   cols: number;
 };
+
+const APP_NAME = 'react-2048';
 
 const App: FC = () => {
   const [{ status: gameStatus, pause }, setGameStatus] = useGameState({

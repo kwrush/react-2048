@@ -313,18 +313,8 @@ const useGameBoard = ({
     const { grid, tiles: newTiles } = resetGameBoard(rows, cols);
     gridRef.current = grid;
     setTiles(newTiles);
+    setGameStatus('running');
   }, [rows, cols, setGameStatus]);
-
-  useEffect(() => {
-    if (gameStatus !== 'continue' && isWin(tiles)) {
-      setGameStatus('win');
-    } else if (
-      gameStatus !== 'lost' &&
-      !canGameContinue(gridRef.current, tiles)
-    ) {
-      setGameStatus('lost');
-    }
-  }, [tiles, gameStatus, setGameStatus]);
 
   useEffect(() => {
     if (gameStatus === 'restart') {
@@ -335,8 +325,15 @@ const useGameBoard = ({
       gridRef.current = grid;
       setTiles(newTiles);
       setGameStatus('running');
+    } else if (gameStatus === 'running' && isWin(tiles)) {
+      setGameStatus('win');
+    } else if (
+      gameStatus !== 'lost' &&
+      !canGameContinue(gridRef.current, tiles)
+    ) {
+      setGameStatus('lost');
     }
-  }, [gameStatus, setGameStatus]);
+  }, [tiles, gameStatus, setGameStatus]);
 
   return { tiles, onMove, onMovePending };
 };
