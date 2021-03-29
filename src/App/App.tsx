@@ -10,15 +10,13 @@ import useGameBoard from '../hooks/useGameBoard';
 import useGameScore from '../hooks/useGameScore';
 import useGameState, { GameStatus } from '../hooks/useGameState';
 import useScaleControl from '../hooks/useScaleControl';
-import defaultTheme from '../themes/default';
-import darkTheme from '../themes/dark';
 import { GRID_SIZE, MIN_SCALE, SPACING } from '../utils/constants';
 import useLocalStorage from '../hooks/useLocalStorage';
-import { ThemeValue } from '../themes/types';
+import { ThemeName } from '../themes/types';
 import useTheme from '../hooks/useTheme';
 
 export type Configuration = {
-  theme: ThemeValue;
+  theme: ThemeName;
   bestScore: number;
   rows: number;
   cols: number;
@@ -39,7 +37,9 @@ const App: FC = () => {
     cols: MIN_SCALE,
   });
 
-  const [theme, setTheme] = useTheme(config.theme);
+  const [{ name: themeName, value: themeValue }, setTheme] = useTheme(
+    config.theme,
+  );
 
   const [rows, setRows] = useScaleControl(config.rows);
   const [cols, setCols] = useScaleControl(config.cols);
@@ -71,11 +71,11 @@ const App: FC = () => {
   }, [gameStatus, setTotal]);
 
   useEffect(() => {
-    setConfig({ rows, cols, bestScore: best, theme });
-  }, [rows, cols, best, theme, setConfig]);
+    setConfig({ rows, cols, bestScore: best, theme: themeName });
+  }, [rows, cols, best, themeName, setConfig]);
 
   return (
-    <ThemeProvider theme={theme === 'default' ? defaultTheme : darkTheme}>
+    <ThemeProvider theme={themeValue}>
       <Box
         justifyContent="center"
         inlineSize="100%"
@@ -91,7 +91,7 @@ const App: FC = () => {
           <Box marginBlockStart="s5" inlineSize="100%" justifyContent="end">
             <Switch
               title="dark mode"
-              value={theme}
+              value={themeName}
               activeValue="dark"
               inactiveValue="default"
               knobColor="background"

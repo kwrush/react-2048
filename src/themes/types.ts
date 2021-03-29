@@ -40,4 +40,4 @@ export interface Theme {
   palette: Palette;
 }
 
-export type ThemeValue = 'default' | 'dark';
+export type ThemeName = 'default' | 'dark';

@@ -1,14 +1,27 @@
 import { useReducer } from 'react';
-import { ThemeValue } from '../themes/types';
+import { Theme, ThemeName } from '../themes/types';
+import defaultTheme from '../themes/default';
+import darkTheme from '../themes/dark';
 
-const isThemeValue = (t: string): t is ThemeValue =>
+export type ThemeEntity = {
+  name: ThemeName;
+  value: Theme;
+};
+
+const isThemeName = (t: string): t is ThemeName =>
   t === 'default' || t === 'dark';
 
-const themeReducer = (theme: ThemeValue, nextTheme: string) =>
-  isThemeValue(nextTheme) ? nextTheme : theme;
+const getTheme = (name: ThemeName): ThemeEntity =>
+  name === 'default'
+    ? { name: 'default', value: defaultTheme }
+    : { name: 'dark', value: darkTheme };
+
+const themeReducer = (theme: ThemeEntity, nextThemeName: string) =>
+  isThemeName(nextThemeName) ? getTheme(nextThemeName) : theme;
 
 const useTheme = (
-  theme: ThemeValue,
-): [ThemeValue, (nextTheme: string) => void] => useReducer(themeReducer, theme);
+  initialThemeName: ThemeName,
+): [ThemeEntity, (nextTheme: string) => void] =>
+  useReducer(themeReducer, getTheme(initialThemeName));
 
 export default useTheme;
