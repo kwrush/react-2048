@@ -6,7 +6,7 @@
   "lang": "en-US",
   "display": "fullscreen",
   "orientation": "portrait",
-  "scope": "/react-2048",
+  "scope": "https://kwrush.github.io/react-2048/",
   "start_url": "../index.html",
   "background_color": "white",
   "theme_color": "white",
