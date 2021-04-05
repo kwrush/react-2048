@@ -1,33 +1,15 @@
 const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
-
+const { merge } = require('webpack-merge');
+const webpackCommon = require('./webpack.common');
 const getLocalIPs = require('./getLocalIPs');
 
-module.exports = {
+module.exports = merge(webpackCommon, {
   mode: 'development',
-  entry: path.resolve(__dirname, '../src/index.tsx'),
-  output: {
-    path: path.resolve(__dirname, '../dist'),
-    filename: 'bundle.js',
-  },
-  module: {
-    rules: [
-      {
-        test: /\.tsx?$/,
-        exclude: [/node_modules/],
-        use: 'babel-loader',
-      },
-    ],
-  },
-  resolve: {
-    extensions: ['.ts', '.tsx', '.js'],
-  },
   plugins: [
     new ForkTsCheckerWebpackPlugin({
       async: false,
     }),
-    new HtmlWebpackPlugin({ template: './src/index.html' }),
   ],
   devtool: 'eval-cheap-module-source-map',
   devServer: {
@@ -47,4 +29,4 @@ module.exports = {
       }
     },
   },
-};
+});

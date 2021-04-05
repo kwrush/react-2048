@@ -1,25 +1,18 @@
-const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+const { merge } = require('webpack-merge');
+const { GenerateSW } = require('workbox-webpack-plugin');
+const webpackCommon = require('./webpack.common');
+const { name } = require('../package.json');
 
-module.exports = {
+module.exports = merge(webpackCommon, {
   mode: 'production',
-  entry: path.resolve(__dirname, '../src/index.tsx'),
   output: {
-    path: path.resolve(__dirname, '../dist'),
-    filename: 'bundle.js',
     clean: true,
   },
-  module: {
-    rules: [
-      {
-        test: /\.tsx?$/,
-        exclude: [/node_modules/],
-        use: 'babel-loader',
-      },
-    ],
-  },
-  resolve: {
-    extensions: ['.ts', '.tsx', '.js'],
-  },
-  plugins: [new HtmlWebpackPlugin({ template: './src/index.html' })],
-};
+  plugins: [
+    new GenerateSW({
+      clientsClaim: true,
+      skipWaiting: true,
+      modifyURLPrefix: { url: `/${name}/` },
+    }),
+  ],
+});
