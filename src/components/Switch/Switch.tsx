@@ -1,66 +1,51 @@
-import React, { FC, useCallback, useEffect, useState } from 'react';
-import { Color } from '../../themes/types';
-import StyledInput from './StyledInput';
+import React, { FC } from 'react';
+import StyledCheckbox from './StyledCheckbox';
 import StyledKnob from './StyledKnob';
 import StyledSwitch from './StyledSwitch';
 import Box from '../Box';
 import Text from '../Text';
 
 export interface SwitchProps {
-  value: string;
+  checked: boolean;
   activeValue: string;
   inactiveValue: string;
-  knobColor?: Color;
-  activeColor?: Color;
-  inactiveColor?: Color;
   title?: string;
-  active?: boolean;
   onChange: (newValue: string) => void;
 }
 
 const Switch: FC<SwitchProps> = ({
-  value,
+  checked,
   activeValue,
   inactiveValue,
-  knobColor = 'foreground',
-  activeColor = 'background',
-  inactiveColor = 'background',
   title,
-  active = false,
   onChange,
-}) => {
-  const [currentValue, setCurrentValue] = useState(
-    active ? activeValue : value,
-  );
-
-  const handleSwitch = useCallback(() => {
-    setCurrentValue((v) => (v === activeValue ? inactiveValue : activeValue));
-  }, [activeValue, inactiveValue]);
-
-  useEffect(() => {
-    onChange(currentValue);
-  }, [currentValue, onChange]);
-
-  return (
-    <Box onClick={handleSwitch}>
-      {title && (
-        <Box marginInlineEnd="s3">
-          <Text color="primary" textTransform="capitalize" fontSize={16}>
-            {title}
-          </Text>
-        </Box>
-      )}
-      <StyledSwitch>
-        <StyledInput defaultChecked={currentValue === activeValue} />
-        <StyledKnob
-          active={currentValue === activeValue}
-          knobColor={knobColor}
-          activeColor={activeColor}
-          inactiveColor={inactiveColor}
-        />
-      </StyledSwitch>
-    </Box>
-  );
-};
+}) => (
+  <Box>
+    {title && (
+      <Box marginInlineEnd="s3">
+        <Text color="primary" textTransform="capitalize" fontSize={16}>
+          {title}
+        </Text>
+      </Box>
+    )}
+    <StyledSwitch
+      onClick={(e) => {
+        e.preventDefault();
+        onChange(checked ? inactiveValue : activeValue);
+      }}
+    >
+      <StyledCheckbox
+        defaultChecked={checked}
+        value={checked ? activeValue : inactiveValue}
+      />
+      <StyledKnob
+        active={checked}
+        knobColor="background"
+        activeColor="white"
+        inactiveColor="black"
+      />
+    </StyledSwitch>
+  </Box>
+);
 
 export default Switch;

@@ -91,12 +91,9 @@ const App: FC = () => {
           <Box marginBlockStart="s5" inlineSize="100%" justifyContent="end">
             <Switch
               title="dark mode"
-              value={themeName}
+              checked={themeName === 'dark'}
               activeValue="dark"
               inactiveValue="default"
-              knobColor="background"
-              activeColor="white"
-              inactiveColor="black"
               onChange={setTheme}
             />
           </Box>

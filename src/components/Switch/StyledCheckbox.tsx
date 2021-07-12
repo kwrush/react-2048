@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-const StyledInput = styled.input.attrs({ type: 'checkbox' })`
+const StyledCheckbox = styled.input.attrs({ type: 'checkbox' })`
   position: absolute;
   width: 0;
   height: 0;
@@ -8,4 +8,4 @@ const StyledInput = styled.input.attrs({ type: 'checkbox' })`
   margin: 0;
 `;
 
-export default StyledInput;
+export default StyledCheckbox;
