@@ -53,3 +53,6 @@ export const calcLocation = (l: number, c: number, spacing: number) =>
   (spacing + l) * c + spacing;
 
 export const createIndexArray = (len: number) => Array.from(Array(len).keys());
+
+export const create2DArray = <T>(rows: number, cols: number) =>
+  Array.from({ length: rows }, () => Array.from<T>(Array(cols).values()));

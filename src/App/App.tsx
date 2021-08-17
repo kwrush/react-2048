@@ -88,7 +88,7 @@ const App: FC = () => {
           flexDirection="column"
           inlineSize={`${GRID_SIZE}px`}
         >
-          <Box marginBlockStart="s5" inlineSize="100%" justifyContent="end">
+          <Box marginBlockStart="s6" inlineSize="100%" justifyContent="end">
             <Switch
               title="dark mode"
               checked={themeName === 'dark'}
@@ -97,7 +97,11 @@ const App: FC = () => {
               onChange={setTheme}
             />
           </Box>
-          <Box inlineSize="100%" justifyContent="space-between">
+          <Box
+            inlineSize="100%"
+            justifyContent="space-between"
+            marginBlockStart="s2"
+          >
             <Box>
               <Text fontSize={64} fontWeight="bold" color="primary">
                 2048
@@ -108,7 +112,7 @@ const App: FC = () => {
               <ScoreBoard total={best} title="best" />
             </Box>
           </Box>
-          <Box marginBlockStart="s3" marginBlockEnd="s6" inlineSize="100%">
+          <Box marginBlockStart="s2" marginBlockEnd="s6" inlineSize="100%">
             <Control
               rows={rows}
               cols={cols}

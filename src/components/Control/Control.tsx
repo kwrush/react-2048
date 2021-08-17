@@ -26,7 +26,7 @@ const Control: FC<ControlProps> = ({
       </Text>
     </Button>
     <Box>
-      <Box marginInlineEnd="s5" flexDirection="column">
+      <Box marginInlineEnd="s6" flexDirection="column">
         <Text textTransform="uppercase" fontSize={13} color="primary">
           rows
         </Text>
@@ -38,7 +38,7 @@ const Control: FC<ControlProps> = ({
           >
             -
           </Button>
-          <Box marginInline="s2">
+          <Box marginInline="s3">
             <Text fontSize={16} color="primary">
               {rows}
             </Text>
@@ -64,7 +64,7 @@ const Control: FC<ControlProps> = ({
           >
             -
           </Button>
-          <Box marginInline="s2">
+          <Box marginInline="s3">
             <Text fontSize={16} color="primary">
               {cols}
             </Text>

@@ -10,7 +10,7 @@ export interface ScoreBoardProps {
 
 const ScoreBoard: FC<ScoreBoardProps> = ({ total, title }) => {
   const totalRef = useRef(total);
-  const [score, setScore] = useState(total - totalRef.current);
+  const [score, setScore] = useState(() => total - totalRef.current);
 
   useEffect(() => {
     setScore(total - totalRef.current);
@@ -21,8 +21,7 @@ const ScoreBoard: FC<ScoreBoardProps> = ({ total, title }) => {
     <Box
       marginInline="s2"
       paddingBlock="s3"
-      paddingInline="s4"
-      inlineSize="90px"
+      inlineSize="92px"
       background="secondary"
       flexDirection="column"
       position="relative"
@@ -42,7 +41,7 @@ const ScoreBoard: FC<ScoreBoardProps> = ({ total, title }) => {
       </Text>
       {score > 0 && (
         // Assign a different key to let React render the animation from beginning
-        <StyledScore key={total.toFixed(0)}>
+        <StyledScore key={total}>
           <Text fontSize={18} fontWeight="bold" color="primary">
             +{score}
           </Text>

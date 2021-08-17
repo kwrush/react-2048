@@ -12,10 +12,12 @@ import {
   getId,
   resetTileIndex,
   shuffle,
+  create2DArray,
 } from '../utils/common';
 import { DIRECTION_MAP } from '../utils/constants';
 import { Vector } from '../utils/types';
 import { GameStatus } from './useGameState';
+import useLazyRef from './useLazyRef';
 
 export interface Location {
   r: number;
@@ -42,12 +44,6 @@ export type GameBoardParams = {
   addScore: (score: number) => void;
 };
 
-const createRow = <T>(rows: number, cb: (r: number) => T) =>
-  Array.from(Array(rows)).map((_, r) => cb(r));
-
-const createEmptyGrid = (rows: number, cols: number) =>
-  createRow(rows, () => createRow<Cell>(cols, () => undefined));
-
 const createNewTile = (r: number, c: number): Tile => {
   const index = nextTileIndex();
   const id = getId(index);
@@ -68,13 +64,17 @@ const getEmptyCellsLocation = (grid: Cell[][]) =>
     row.flatMap<Location>((cell, c) => (cell == null ? { r, c } : [])),
   );
 
-const createRandomTiles = (emptyCells: Location[], amount: number) => {
-  const tilesNumber = emptyCells.length < amount ? emptyCells.length : amount;
+const createNewTilesInEmptyCells = (
+  emptyCells: Location[],
+  tilesNumber: number,
+) => {
+  const actualTilesNumber =
+    emptyCells.length < tilesNumber ? emptyCells.length : tilesNumber;
 
-  if (!tilesNumber) return [];
+  if (!actualTilesNumber) return [];
 
   return shuffle(emptyCells)
-    .slice(0, tilesNumber)
+    .slice(0, actualTilesNumber)
     .map(({ r, c }) => createNewTile(r, c));
 };
 
@@ -156,7 +156,10 @@ const mergeAndCreateNewTiles = (grid: Cell[][]) => {
   );
 
   const emptyCells = getEmptyCellsLocation(newGrid);
-  const newTiles = createRandomTiles(emptyCells, rows * cols >= 24 ? 2 : 1);
+  const newTiles = createNewTilesInEmptyCells(
+    emptyCells,
+    Math.ceil((rows * cols) / 16),
+  );
   newTiles.forEach((tile) => {
     newGrid[tile.r][tile.c] = tile;
     tiles.push(tile);
@@ -240,9 +243,12 @@ const moveInDirection = (grid: Cell[][], dir: Vector) => {
 const resetGameBoard = (rows: number, cols: number) => {
   // Index restarts from 0 on reset
   resetTileIndex();
-  const grid = createEmptyGrid(rows, cols);
+  const grid = create2DArray<Cell>(rows, cols);
   const emptyCells = getEmptyCellsLocation(grid);
-  const newTiles = createRandomTiles(emptyCells, rows * cols >= 24 ? 4 : 2);
+  const newTiles = createNewTilesInEmptyCells(
+    emptyCells,
+    Math.ceil((rows * cols) / 8),
+  );
 
   newTiles.forEach((tile) => {
     grid[tile.r][tile.c] = tile;
@@ -262,48 +268,54 @@ const useGameBoard = ({
   setGameStatus,
   addScore,
 }: GameBoardParams) => {
-  const gridRef = useRef(createEmptyGrid(rows, cols));
+  const gridRef = useLazyRef(() => create2DArray<Cell>(rows, cols));
   const [tiles, setTiles] = useState<Tile[]>([]);
   const pendingStackRef = useRef<number[]>([]);
   const [moving, setMoving] = useState(false);
   const pauseRef = useRef(pause);
 
-  const onMove = useCallback((dir: Vector) => {
-    if (pendingStackRef.current.length === 0 && !pauseRef.current) {
-      const { tiles: newTiles, moveStack, grid } = moveInDirection(
-        gridRef.current,
-        dir,
-      );
-      gridRef.current = grid;
-      pendingStackRef.current = moveStack;
+  const onMove = useCallback(
+    (dir: Vector) => {
+      if (pendingStackRef.current.length === 0 && !pauseRef.current) {
+        const {
+          tiles: newTiles,
+          moveStack,
+          grid,
+        } = moveInDirection(gridRef.current, dir);
+        gridRef.current = grid;
+        pendingStackRef.current = moveStack;
 
-      // Don't trigger upates if no movments
-      if (moveStack.length > 0) {
-        setMoving(true);
-        // Sort by index to persist iteration order of tiles array
-        // so that transform animation won't be interrupted by rerending
-        // when id is not changed.
-        setTiles(sortTiles(newTiles));
+        // Don't trigger upates if no movments
+        if (moveStack.length > 0) {
+          setMoving(true);
+          // Sort by index to persist iteration order of tiles array
+          // so that transform animation won't be interrupted by rerending
+          // when id is not changed.
+          setTiles(sortTiles(newTiles));
+        }
       }
-    }
-  }, []);
+    },
+    [gridRef],
+  );
 
   const onMovePending = useCallback(() => {
     pendingStackRef.current.pop();
-    setMoving(pendingStackRef.current.length > 0);
+    if (pendingStackRef.current.length === 0) setMoving(false);
   }, []);
 
   useLayoutEffect(() => {
     if (!moving) {
-      const { tiles: newTiles, score, grid } = mergeAndCreateNewTiles(
-        gridRef.current,
-      );
+      const {
+        tiles: newTiles,
+        score,
+        grid,
+      } = mergeAndCreateNewTiles(gridRef.current);
       gridRef.current = grid;
 
       addScore(score);
       setTiles(sortTiles(newTiles));
     }
-  }, [moving, addScore]);
+  }, [moving, addScore, gridRef]);
 
   useLayoutEffect(() => {
     pauseRef.current = pause;
@@ -314,7 +326,7 @@ const useGameBoard = ({
     gridRef.current = grid;
     setTiles(newTiles);
     setGameStatus('running');
-  }, [rows, cols, setGameStatus]);
+  }, [rows, cols, setGameStatus, gridRef]);
 
   useEffect(() => {
     if (gameStatus === 'restart') {
@@ -333,7 +345,7 @@ const useGameBoard = ({
     ) {
       setGameStatus('lost');
     }
-  }, [tiles, gameStatus, setGameStatus]);
+  }, [tiles, gameStatus, setGameStatus, gridRef]);
 
   return { tiles, onMove, onMovePending };
 };

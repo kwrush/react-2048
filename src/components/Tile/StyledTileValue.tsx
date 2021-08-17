@@ -6,7 +6,6 @@ export interface StyledTileValueProps {
   isNew: boolean;
   isMerging: boolean;
   value: number;
-  backgroundColor: string;
 }
 
 const StyledTileValue = styled.div<StyledTileValueProps>`

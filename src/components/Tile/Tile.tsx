@@ -1,5 +1,4 @@
 import React, { FC } from 'react';
-import { getTileColor } from '../../utils/common';
 import StyledTile, { StyledTileProps } from './StyledTile';
 import StyledTileValue from './StyledTileValue';
 
@@ -18,12 +17,7 @@ const Tile: FC<TileProps> = ({
   isMerging = false,
 }) => (
   <StyledTile value={value} x={x} y={y} width={width} height={height}>
-    <StyledTileValue
-      value={value}
-      backgroundColor={getTileColor(value)}
-      isNew={isNew}
-      isMerging={isMerging}
-    >
+    <StyledTileValue value={value} isNew={isNew} isMerging={isMerging}>
       {value}
     </StyledTileValue>
   </StyledTile>

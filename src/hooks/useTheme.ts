@@ -22,6 +22,6 @@ const themeReducer = (theme: ThemeEntity, nextThemeName: string) =>
 const useTheme = (
   initialThemeName: ThemeName,
 ): [ThemeEntity, (nextTheme: string) => void] =>
-  useReducer(themeReducer, getTheme(initialThemeName));
+  useReducer(themeReducer, initialThemeName, getTheme);
 
 export default useTheme;

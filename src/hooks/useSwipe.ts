@@ -5,8 +5,8 @@ import { Vector } from '../utils/types';
 const isTouchDevice = () => 'ontouchstart' in window;
 
 // Similar to useArrowKeyPress, use callback to let hook user decide when to rerender
-const useSwipe = (
-  ref: RefObject<HTMLElement | null | undefined>,
+const useSwipe = <T extends HTMLElement>(
+  ref: RefObject<T>,
   cb: (dir: Vector) => void,
   threshold = 3,
 ) => {

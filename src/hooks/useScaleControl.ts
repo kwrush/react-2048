@@ -8,6 +8,6 @@ const scaleReducer = (s: number, change: number) =>
 const useScaleControl = (
   initScale: number,
 ): [number, (change: number) => void] =>
-  useReducer(scaleReducer, clamp(initScale, MIN_SCALE, MAX_SCALE));
+  useReducer(scaleReducer, initScale, (s) => clamp(s, MIN_SCALE, MAX_SCALE));
 
 export default useScaleControl;
