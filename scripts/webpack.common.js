@@ -23,10 +23,10 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: './public/index.html',
+      template: path.resolve(__dirname, '../public/index.html'),
     }),
     new FaviconsWebpackPlugin({
-      logo: './public/images/favicon.svg',
+      logo: path.resolve(__dirname, '../public/images/favicon.svg'),
       favicons: {
         appName: 'React 2048',
         appShortName: '2048',
@@ -36,7 +36,6 @@ module.exports = {
         theme_color: 'white',
         display: 'fullscreen',
         orientation: 'portrait',
-        start_url: '../index.html',
         icons: {
           android: true,
           appleIcon: true,

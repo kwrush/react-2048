@@ -6,6 +6,7 @@ module.exports = {
   extends: [
     'airbnb-typescript',
     'airbnb/hooks',
+    'plugin:import/recommended',
     'plugin:@typescript-eslint/recommended',
     'prettier',
   ],
@@ -18,13 +19,18 @@ module.exports = {
     sourceType: 'module',
     project: './tsconfig.eslint.json',
   },
-  plugins: ['react', '@typescript-eslint'],
+  plugins: ['react', 'import', '@typescript-eslint'],
   rules: {
     'no-nested-ternary': 'off',
     'jsx-a11y/accessible-emoji': 'off',
     'react/prop-types': 'off',
     'react/jsx-props-no-spreading': 'off',
     '@typescript-eslint/explicit-module-boundary-types': 'off',
+    '@typescript-eslint/no-explicit-any': 'off',
+    '@typescript-eslint/no-implicit-any-catch': [
+      'error',
+      { allowExplicitAny: true },
+    ],
   },
   overrides: [
     {

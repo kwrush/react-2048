@@ -8,7 +8,7 @@ const useLocalStorage = <T>(
     try {
       const item = window.localStorage.getItem(name);
       return item != null ? JSON.parse(item) : initialValue;
-    } catch (error) {
+    } catch (error: any) {
       // eslint-disable-next-line no-console
       console.error(
         `Cannot get localStorage by the given name ${name}:`,
@@ -25,7 +25,7 @@ const useLocalStorage = <T>(
       try {
         window.localStorage.setItem(name, JSON.stringify(newValue));
         setStoredValue(newValue);
-      } catch (error) {
+      } catch (error: any) {
         // eslint-disable-next-line no-console
         console.error(
           `Cannot set localStorage by the given name ${name}:`,
