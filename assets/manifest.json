@@ -6,7 +6,7 @@
   "lang": "en-US",
   "display": "fullscreen",
   "orientation": "portrait",
-  "start_url": "../index.html",
+  "start_url": "/?homescreen=1",
   "background_color": "white",
   "theme_color": "white",
   "icons": [
