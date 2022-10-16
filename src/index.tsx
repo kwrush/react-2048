@@ -1,12 +1,13 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import App from './App';
 import GlobalStyle from './components/GlobalStyle';
 
-ReactDOM.render(
+const container = document.getElementById('game') as HTMLElement;
+const root = createRoot(container);
+root.render(
   <>
     <GlobalStyle />
     <App />
   </>,
-  document.getElementById('game'),
 );
