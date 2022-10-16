@@ -14,6 +14,6 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx", "styled.d.ts"],
+  "include": ["src/**/*.ts", "src/**/*.tsx", "styled.d.ts", "vite.config.ts"],
   "exclude": ["node_modules", "dist"]
 }
