@@ -5,6 +5,7 @@
     "src/**/*.tsx",
     "scripts/**/*.js",
     ".eslintrc.js",
-    "styled.d.ts"
+    "styled.d.ts",
+    "vite.config.ts"
   ]
 }
