@@ -7,9 +7,9 @@ import type { VitePWAOptions } from 'vite-plugin-pwa';
 /* eslint-enable import/no-extraneous-dependencies */
 
 const pwaOptions: Partial<VitePWAOptions> = {
-  includeAssets: ['favicon.ico', 'apple-touch-icon.png'],
   registerType: 'autoUpdate',
   manifest: {
+    id: '/react-2048/',
     name: 'React 2048',
     short_name: 'React 2048',
     description: 'A React clone of 2048 game',
@@ -30,16 +30,21 @@ const pwaOptions: Partial<VitePWAOptions> = {
 };
 
 export default defineConfig(({ mode }) => {
+  const isProd = mode === 'production';
   const plugins: PluginOption[] = [react()];
 
-  if (mode === 'production') {
+  if (isProd) {
     plugins.push(VitePWA(pwaOptions));
   }
 
   return {
+    base: isProd ? '/react-2048/' : '/',
     server: {
       port: 3000,
     },
     plugins,
+    build: {
+      emptyOutDir: true,
+    },
   };
 });
