@@ -5,15 +5,14 @@
   "description": "A React clone of 2048 game",
   "main": "src/index.js",
   "scripts": {
-    "dev": "vite",
     "build": "npm run tsc && vite build",
     "start": "vite --host",
-    "start:pwa": "npm run build && http-server dist --port=3000",
+    "preview": "vite preview --port=3000 --host",
     "genicons": "node scripts/generateFavicons.js",
     "lint": "eslint . --ext .js,.ts,.tsx --max-warnings 0",
     "format": "prettier --write .",
     "tsc": "tsc -p tsconfig.json --noEmit",
-    "deploy": "npm run build && gh-pages -d dist",
+    "deploy": "npm run build && gh-pages -d dist/react-2048",
     "prepare": "husky install"
   },
   "keywords": [
