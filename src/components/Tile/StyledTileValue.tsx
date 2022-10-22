@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { pop, scaleUp } from '../../utils/animation';
+import { pop, expand } from '../../utils/animation';
 import { getTileColor } from '../../utils/common';
 
 export interface StyledTileValueProps {
@@ -20,7 +20,7 @@ const StyledTileValue = styled.div<StyledTileValueProps>`
   background-color: ${({ theme: { palette }, value }) =>
     palette[getTileColor(value)]};
   animation-name: ${({ isMerging, isNew }) =>
-    isMerging ? pop : isNew ? scaleUp : ''};
+    isMerging ? pop : isNew ? expand : ''};
   animation-duration: 0.18s;
   animation-fill-mode: forwards;
   color: ${({ theme: { palette }, value }) =>

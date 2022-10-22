@@ -1,17 +1,17 @@
 import React, { FC, useEffect, useRef, useState } from 'react';
 import useArrowKeyPress from '../../hooks/useArrowKeyPress';
-import { Tile as TileType } from '../../hooks/useGameBoard';
-import { GameStatus } from '../../hooks/useGameState';
+import type { Tile } from '../../hooks/useGameBoard';
+import type { GameStatus } from '../../hooks/useGameState';
 import useSwipe from '../../hooks/useSwipe';
 import { calcLocation, calcTileSize } from '../../utils/common';
 import { Vector } from '../../utils/types';
 import Box from '../Box';
 import Grid from '../Grid';
 import Notification from '../Notification';
-import Tile from '../Tile';
+import TileComponent from '../Tile';
 
 export interface GameBoardProps {
-  tiles?: TileType[];
+  tiles?: Tile[];
   gameStatus: GameStatus;
   rows: number;
   cols: number;
@@ -19,6 +19,7 @@ export interface GameBoardProps {
   spacing: number;
   onMove: (dir: Vector) => void;
   onMovePending: () => void;
+  onMergePending: () => void;
   onCloseNotification: (currentStatus: GameStatus) => void;
 }
 
@@ -31,7 +32,7 @@ const GameBoard: FC<GameBoardProps> = ({
   spacing,
   onMove,
   onMovePending,
-  // onMergePending,
+  onMergePending,
   onCloseNotification,
 }) => {
   const [{ width: tileWidth, height: tileHeight }, setTileSize] = useState(() =>
@@ -62,9 +63,10 @@ const GameBoard: FC<GameBoardProps> = ({
         blockSize="100%"
         inlineSize="100%"
         onTransitionEnd={onMovePending}
+        onAnimationEnd={onMergePending}
       >
         {tiles?.map(({ r, c, id, value, isMerging, isNew }) => (
-          <Tile
+          <TileComponent
             key={id}
             width={tileWidth}
             height={tileHeight}

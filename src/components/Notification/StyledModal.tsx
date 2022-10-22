@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { scaleUp } from '../../utils/animation';
+import { expand } from '../../utils/animation';
 
 const StyledModal = styled.div`
   position: absolute;
@@ -9,7 +9,7 @@ const StyledModal = styled.div`
   height: 100%;
   background: none;
   z-index: 9999;
-  animation-name: ${scaleUp};
+  animation-name: ${expand};
   animation-duration: 0.2s;
   animation-fill-mode: forwards;
   border-radius: ${({ theme }) => theme.borderRadius};

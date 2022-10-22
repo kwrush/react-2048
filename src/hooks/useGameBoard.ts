@@ -1,10 +1,4 @@
-import {
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-} from 'react';
+import { useCallback, useRef, useState } from 'react';
 import {
   clamp,
   createIndexArray,
@@ -14,9 +8,8 @@ import {
   shuffle,
   create2DArray,
 } from '../utils/common';
-import { DIRECTION_MAP } from '../utils/constants';
 import { Vector } from '../utils/types';
-import { GameStatus } from './useGameState';
+import type { GameState } from './useGameState';
 import useLazyRef from './useLazyRef';
 
 export interface Location {
@@ -38,9 +31,7 @@ export type Cell = Tile | undefined;
 export type GameBoardParams = {
   rows: number;
   cols: number;
-  pause: boolean;
-  gameStatus: GameStatus;
-  setGameStatus: (nextStatus: GameStatus) => void;
+  gameState: GameState;
   addScore: (score: number) => void;
 };
 
@@ -89,38 +80,7 @@ const createTraversalMap = (rows: number, cols: number, dir: Vector) => {
 };
 
 const sortTiles = (tiles: Tile[]) =>
-  tiles.sort((t1, t2) => t1.index - t2.index);
-
-const isWin = (tiles: Tile[]) => tiles.some(({ value }) => value === 2048);
-
-const canGameContinue = (grid: Cell[][], tiles: Tile[]) => {
-  const totalRows = grid.length;
-  const totalCols = grid[0].length;
-  // We can always continue the game when there're empty cells,
-  if (tiles.length < totalRows * totalCols) return true;
-
-  const dirs = [
-    DIRECTION_MAP.Left,
-    DIRECTION_MAP.Right,
-    DIRECTION_MAP.Up,
-    DIRECTION_MAP.Down,
-  ];
-
-  for (let ind = 0; ind < tiles.length; ind++) {
-    const { r, c, value } = tiles[ind];
-    for (let d = 0; d < dirs.length; d++) {
-      const dir = dirs[d];
-      const nextRow = clamp(r + dir.r, 0, totalRows - 1);
-      const nextCol = clamp(c + dir.c, 0, totalCols - 1);
-
-      if (nextRow !== r || nextCol !== c) {
-        const tile = grid[nextRow][nextCol];
-        if (tile == null || tile.value === value) return true;
-      }
-    }
-  }
-  return false;
-};
+  [...tiles].sort((t1, t2) => t1.index - t2.index);
 
 const mergeAndCreateNewTiles = (grid: Cell[][]) => {
   const tiles: Tile[] = [];
@@ -240,15 +200,18 @@ const moveInDirection = (grid: Cell[][], dir: Vector) => {
   };
 };
 
+const createInitialTiles = (grid: Cell[][]) => {
+  const emptyCells = getEmptyCellsLocation(grid);
+  const rows = grid.length;
+  const cols = grid[0].length;
+  return createNewTilesInEmptyCells(emptyCells, Math.ceil((rows * cols) / 8));
+};
+
 const resetGameBoard = (rows: number, cols: number) => {
   // Index restarts from 0 on reset
   resetTileIndex();
   const grid = create2DArray<Cell>(rows, cols);
-  const emptyCells = getEmptyCellsLocation(grid);
-  const newTiles = createNewTilesInEmptyCells(
-    emptyCells,
-    Math.ceil((rows * cols) / 8),
-  );
+  const newTiles = createInitialTiles(grid);
 
   newTiles.forEach((tile) => {
     grid[tile.r][tile.c] = tile;
@@ -260,19 +223,20 @@ const resetGameBoard = (rows: number, cols: number) => {
   };
 };
 
-const useGameBoard = ({
-  rows,
-  cols,
-  pause,
-  gameStatus,
-  setGameStatus,
-  addScore,
-}: GameBoardParams) => {
-  const gridRef = useLazyRef(() => create2DArray<Cell>(rows, cols));
-  const [tiles, setTiles] = useState<Tile[]>([]);
+const useGameBoard = ({ rows, cols, gameState, addScore }: GameBoardParams) => {
+  const gridMapRef = useLazyRef(() => {
+    const grid = create2DArray<Cell>(rows, cols);
+    const tiles = createInitialTiles(grid);
+    tiles.forEach((tile) => {
+      grid[tile.r][tile.c] = tile;
+    });
+
+    return { grid, tiles };
+  });
+
+  const [tiles, setTiles] = useState<Tile[]>(gridMapRef.current.tiles);
   const pendingStackRef = useRef<number[]>([]);
-  const [moving, setMoving] = useState(false);
-  const pauseRef = useRef(pause);
+  const pauseRef = useRef(gameState.pause);
 
   const onMove = useCallback(
     (dir: Vector) => {
@@ -281,73 +245,58 @@ const useGameBoard = ({
           tiles: newTiles,
           moveStack,
           grid,
-        } = moveInDirection(gridRef.current, dir);
-        gridRef.current = grid;
+        } = moveInDirection(gridMapRef.current.grid, dir);
+        gridMapRef.current = { grid, tiles: newTiles };
         pendingStackRef.current = moveStack;
 
-        // Don't trigger upates if no movments
+        // No need to update when no tile moves
         if (moveStack.length > 0) {
-          setMoving(true);
-          // Sort by index to persist iteration order of tiles array
-          // so that transform animation won't be interrupted by rerending
-          // when id is not changed.
           setTiles(sortTiles(newTiles));
         }
       }
     },
-    [gridRef],
+    [gridMapRef],
   );
 
   const onMovePending = useCallback(() => {
     pendingStackRef.current.pop();
-    if (pendingStackRef.current.length === 0) setMoving(false);
-  }, []);
-
-  useLayoutEffect(() => {
-    if (!moving) {
+    if (pendingStackRef.current.length === 0) {
       const {
         tiles: newTiles,
         score,
         grid,
-      } = mergeAndCreateNewTiles(gridRef.current);
-      gridRef.current = grid;
-
+      } = mergeAndCreateNewTiles(gridMapRef.current.grid);
+      gridMapRef.current = { grid, tiles: newTiles };
       addScore(score);
+      pendingStackRef.current = newTiles
+        .filter((tile) => tile.isMerging || tile.isNew)
+        .map((tile) => tile.index);
       setTiles(sortTiles(newTiles));
     }
-  }, [moving, addScore, gridRef]);
+  }, [addScore, gridMapRef]);
 
-  useLayoutEffect(() => {
-    pauseRef.current = pause;
-  }, [pause]);
+  const onMergePending = useCallback(() => {
+    pendingStackRef.current.pop();
+  }, []);
 
-  useEffect(() => {
+  if (pauseRef.current !== gameState.pause) {
+    pauseRef.current = gameState.pause;
+  }
+
+  if (gameState.status === 'restart') {
     const { grid, tiles: newTiles } = resetGameBoard(rows, cols);
-    gridRef.current = grid;
+    gridMapRef.current = { grid, tiles: newTiles };
+    pendingStackRef.current = [];
     setTiles(newTiles);
-    setGameStatus('running');
-  }, [rows, cols, setGameStatus, gridRef]);
+  }
 
-  useEffect(() => {
-    if (gameStatus === 'restart') {
-      const r = gridRef.current.length;
-      const c = gridRef.current[0].length;
-      const { grid, tiles: newTiles } = resetGameBoard(r, c);
-
-      gridRef.current = grid;
-      setTiles(newTiles);
-      setGameStatus('running');
-    } else if (gameStatus === 'running' && isWin(tiles)) {
-      setGameStatus('win');
-    } else if (
-      gameStatus !== 'lost' &&
-      !canGameContinue(gridRef.current, tiles)
-    ) {
-      setGameStatus('lost');
-    }
-  }, [tiles, gameStatus, setGameStatus, gridRef]);
-
-  return { tiles, onMove, onMovePending };
+  return {
+    tiles,
+    grid: gridMapRef.current.grid,
+    onMove,
+    onMovePending,
+    onMergePending,
+  };
 };
 
 export default useGameBoard;
