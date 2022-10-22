@@ -14,6 +14,7 @@ import { GRID_SIZE, MIN_SCALE, SPACING } from '../utils/constants';
 import useLocalStorage from '../hooks/useLocalStorage';
 import { ThemeName } from '../themes/types';
 import useTheme from '../hooks/useTheme';
+import { canGameContinue, isWin } from '../utils/rules';
 
 export type Configuration = {
   theme: ThemeName;
@@ -25,7 +26,7 @@ export type Configuration = {
 const APP_NAME = 'react-2048';
 
 const App: FC = () => {
-  const [{ status: gameStatus, pause }, setGameStatus] = useGameState({
+  const [gameState, setGameStatus] = useGameState({
     status: 'running',
     pause: false,
   });
@@ -46,12 +47,10 @@ const App: FC = () => {
 
   const { total, best, addScore, setTotal } = useGameScore(config.bestScore);
 
-  const { tiles, onMove, onMovePending } = useGameBoard({
+  const { tiles, grid, onMove, onMovePending, onMergePending } = useGameBoard({
     rows,
     cols,
-    pause,
-    gameStatus,
-    setGameStatus,
+    gameState,
     addScore,
   });
 
@@ -66,9 +65,18 @@ const App: FC = () => {
     [setGameStatus],
   );
 
+  if (gameState.status === 'restart') {
+    setTotal(0);
+    setGameStatus('running');
+  } else if (gameState.status === 'running' && isWin(tiles)) {
+    setGameStatus('win');
+  } else if (gameState.status !== 'lost' && !canGameContinue(grid, tiles)) {
+    setGameStatus('lost');
+  }
+
   useEffect(() => {
-    if (gameStatus === 'restart') setTotal(0);
-  }, [gameStatus, setTotal]);
+    setGameStatus('restart');
+  }, [rows, cols, setGameStatus]);
 
   useEffect(() => {
     setConfig({ rows, cols, bestScore: best, theme: themeName });
@@ -127,9 +135,10 @@ const App: FC = () => {
             rows={rows}
             cols={cols}
             spacing={SPACING}
-            gameStatus={gameStatus}
+            gameStatus={gameState.status}
             onMove={onMove}
             onMovePending={onMovePending}
+            onMergePending={onMergePending}
             onCloseNotification={onCloseNotification}
           />
           <Box marginBlock="s4" justifyContent="center" flexDirection="column">

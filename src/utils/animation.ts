@@ -1,6 +1,6 @@
 import { keyframes } from 'styled-components';
 
-export const scaleUp = keyframes`
+export const expand = keyframes`
   from {
     transform: scale(0);
   }
