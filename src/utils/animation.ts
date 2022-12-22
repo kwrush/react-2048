@@ -2,7 +2,7 @@ import { keyframes } from 'styled-components';
 
 export const expand = keyframes`
   from {
-    transform: scale(0);
+    transform: scale(0.2);
   }
 
   to {

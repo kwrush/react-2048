@@ -1,20 +1,20 @@
 import React, { FC, useCallback, useEffect } from 'react';
 import { ThemeProvider } from 'styled-components';
-import Box from '../components/Box';
-import Control from '../components/Control/Control';
-import GameBoard from '../components/GameBoard';
-import ScoreBoard from '../components/ScoreBoard';
-import Switch from '../components/Switch';
-import Text from '../components/Text';
-import useGameBoard from '../hooks/useGameBoard';
-import useGameScore from '../hooks/useGameScore';
-import useGameState, { GameStatus } from '../hooks/useGameState';
-import useScaleControl from '../hooks/useScaleControl';
-import { GRID_SIZE, MIN_SCALE, SPACING } from '../utils/constants';
-import useLocalStorage from '../hooks/useLocalStorage';
-import { ThemeName } from '../themes/types';
-import useTheme from '../hooks/useTheme';
-import { canGameContinue, isWin } from '../utils/rules';
+import Box from './components/Box';
+import Control from './components/Control/Control';
+import GameBoard from './components/GameBoard';
+import ScoreBoard from './components/ScoreBoard';
+import Switch from './components/Switch';
+import Text from './components/Text';
+import useGameBoard from './hooks/useGameBoard';
+import useGameScore from './hooks/useGameScore';
+import useGameState, { GameStatus } from './hooks/useGameState';
+import useScaleControl from './hooks/useScaleControl';
+import { GRID_SIZE, MIN_SCALE, SPACING } from './utils/constants';
+import useLocalStorage from './hooks/useLocalStorage';
+import { ThemeName } from './themes/types';
+import useTheme from './hooks/useTheme';
+import { canGameContinue, isWin } from './utils/rules';
 
 export type Configuration = {
   theme: ThemeName;

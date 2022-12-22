@@ -1,6 +1,5 @@
-import { Theme } from '../types';
-import defaultTheme from '../default';
-import { defaultPalette } from '../default/default';
+import { Theme } from './types';
+import defaultTheme, { defaultPalette } from './default';
 
 const theme: Theme = {
   ...defaultTheme,

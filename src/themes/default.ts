@@ -1,4 +1,4 @@
-import { Palette, Theme } from '../types';
+import { Palette, Theme } from './types';
 
 export const defaultPalette: Palette = {
   transparent: 'transparent',
