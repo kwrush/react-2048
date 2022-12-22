@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 
 const useGameScore = (initialBest: number) => {
   const [total, setTotal] = useState(0);
@@ -6,9 +6,9 @@ const useGameScore = (initialBest: number) => {
 
   const addScore = useCallback((s: number) => setTotal((t) => t + s), []);
 
-  useEffect(() => {
-    setBest((b) => (total > b ? total : b));
-  }, [total]);
+  if (total > best) {
+    setBest(total);
+  }
 
   return {
     total,
