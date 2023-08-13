@@ -2,10 +2,11 @@
   "name": "react-2048",
   "version": "0.0.0",
   "private": true,
+  "homepage": "./",
   "description": "A React clone of 2048 game",
   "main": "src/index.js",
   "scripts": {
-    "build": "npm run tsc && vite build",
+    "build": "npm run tsc && vite build --base=./react-2048/dist/",
     "start": "vite --host",
     "preview": "vite preview --port=3000 --host",
     "genicons": "node scripts/generateFavicons.js",
@@ -34,6 +35,7 @@
   "dependencies": {
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "serve": "^14.2.0",
     "styled-components": "^5.3.6",
     "styled-normalize": "^8.0.7"
   },
